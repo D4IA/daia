@@ -22,7 +22,7 @@ export const fetchTransactionByIdOrNull = async (transactionId: string) => {
 
 export type TransactionsByUserAddressFetcher = {
   transactionIdsByAddressFetcher: (
-    address: string
+    ...args: Parameters<typeof GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS>
   ) => Promise<WalletConfirmedHistoryTransactions | null>;
   bulkTransactionDetailsFetcher: (
     txIds: string[]
@@ -30,9 +30,9 @@ export type TransactionsByUserAddressFetcher = {
 };
 
 const defaultFetcher: TransactionsByUserAddressFetcher = {
-  transactionIdsByAddressFetcher: (address: string) => {
+  transactionIdsByAddressFetcher: (...args) => {
     return throttleFetchJsonOrNull<WalletConfirmedHistoryTransactions>(
-      GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS(address)
+      GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS(...args)
     );
   },
   bulkTransactionDetailsFetcher: (txIds: string[]) => {
@@ -49,20 +49,38 @@ const defaultFetcher: TransactionsByUserAddressFetcher = {
 /*
  * Fetches confirmed transactions for a given user wallet address in WIF format.
  * @param address - The wallet address to fetch transactions for.
+ * @param fetcher - Optional custom fetcher functions for fetching transaction IDs and details.
  * @returns An array of transaction objects.
  */
 export const fetchTransactionsByUserAddress = async (
   address: string,
-  fetcher: TransactionsByUserAddressFetcher = defaultFetcher
+  fetcher: TransactionsByUserAddressFetcher = defaultFetcher,
+  options?: { batchSize?: number }
 ) => {
-  const transactions = await fetcher.transactionIdsByAddressFetcher(address);
-  if (!transactions) return [];
+  let transactionHashes: string[] = [];
 
-  const transactionHashes = transactions.result.map(
-    (shortTransaction) => shortTransaction.tx_hash
+  let pageToken: string | undefined = undefined;
+  while (true) {
+    const transactions = await fetcher.transactionIdsByAddressFetcher(address, {
+      pageToken,
+    });
+
+    if (!transactions) return [];
+
+    const localTransactionHashes = transactions.result.map(
+      (shortTransaction) => shortTransaction.tx_hash
+    );
+
+    transactionHashes = [...transactionHashes, ...localTransactionHashes];
+
+    if (!transactions.nextPageToken) break;
+    pageToken = transactions.nextPageToken;
+  }
+
+  const chunks = chunkArray(
+    transactionHashes,
+    options?.batchSize ?? TRANSACTIONS_PER_BATCH
   );
-
-  const chunks = chunkArray(transactionHashes, TRANSACTIONS_PER_BATCH);
   const bulkTransactionDetails: Transaction[] = [];
 
   for (const chunk of chunks) {
@@ -71,5 +89,6 @@ export const fetchTransactionsByUserAddress = async (
       bulkTransactionDetails.push(...details);
     }
   }
+
   return bulkTransactionDetails;
 };
