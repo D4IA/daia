@@ -1,8 +1,8 @@
 {
-  "name": "d4ia-blockchain-bridge",
+  "name": "@d4ia/blockchain-bridge",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/d4ia-blockchain-bridge.cjs.js",
+  "main": "./dist/blockchain-bridge.cjs.js",
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
@@ -10,7 +10,7 @@
     "test-watch": "vitest"
   },
   "type": "module",
-  "module": "./dist/d4ia-blockchain-bridge.es.js",
+  "module": "./dist/blockchain-bridge.es.js",
   "types": "./dist/index.d.ts",
   "keywords": [],
   "author": "",
