@@ -11,8 +11,9 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"],
-      "@types/*": ["types/*"]
+      "#src/*": ["src/*"],
+      "#types/*": ["types/*"],
+      "#tests/*": ["tests/*"]
     }
   },
   "include": ["src", "types"]
