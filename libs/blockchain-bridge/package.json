@@ -6,7 +6,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "test": "vitest"
+    "test": "vitest run",
+    "test-watch": "vitest"
   },
   "type": "module",
   "module": "./dist/d4ia-blockchain-bridge.es.js",
