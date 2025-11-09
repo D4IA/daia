@@ -1,13 +1,13 @@
-import { throttleFetchJsonOrNull } from "@src/adapters/httpAdapter";
+import { throttleFetchJsonOrNull } from "#src/adapters/httpAdapter";
 import {
   GET_TRANSACTION_BY_TX_ID,
   GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS,
   GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS,
-} from "@src/constants/apiEndpoints.const";
-import { TRANSACTIONS_PER_BATCH } from "@src/constants/transactions";
-import { chunkArray } from "@src/utils/chunkArray";
-import type { Transaction } from "@types/transaction";
-import type { WalletConfirmedHistoryTransactions } from "@types/wallet";
+} from "#src/constants/apiEndpoints.const";
+import { TRANSACTIONS_PER_BATCH } from "#src/constants/transactions";
+import { chunkArray } from "#src/utils/chunkArray";
+import type { Transaction } from "#types/transaction";
+import type { WalletConfirmedHistoryTransactions } from "#types/wallet";
 
 /*
  * Fetches a transaction by its transaction ID.

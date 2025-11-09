@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { FetchThrottler } from "../src/utils/fetchThrottler";
+import { FetchThrottler } from "#src/utils/fetchThrottler.ts";
 
 function createMockFetch(delay = 10) {
   return vi.fn((url: string) => {

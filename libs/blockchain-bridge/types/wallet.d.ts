@@ -1,9 +1,10 @@
 export type WalletConfirmedHistoryTransactions = {
-  address: unknown;
-  script: unknown;
+  address: string;
+  script: string;
   result: Array<{
     tx_hash: string;
     height: number;
   }>;
-  error: unknown;
+  nextPageToken?: string;
+  error: string;
 };
