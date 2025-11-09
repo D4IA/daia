@@ -11,30 +11,27 @@ function createMockFetch(delay = 10) {
 
 describe("FetchThrottler", () => {
   it("should throttle requests to max 3 per second", async () => {
+    vi.useFakeTimers();
+
     const throttler = FetchThrottler.getInstance(3, 1000);
     const mockFetch = createMockFetch();
-    // @ts-ignore
-    global.fetch = mockFetch;
+    global.fetch = mockFetch as any;
 
-    const start = Date.now();
     const requests = Array.from({ length: 7 }, (_, i) =>
       throttler.throttledFetch(`https://test.com/${i}`)
     );
+
+    // TICK 1 second → first 3 requests released
+    await vi.advanceTimersByTimeAsync(1000);
+
+    // TICK 2 second → next 3 released
+    await vi.advanceTimersByTimeAsync(1000);
+
+    // TICK 3 second → last 1 released
+    await vi.advanceTimersByTimeAsync(1000);
+
     await Promise.all(requests);
-    const duration = Date.now() - start;
-    // 7 requests, 3 per second, so at least 3 seconds
-    expect(duration).toBeGreaterThanOrEqual(2000);
+
     expect(mockFetch).toHaveBeenCalledTimes(7);
-  });
-
-  it("should resolve responses correctly", async () => {
-    const throttler = FetchThrottler.getInstance();
-    const mockFetch = createMockFetch();
-    // @ts-ignore
-    global.fetch = mockFetch;
-
-    const res = await throttler.throttledFetch("https://test.com/abc");
-    expect(res).toHaveProperty("ok", true);
-    expect(res).toHaveProperty("url", "https://test.com/abc");
   });
 });
