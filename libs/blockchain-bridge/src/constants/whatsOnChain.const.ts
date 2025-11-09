@@ -1,0 +1,1 @@
+export const TRANSACTIONS_PER_BATCH = 20;
