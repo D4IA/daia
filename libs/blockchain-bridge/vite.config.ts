@@ -12,7 +12,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "D4iaBlockchainBridge",
-      fileName: (format) => `d4ia-blockchain-bridge.${format}.js`,
+      fileName: (format) => `blockchain-bridge.${format}.js`,
       formats: ["es", "cjs", "umd"],
     },
     rollupOptions: {
