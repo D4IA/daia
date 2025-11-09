@@ -4,7 +4,7 @@ import {
   GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS,
   GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS,
 } from "@src/constants/apiEndpoints.const";
-import { TRANSACTIONS_PER_BATCH } from "@src/constants/whatsOnChain.const";
+import { TRANSACTIONS_PER_BATCH } from "@src/constants/transactions";
 import { chunkArray } from "@src/utils/chunkArray";
 import type { Transaction } from "@types/transaction";
 import type { WalletConfirmedHistoryTransactions } from "@types/wallet";
