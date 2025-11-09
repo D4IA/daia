@@ -1,6 +1,10 @@
 // fetchThrottler.ts
 // Utility to throttle fetch requests to max N per interval
 
+import { REQUESTS_PER_SECOND } from "@src/constants/requests";
+
+const SECOND_IN_MS = 1000;
+
 export class FetchThrottler {
   private static instance: FetchThrottler;
   private queue: Array<() => void> = [];
@@ -8,15 +12,18 @@ export class FetchThrottler {
   private readonly maxRequests: number;
   private readonly intervalMs: number;
 
-  private constructor(maxRequests: number = 3, intervalMs: number = 1000) {
+  private constructor(
+    maxRequests: number = REQUESTS_PER_SECOND,
+    intervalMs: number = SECOND_IN_MS
+  ) {
     this.maxRequests = maxRequests;
     this.intervalMs = intervalMs;
     setInterval(() => this.release(), this.intervalMs);
   }
 
   public static getInstance(
-    maxRequests: number = 3,
-    intervalMs: number = 1000
+    maxRequests: number = REQUESTS_PER_SECOND,
+    intervalMs: number = SECOND_IN_MS
   ): FetchThrottler {
     if (!FetchThrottler.instance) {
       FetchThrottler.instance = new FetchThrottler(maxRequests, intervalMs);
