@@ -1,4 +1,4 @@
 export {
   fetchTransactionByIdOrNull,
   fetchTransactionsByUserAddress,
-} from "./core/transactions";
+} from "#src/core/transactions";

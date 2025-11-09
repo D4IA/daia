@@ -1,7 +1,7 @@
 // fetchThrottler.ts
 // Utility to throttle fetch requests to max N per interval
 
-import { REQUESTS_PER_SECOND } from "@src/constants/requests";
+import { REQUESTS_PER_SECOND } from "#src/constants/requests";
 
 const SECOND_IN_MS = 1000;
 

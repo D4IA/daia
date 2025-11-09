@@ -1,4 +1,4 @@
-import { FetchThrottler } from "@src/utils/fetchThrottler";
+import { FetchThrottler } from "#src/utils/fetchThrottler";
 /**
  * Fetches JSON from the given URL (GET or POST).
  * Returns parsed JSON or null if 404 or other error.
