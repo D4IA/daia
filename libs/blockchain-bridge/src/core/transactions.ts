@@ -20,16 +20,42 @@ export const fetchTransactionByIdOrNull = async (transactionId: string) => {
   );
 };
 
+export type TransactionsByUserAddressFetcher = {
+  transactionIdsByAddressFetcher: (
+    address: string
+  ) => Promise<WalletConfirmedHistoryTransactions | null>;
+  bulkTransactionDetailsFetcher: (
+    txIds: string[]
+  ) => Promise<Transaction[] | null>;
+};
+
+const defaultFetcher: TransactionsByUserAddressFetcher = {
+  transactionIdsByAddressFetcher: (address: string) => {
+    return throttleFetchJsonOrNull<WalletConfirmedHistoryTransactions>(
+      GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS(address)
+    );
+  },
+  bulkTransactionDetailsFetcher: (txIds: string[]) => {
+    return throttleFetchJsonOrNull<Transaction[]>(
+      GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS(),
+      {
+        method: "POST",
+        body: JSON.stringify({ txids: txIds }),
+      }
+    );
+  },
+};
+
 /*
  * Fetches confirmed transactions for a given user wallet address in WIF format.
  * @param address - The wallet address to fetch transactions for.
  * @returns An array of transaction objects.
  */
-export const fetchTransactionsByUserAddress = async (address: string) => {
-  const transactions =
-    await throttleFetchJsonOrNull<WalletConfirmedHistoryTransactions>(
-      GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS(address)
-    );
+export const fetchTransactionsByUserAddress = async (
+  address: string,
+  fetcher: TransactionsByUserAddressFetcher = defaultFetcher
+) => {
+  const transactions = await fetcher.transactionIdsByAddressFetcher(address);
   if (!transactions) return [];
 
   const transactionHashes = transactions.result.map(
@@ -40,13 +66,7 @@ export const fetchTransactionsByUserAddress = async (address: string) => {
   const bulkTransactionDetails: Transaction[] = [];
 
   for (const chunk of chunks) {
-    const details = await throttleFetchJsonOrNull<Transaction[]>(
-      GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS(),
-      {
-        method: "POST",
-        body: JSON.stringify({ txids: chunk }),
-      }
-    );
+    const details = await fetcher.bulkTransactionDetailsFetcher(chunk);
     if (details) {
       bulkTransactionDetails.push(...details);
     }

@@ -3,7 +3,13 @@ import { describe, it, expect, vi } from "vitest";
 import {
   fetchTransactionByIdOrNull,
   fetchTransactionsByUserAddress,
+  type TransactionsByUserAddressFetcher,
 } from "../src/core/transactions";
+
+import {
+  GET_CONFIRMED_HISTORY_TRANSACTIONS_BY_ADDRESS_MOCK,
+  GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS,
+} from "./transactions.mock";
 
 describe("Transactions module", () => {
   it("should return transaction by transaction ID", async () => {
@@ -27,13 +33,27 @@ describe("Transactions module", () => {
   describe("when fetching transactions by user wallet", () => {
     it(
       "should return confirmed transactions for a valid wallet address",
-      async () => {
-        const address = "mhZL5AvE2ZncDw3JXx9iaDGHQdUE5LDowG";
-
-        const result = await fetchTransactionsByUserAddress(address);
-      },
       {
         timeout: 10000,
+      },
+      async () => {
+        const fetcher: TransactionsByUserAddressFetcher = {
+          transactionIdsByAddressFetcher: (_) => {
+            return Promise.resolve(
+              GET_CONFIRMED_HISTORY_TRANSACTIONS_BY_ADDRESS_MOCK
+            );
+          },
+          bulkTransactionDetailsFetcher: (txIds: string[]) => {
+            return Promise.resolve(
+              GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS(txIds)
+            );
+          },
+        };
+
+        const address = "mhZL5AvE2ZncDw3JXx9iaDGHQdUE5LDowG";
+
+        const result = await fetchTransactionsByUserAddress(address, fetcher);
+        console.log(result);
       }
     );
   });
