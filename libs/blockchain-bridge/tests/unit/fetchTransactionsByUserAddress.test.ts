@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import {
   fetchTransactionsByUserAddress,
@@ -13,6 +13,10 @@ import {
 import { createTransaction } from "#tests/mocks/factories/bulkTransactionDetails.ts";
 
 describe("fetchTransactionsByUserAddress", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("returns confirmed transactions from multiple pages", async () => {
     const PAGE_1_TRANSACTIONS = [
       createTransaction("1"),

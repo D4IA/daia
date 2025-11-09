@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { FetchThrottler } from "#src/utils/fetchThrottler.ts";
+import { FetchThrottler } from "#src/adapters/fetchThrottler.ts";
+import { afterEach } from "node:test";
 
 function createMockFetch(delay = 10) {
   return vi.fn((url: string) => {
@@ -10,6 +11,17 @@ function createMockFetch(delay = 10) {
 }
 
 describe("FetchThrottler", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+
+    // reset singleton
+    // @ts-expect-error – internal state reset
+    FetchThrottler["instance"] = undefined;
+
+    // jeśli używasz fake timers
+    vi.useRealTimers();
+  });
+
   it("should throttle requests to max 3 per second", async () => {
     vi.useFakeTimers();
 
