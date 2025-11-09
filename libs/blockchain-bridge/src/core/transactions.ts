@@ -50,6 +50,7 @@ const defaultFetcher: TransactionsByUserAddressFetcher = {
  * Fetches confirmed transactions for a given user wallet address in WIF format.
  * @param address - The wallet address to fetch transactions for.
  * @param fetcher - Optional custom fetcher functions for fetching transaction IDs and details.
+ * @param options - Optional settings, including batchSize for bulk fetching.
  * @returns An array of transaction objects.
  */
 export const fetchTransactionsByUserAddress = async (
