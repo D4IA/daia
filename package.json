@@ -12,6 +12,6 @@
     "test": "turbo run test",
     "clean": "turbo run clean"
   },
-  "packageManager": "npm@8.5.0"
+  "packageManager": "pnpm@10.0.0"
 }
 
