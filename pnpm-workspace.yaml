@@ -1,6 +1,6 @@
 packages:
   - 'libs/*'
   - 'blockchain-api'
-  - 'demo'
+  - 'demo/*'
   - 'ui'
 
