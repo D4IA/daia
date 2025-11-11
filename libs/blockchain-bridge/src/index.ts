@@ -1,7 +1,14 @@
+import {
+  fetchTransactionByIdOrNull,
+  fetchTransactionsByUserAddress,
+} from "./core/transactions";
+
+import type { Transaction } from "../types/transaction";
+import type { WalletConfirmedHistoryTransactions } from "../types/wallet";
+
 export {
   fetchTransactionByIdOrNull,
   fetchTransactionsByUserAddress,
-} from "#src/core/transactions";
-
-export type { Transaction } from "#types/transaction";
-export type { WalletConfirmedHistoryTransactions } from "#types/wallet";
+  type Transaction,
+  type WalletConfirmedHistoryTransactions,
+};

@@ -1,33 +1,30 @@
 {
   "name": "@d4ia/blockchain-bridge",
   "version": "1.0.0",
-  "description": "",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/blockchain-bridge.es.js",
+      "require": "./dist/blockchain-bridge.cjs.js"
+    }
+  },
   "main": "./dist/blockchain-bridge.cjs.js",
+  "module": "./dist/blockchain-bridge.es.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test-watch": "vitest"
   },
-  "type": "module",
-  "module": "./dist/blockchain-bridge.es.js",
-  "types": "./dist/index.d.ts",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "@bsv/sdk": "^1.8.3"
+  },
   "devDependencies": {
     "@types/node": "^24.8.1",
     "typescript": "^5.9.3",
     "vite": "^7.1.10",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "@bsv/sdk": "^1.8.3"
-  },
-  "imports": {
-    "#src/*": "./src/*",
-    "#types/*": "./types/*",
-    "#tests/*": "./tests/*"
   }
 }

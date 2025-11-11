@@ -1,6 +1,6 @@
 type Network = "main" | "test";
 
-const GET_BASE_URL = (network: Network = "test"): string => {
+const GET_BASE_URL = (network: Network = "main"): string => {
   return `https://api.whatsonchain.com/v1/bsv/${network}`;
 };
 
@@ -19,10 +19,11 @@ export const GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS = (
     urlParams.append("pageToken", params.pageToken);
   }
   const stringifiedParams = urlParams.toString();
+  let url = `${GET_BASE_URL()}/address/${address}/confirmed/history`;
   if (stringifiedParams.length > 0) {
-    return `${GET_BASE_URL()}/address/${address}/confirmed/history?${stringifiedParams}`;
+    url += `?${stringifiedParams}`;
   }
-  return `${GET_BASE_URL()}/address/${address}/confirmed/history`;
+  return url;
 };
 
 export const GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS = (): string => {
