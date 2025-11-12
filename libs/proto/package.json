@@ -1,0 +1,37 @@
+{
+  "name": "@d4ia/proto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/proto.cjs.js",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test-watch": "vitest",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
+  },
+  "type": "module",
+  "module": "./dist/proto.es.js",
+  "types": "./dist/index.d.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.8.1",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@bsv/sdk": "^1.9.0",
+    "zod": "^4.1.12"
+  },
+  "imports": {
+    "#src/*": "./src/*",
+    "#types/*": "./types/*",
+    "#tests/*": "./tests/*"
+  }
+}
