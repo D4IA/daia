@@ -98,7 +98,7 @@ describe("AgreementVerifier", () => {
         ]),
       };
 
-      await expect(verifier.verify(agreement)).resolves.toBeUndefined();
+      await expect(verifier.verify({ agreement })).resolves.toBeUndefined();
     });
 
     it("should reject invalid signature", async () => {
@@ -142,7 +142,7 @@ describe("AgreementVerifier", () => {
         ]),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -169,7 +169,7 @@ describe("AgreementVerifier", () => {
         proofs: new Map(), // No proofs
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -215,7 +215,7 @@ describe("AgreementVerifier", () => {
         ]),
       };
 
-      await expect(verifier.verify(agreement)).resolves.toBeUndefined();
+      await expect(verifier.verify({ agreement })).resolves.toBeUndefined();
     });
 
     it("should reject when payment not found", async () => {
@@ -249,7 +249,7 @@ describe("AgreementVerifier", () => {
         ]),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -294,7 +294,7 @@ describe("AgreementVerifier", () => {
         ]),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -339,7 +339,7 @@ describe("AgreementVerifier", () => {
       };
 
       await expect(
-        verifier.verify(agreement, currentTxId)
+        verifier.verify({ agreement, txId: currentTxId })
       ).resolves.toBeUndefined();
     });
   });
@@ -376,7 +376,7 @@ describe("AgreementVerifier", () => {
         ]),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -389,7 +389,7 @@ describe("AgreementVerifier", () => {
         proofs: new Map(),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -403,7 +403,7 @@ describe("AgreementVerifier", () => {
         proofs: new Map(),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -422,7 +422,7 @@ describe("AgreementVerifier", () => {
         proofs: new Map(),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -442,7 +442,7 @@ describe("AgreementVerifier", () => {
         proofs: new Map(),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });
@@ -462,7 +462,7 @@ describe("AgreementVerifier", () => {
         proofs: new Map(),
       };
 
-      await expect(verifier.verify(agreement)).rejects.toThrow(
+      await expect(verifier.verify({ agreement })).rejects.toThrow(
         VerificationFailedError
       );
     });

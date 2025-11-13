@@ -130,7 +130,7 @@ describe("Integration: Offer Creation -> Signing -> Verification", () => {
     const { agreement } = await signer.sign(offerContent);
 
     // 3. Verify agreement
-    await expect(verifier.verify(agreement)).resolves.toBeUndefined();
+    await expect(verifier.verify({ agreement })).resolves.toBeUndefined();
   });
 
   it("should successfully sign and verify a payment-only offer", async () => {
@@ -177,7 +177,7 @@ describe("Integration: Offer Creation -> Signing -> Verification", () => {
 
     // 3. Verify agreement with current transaction ID
     await expect(
-      verifier.verify(agreement, currentTxId)
+      verifier.verify({ agreement, txId: currentTxId })
     ).resolves.toBeUndefined();
   });
 
@@ -240,7 +240,7 @@ describe("Integration: Offer Creation -> Signing -> Verification", () => {
 
     // 3. Verify agreement
     await expect(
-      verifier.verify(agreement, currentTxId)
+      verifier.verify({ agreement, txId: currentTxId })
     ).resolves.toBeUndefined();
   });
 
@@ -289,7 +289,7 @@ describe("Integration: Offer Creation -> Signing -> Verification", () => {
     }
 
     // 3. Verification should fail
-    await expect(verifier.verify(agreement)).rejects.toThrow();
+    await expect(verifier.verify({ agreement })).rejects.toThrow();
   });
 
   it("should fail verification if payment is not found", async () => {
@@ -323,7 +323,7 @@ describe("Integration: Offer Creation -> Signing -> Verification", () => {
     const { agreement } = await signer.sign(offerContent);
 
     // 2. Verification should fail (no currentTxId provided and payment not found)
-    await expect(verifier.verify(agreement)).rejects.toThrow();
+    await expect(verifier.verify({ agreement })).rejects.toThrow();
   });
 
   it("should handle multiple signers with different keys", async () => {
@@ -376,6 +376,6 @@ describe("Integration: Offer Creation -> Signing -> Verification", () => {
     expect(agreement.proofs.size).toBe(2);
 
     // 3. Verify agreement
-    await expect(verifier.verify(agreement)).resolves.toBeUndefined();
+    await expect(verifier.verify({ agreement })).resolves.toBeUndefined();
   });
 });

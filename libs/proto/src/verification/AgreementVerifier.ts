@@ -11,6 +11,20 @@ import {
 } from "./adapters";
 import { VerificationError, VerificationFailedError } from "./errors";
 import { deserializeOfferContent } from "./serialization";
+import { Transaction } from "@bsv/sdk";
+
+/**
+ * Data for verifying an agreement with payment proofs.
+ * Either provide a transaction ID (for already broadcast transactions)
+ * or a Transaction object (for mempool verification before broadcast).
+ */
+export type AgreementVerifyData = {
+  agreement: DaiaAgreement;
+} & (
+  | { txId: string; tx?: never }
+  | { tx: Transaction; txId?: never }
+  | { txId?: never; tx?: never }
+);
 
 /**
  * Verifies that proofs in an agreement match the requirements.
@@ -23,15 +37,15 @@ export class AgreementVerifier {
 
   /**
    * Verify an agreement against its requirements.
-   * @param agreement - The agreement to verify
-   * @param currentTxId - Optional transaction ID if verifying during transaction creation
+   * @param verifyData - Object containing the agreement and optional transaction info
    * @throws VerificationFailedError if verification fails
    */
-  async verify(
-    agreement: DaiaAgreement,
-    currentTxId?: string
-  ): Promise<void> {
+  async verify(verifyData: AgreementVerifyData): Promise<void> {
+    const { agreement } = verifyData;
     const errors: VerificationError[] = [];
+
+    // Extract transaction ID from either txId or Transaction object
+    const currentTxId = verifyData.txId || (verifyData.tx ? verifyData.tx.id("hex") as string : undefined);
 
     // Parse and validate offer content using Zod
     let offerContent: DaiaOfferContent;

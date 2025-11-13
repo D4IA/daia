@@ -1,5 +1,5 @@
 // Verification components
-export { AgreementVerifier } from "./AgreementVerifier";
+export { AgreementVerifier, type AgreementVerifyData } from "./AgreementVerifier";
 export { OfferSigner, type PaymentMap, type SigningResult } from "./OfferSigner";
 
 // Serialization utilities

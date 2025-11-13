@@ -1,26 +1,20 @@
 {
-  "name": "@d4ia/proto",
+  "name": "@d4ia/langchain-demo",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/proto.cjs.js",
-  "module": "./dist/proto.es.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/proto.es.js",
-      "require": "./dist/proto.cjs.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
+    "start": "node dist/langchain-demo.es.js",
     "test": "vitest run",
     "test-watch": "vitest",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
   },
   "type": "module",
+  "module": "./dist/proto.es.js",
+  "types": "./dist/index.d.ts",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -35,6 +29,11 @@
   },
   "dependencies": {
     "@bsv/sdk": "^1.9.0",
+    "@d4ia/langchain": "workspace:^",
+    "@d4ia/proto": "workspace:^",
+    "@langchain/core": "^1.0.4",
+    "@langchain/openai": "^1.1.0",
+    "dotenv": "^16.4.5",
     "zod": "^4.1.12"
   },
   "imports": {

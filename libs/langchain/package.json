@@ -1,14 +1,14 @@
 {
-  "name": "@d4ia/proto",
+  "name": "@d4ia/langchain",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/proto.cjs.js",
-  "module": "./dist/proto.es.js",
+  "main": "./dist/langchain.cjs.js",
+  "module": "./dist/langchain.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/proto.es.js",
-      "require": "./dist/proto.cjs.js",
+      "import": "./dist/langchain.es.js",
+      "require": "./dist/langchain.cjs.js",
       "types": "./dist/index.d.ts"
     }
   },
@@ -35,6 +35,8 @@
   },
   "dependencies": {
     "@bsv/sdk": "^1.9.0",
+    "@d4ia/proto": "workspace:^",
+    "@langchain/core": "^1.0.4",
     "zod": "^4.1.12"
   },
   "imports": {

@@ -13,12 +13,20 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "D4iaProto",
-      fileName: (format) => `proto.${format}.js`,
-      formats: ["es", "cjs", "umd"],
+      name: "D4iaLangchain",
+      fileName: (format) => `langchain.${format}.js`,
+      formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: [],
+      external: [
+        "@langchain/core",
+        "@langchain/core/messages",
+        "@langchain/core/runnables",
+        "@langchain/core/language_models/chat_models",
+        "@d4ia/proto",
+        "@bsv/sdk",
+        "zod",
+      ],
     },
   },
 });
