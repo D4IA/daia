@@ -52,8 +52,19 @@ export class TransactionBuilder {
     data?: string,
     changeAddress?: string
   ): Promise<TransactionBuildResult> {
+    // Determine sender's address
+    const senderAddress = privateKey.toPublicKey().toAddress();
+    const finalChangeAddress = changeAddress || senderAddress;
+    
+    // Detect if this is a data-only transaction (sending to self with minimal amount and has data)
+    const isDataOnlyTransaction = 
+      data && 
+      data.length > 0 && 
+      amountSatoshis === TransactionBuilder.DUST_LIMIT &&
+      recipientAddress === finalChangeAddress;
+
     // Validate inputs
-    if (amountSatoshis < TransactionBuilder.DUST_LIMIT) {
+    if (!isDataOnlyTransaction && amountSatoshis < TransactionBuilder.DUST_LIMIT) {
       throw new Error(
         `Amount must be at least ${TransactionBuilder.DUST_LIMIT} satoshis`
       );
@@ -95,14 +106,8 @@ export class TransactionBuilder {
       });
     }
 
-    // Add payment output
-    tx.addOutput({
-      lockingScript: new P2PKH().lock(recipientAddress),
-      satoshis: amountSatoshis,
-    });
-
-    // Add data output if provided
-    if (data && data.length > 0) {
+    // Add data output first if this is a data-only transaction
+    if (isDataOnlyTransaction) {
       const dataScript = Script.fromASM(
         `OP_0 OP_RETURN ${Buffer.from(data, "utf8").toString("hex")}`
       );
@@ -110,13 +115,31 @@ export class TransactionBuilder {
         lockingScript: dataScript,
         satoshis: 0,
       });
+    } else {
+      // Add payment output for regular transactions
+      tx.addOutput({
+        lockingScript: new P2PKH().lock(recipientAddress),
+        satoshis: amountSatoshis,
+      });
+
+      // Add data output if provided
+      if (data && data.length > 0) {
+        const dataScript = Script.fromASM(
+          `OP_0 OP_RETURN ${Buffer.from(data, "utf8").toString("hex")}`
+        );
+        tx.addOutput({
+          lockingScript: dataScript,
+          satoshis: 0,
+        });
+      }
     }
 
     // Estimate fee (simplified: 1 sat per byte estimate)
     // Rough estimate: inputs ~150 bytes each, outputs ~34 bytes each, overhead ~10 bytes
+    const outputCount = isDataOnlyTransaction ? 2 : (data ? 2 : 1);
     const estimatedSize =
       utxos.length * 150 +
-      (data ? 2 : 1) * 34 +
+      outputCount * 34 +
       (data ? Buffer.from(data, "utf8").length : 0) +
       10;
     const estimatedFee = Math.ceil(
@@ -124,21 +147,22 @@ export class TransactionBuilder {
     );
 
     // Calculate change
-    const change = totalAvailable - amountSatoshis - estimatedFee;
+    const changeAmount = isDataOnlyTransaction 
+      ? totalAvailable - estimatedFee 
+      : totalAvailable - amountSatoshis - estimatedFee;
 
-    if (change < 0) {
+    if (changeAmount < 0) {
       throw new InsufficientFundsError(
-        amountSatoshis + estimatedFee,
+        (isDataOnlyTransaction ? 0 : amountSatoshis) + estimatedFee,
         totalAvailable
       );
     }
 
     // Add change output if significant
-    if (change > TransactionBuilder.DUST_LIMIT) {
-      const changeAddr = changeAddress || privateKey.toPublicKey().toAddress();
+    if (changeAmount > TransactionBuilder.DUST_LIMIT) {
       tx.addOutput({
-        lockingScript: new P2PKH().lock(changeAddr),
-        satoshis: change,
+        lockingScript: new P2PKH().lock(finalChangeAddress),
+        satoshis: changeAmount,
       });
     }
 
