@@ -1,15 +1,11 @@
-/**
- * Car Agent Types
- */
-
 import type { BaseMessage } from "@langchain/core/messages";
 
 export interface CarContext {
   messages: BaseMessage[];
   carId: string;
   rates: {
-    min: number; // Minimum acceptable rate (sat/hour)
-    max: number; // Maximum willing to pay (sat/hour)
+    min: number;
+    max: number;
   };
 }
 

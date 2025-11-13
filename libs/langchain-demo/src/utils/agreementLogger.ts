@@ -1,10 +1,3 @@
-/**
- * DAIA Transaction Logger
- * 
- * Logs DAIA agreements, signatures, and transaction details.
- * Prepares data for future blockchain publication.
- */
-
 import type { DaiaAgreement, DaiaOfferContent } from "@d4ia/proto";
 import { DaiaRequirementType } from "@d4ia/proto";
 
@@ -13,14 +6,11 @@ export interface AgreementLogData {
   offer: DaiaOfferContent;
   timestamp: Date;
   parties: {
-    offerer: string; // public key
-    signee: string; // public key
+    offerer: string;
+    signee: string;
   };
 }
 
-/**
- * Log the contents of a DAIA agreement with all signatures
- */
 export function logAgreementDetails(
   agentId: string,
   agreement: DaiaAgreement,
@@ -28,11 +18,11 @@ export function logAgreementDetails(
 ): void {
   console.log();
   console.log("=".repeat(70));
-  console.log(`📜 DAIA AGREEMENT DETAILS [${agentId}]`);
+  console.log(` DAIA AGREEMENT DETAILS [${agentId}]`);
   console.log("=".repeat(70));
   
   // Log offer content
-  console.log("\n📋 Offer Content:");
+  console.log("\n Offer Content:");
   console.log(`   Serialized: ${agreement.offerContentSerialized.substring(0, 100)}...`);
   
   if (offer) {
@@ -41,7 +31,7 @@ export function logAgreementDetails(
   }
   
   // Log all proofs/signatures
-  console.log("\n✍️  Proofs & Signatures:");
+  console.log("\n  Proofs & Signatures:");
   console.log(`   Total Proofs: ${agreement.proofs.size}`);
   
   for (const [requirementId, proof] of agreement.proofs.entries()) {
@@ -92,10 +82,10 @@ export function prepareForBlockchain(agreement: DaiaAgreement): {
     }
   }
   
-  console.log(`\n📦 Blockchain Preparation:`);
+  console.log(`\n Blockchain Preparation:`);
   console.log(`   Serialized Size: ${size} bytes`);
   console.log(`   Chunks Needed: ${chunks ? chunks.length : 1}`);
-  console.log(`   Ready for Publication: ${size <= MAX_CHUNK_SIZE ? "✅ Yes" : "⚠️  Needs chunking"}`);
+  console.log(`   Ready for Publication: ${size <= MAX_CHUNK_SIZE ? " Yes" : " Needs chunking"}`);
   
   return {
     serialized,
@@ -104,15 +94,12 @@ export function prepareForBlockchain(agreement: DaiaAgreement): {
   };
 }
 
-/**
- * Log that an agreement is ready to be pushed to blockchain
- */
 export function logBlockchainReadiness(
   agentId: string,
   txData: ReturnType<typeof prepareForBlockchain>
 ): void {
   console.log();
-  console.log("⛓️  BLOCKCHAIN PUBLICATION STATUS");
+  console.log("  BLOCKCHAIN PUBLICATION STATUS");
   console.log(`   Agent: ${agentId}`);
   console.log(`   Data Size: ${txData.size} bytes`);
   console.log(`   Status: Ready for transaction creation`);

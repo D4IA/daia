@@ -1,26 +1,21 @@
-/**
- * Parking Gate Agent - Refactored
- * 
- * Manages the gate side of parking negotiations:
- * - Responds to public key requests
- * - Creates parking offers based on min/max/preferred rates
- * - Verifies signed agreements from car agents
- * - Tracks offer history to enforce limits (max 3 offers)
- */
-
 import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import { PrivateKey } from "@bsv/sdk";
 import {
   LLMOfferCreationAdapter,
   AgentSigningAdapter,
   parseIncomingMessage,
-  formatPubKeyResponse,
   DaiaMessageType,
-  MESSAGE_PREFIX,
+  createPubKeyExchangeChain,
+  createOfferNegotiationChain,
+  createAgreementChain,
+  type PubKeyExchangeInput,
+  type PubKeyExchangeOutput,
+  type OfferNegotiationInput,
+  type OfferNegotiationOutput,
+  type AgreementInput,
+  type AgreementOutput,
 } from "@d4ia/langchain";
 import {
-  type DaiaOfferContent,
-  serializeOfferContent,
   DaiaRequirementType,
   AgreementVerifier,
   BsvSignatureVerifier,
@@ -42,9 +37,14 @@ export class ParkingGateAgent {
   private context: ParkingGateContext;
   private offerCreator: LLMOfferCreationAdapter<ParkingGateContext>;
   private agreementVerifier: AgreementVerifier;
+  
+  private pubKeyChain;
+  private offerChain;
+  private agreementChain;
+  
   private state: ParkingGateState = ParkingGateState.Initial;
-  private lastOffer: DaiaOfferContent | null = null;
   private remotePubKey: string | null = null;
+  private currentOffer: any = null;
   private offersSent: number = 0;
 
   constructor(config: ParkingGateConfig) {
@@ -67,7 +67,6 @@ export class ParkingGateAgent {
       remotePublicKey: null,
     };
 
-    // Create offer creator with custom system prompt
     this.offerCreator = new LLMOfferCreationAdapter<ParkingGateContext>({
       llm: this.llm,
       defaultPaymentAddress: "",
@@ -75,49 +74,54 @@ export class ParkingGateAgent {
       systemPrompt: this.buildOfferCreationPrompt(),
     });
 
-    // Create agreement verifier
-    const blockchainAdapter = new WhatsOnChainAdapter("test"); // testnet
+    const blockchainAdapter = new WhatsOnChainAdapter("test");
     const signatureVerifier = new BsvSignatureVerifier();
     this.agreementVerifier = new AgreementVerifier(
       blockchainAdapter,
       signatureVerifier
     );
+
+    this.pubKeyChain = createPubKeyExchangeChain({
+      signingAdapter: this.signingAdapter,
+      requestId: this.gateId,
+    });
+
+    this.offerChain = createOfferNegotiationChain({
+      offerCreator: this.offerCreator,
+      maxOffers: MAX_OFFERS_TO_SEND,
+    });
+
+    this.agreementChain = createAgreementChain({
+      verifier: this.agreementVerifier,
+    });
   }
 
-  /**
-   * Process incoming message and return response
-   */
   async processMessage(incomingMessage: string | null): Promise<string | null> {
-    // State: Initial - wait for public key request
-    if (this.state === ParkingGateState.Initial && incomingMessage) {
-      return this.handleInitialState(incomingMessage);
-    }
+    if (!incomingMessage) return null;
 
-    // State: WaitingForPubKey - receive car's public key
-    if (this.state === ParkingGateState.WaitingForPubKey && incomingMessage) {
+    this.context.messages.push(new HumanMessage(incomingMessage));
+    const parsed = parseIncomingMessage(incomingMessage);
+
+    if (this.state === ParkingGateState.Initial) {
       return this.handlePubKeyExchange(incomingMessage);
     }
 
-    // State: WaitingForRequest - wait for parking request
-    if (this.state === ParkingGateState.WaitingForRequest && incomingMessage) {
-      return await this.handleParkingRequest(incomingMessage);
+    if (this.state === ParkingGateState.WaitingForPubKey) {
+      return this.handlePubKeyExchange(incomingMessage);
     }
 
-    // State: WaitingForResponse - wait for car's response/agreement
-    if (this.state === ParkingGateState.WaitingForResponse && incomingMessage) {
-      return await this.handleAgreement(incomingMessage);
-    }
-
-    // State: Accepted - finalize
-    if (this.state === ParkingGateState.Accepted) {
-      console.log(`🚧✅ [Gate ${this.gateId}] Gate opened! Car entering.`);
-      this.state = ParkingGateState.Done;
+    if (this.state === ParkingGateState.WaitingForRequest) {
+      if (parsed.type === DaiaMessageType.Natural) {
+        return await this.handleParkingRequest(incomingMessage);
+      }
       return null;
     }
 
-    // State: Rejected - finalize
-    if (this.state === ParkingGateState.Rejected) {
-      console.log(`🚧❌ [Gate ${this.gateId}] Access denied.`);
+    if (this.state === ParkingGateState.WaitingForResponse) {
+      return await this.handleResponse(incomingMessage);
+    }
+
+    if (this.state === ParkingGateState.Accepted || this.state === ParkingGateState.Rejected) {
       this.state = ParkingGateState.Done;
       return null;
     }
@@ -125,109 +129,98 @@ export class ParkingGateAgent {
     return null;
   }
 
-  /**
-   * Handle initial state - respond to public key requests
-   */
-  private handleInitialState(incomingMessage: string): string {
-    this.context.messages.push(new HumanMessage(incomingMessage));
-    const parsed = parseIncomingMessage(incomingMessage);
-    
-    if (parsed.type === DaiaMessageType.PubKeyRequest) {
-      console.log(`🔑 [Gate ${this.gateId}] Received public key request`);
-      console.log(`🔑 [Gate ${this.gateId}] Sending my public key: ${this.signingAdapter.getPublicKey().substring(0, 20)}...`);
-      
-      const myPubKeyResponse = formatPubKeyResponse({
-        publicKey: this.signingAdapter.getPublicKey(),
-      });
-      this.context.messages.push(new AIMessage(myPubKeyResponse));
-      this.state = ParkingGateState.WaitingForPubKey;
-      return myPubKeyResponse;
+  private async handlePubKeyExchange(incomingMessage: string): Promise<string | null> {
+    const input: PubKeyExchangeInput = {
+      message: incomingMessage,
+      role: "responder",
+    };
+
+    const result: PubKeyExchangeOutput = await this.pubKeyChain.invoke(input);
+
+    if (result.error) {
+      console.error(`[Gate ${this.gateId}] PubKey exchange error: ${result.error}`);
+      return null;
     }
 
-    return "Please request my public key to begin.";
-  }
+    if (result.outgoingMessage) {
+      this.context.messages.push(new AIMessage(result.outgoingMessage));
+      
+      if (this.state === ParkingGateState.Initial) {
+        console.log(` [Gate ${this.gateId}] Received public key request`);
+        console.log(` [Gate ${this.gateId}] Sending my public key: ${this.signingAdapter.getPublicKey().substring(0, 20)}...`);
+        this.state = ParkingGateState.WaitingForPubKey;
+      }
+      
+      return result.outgoingMessage;
+    }
 
-  /**
-   * Handle key exchange - store remote public key
-   */
-  private handlePubKeyExchange(incomingMessage: string): string | null {
-    this.context.messages.push(new HumanMessage(incomingMessage));
-    const parsed = parseIncomingMessage(incomingMessage);
-    
-    if (parsed.type === DaiaMessageType.PubKeyResponse) {
-      this.remotePubKey = parsed.response.publicKey;
+    if (result.remotePubKey) {
+      this.remotePubKey = result.remotePubKey;
       this.context.remotePublicKey = this.remotePubKey;
-      console.log(`🔑 [Gate ${this.gateId}] Received car public key: ${this.remotePubKey.substring(0, 20)}...`);
-      console.log(`✅ [Gate ${this.gateId}] Key exchange complete. Ready for parking requests.`);
+      console.log(`[Gate ${this.gateId}] Received car public key: ${this.remotePubKey.substring(0, 20)}...`);
+      
+      this.offerCreator = new LLMOfferCreationAdapter<ParkingGateContext>({
+        llm: this.llm,
+        defaultPaymentAddress: "",
+        defaultPubKey: this.remotePubKey,
+        systemPrompt: this.buildOfferCreationPrompt(),
+      });
+      
+      this.offerChain = createOfferNegotiationChain({
+        offerCreator: this.offerCreator,
+        maxOffers: MAX_OFFERS_TO_SEND,
+      });
+    }
+
+    if (result.isComplete) {
+      console.log(` [Gate ${this.gateId}] Key exchange complete. Ready for parking requests.`);
       this.state = ParkingGateState.WaitingForRequest;
-      return null; // Wait for parking request
     }
 
     return null;
   }
 
-  /**
-   * Handle parking request - create and send offer
-   */
   private async handleParkingRequest(incomingMessage: string): Promise<string | null> {
-    this.context.messages.push(new HumanMessage(incomingMessage));
-    console.log(`🚧 [Gate ${this.gateId}] Received: ${incomingMessage}`);
+    console.log(`[Gate ${this.gateId}] Received: ${incomingMessage}`);
     
-    // Parse the message
-    const parsed = parseIncomingMessage(incomingMessage);
-    
-    if (parsed.type === DaiaMessageType.Natural) {
-      // Check if we've hit the offer limit
-      if (this.offersSent >= MAX_OFFERS_TO_SEND) {
-        console.log(
-          `❌ [Gate ${this.gateId}] Maximum offers (${MAX_OFFERS_TO_SEND}) already sent. Rejecting.`
-        );
-        const rejectionMessage = `I'm sorry, but I've already sent ${MAX_OFFERS_TO_SEND} offers. I cannot make another offer.`;
-        this.context.messages.push(new AIMessage(rejectionMessage));
-        this.state = ParkingGateState.Rejected;
-        return rejectionMessage;
-      }
+    if (this.offersSent >= MAX_OFFERS_TO_SEND) {
+      console.log(` [Gate ${this.gateId}] Maximum offers (${MAX_OFFERS_TO_SEND}) already sent. Rejecting.`);
+      const rejectionMessage = `I'm sorry, but I've already sent ${MAX_OFFERS_TO_SEND} offers. I cannot make another offer.`;
+      this.context.messages.push(new AIMessage(rejectionMessage));
+      this.state = ParkingGateState.Rejected;
+      return rejectionMessage;
+    }
 
-      // Create an offer
-      console.log(
-        `🤔 [Gate ${this.gateId}] Creating offer for request: ${incomingMessage}`
-      );
+    console.log(`[Gate ${this.gateId}] Creating offer for request: ${incomingMessage}`);
 
-      // Update default pub key to car's public key
-      if (this.remotePubKey) {
-        this.offerCreator = new LLMOfferCreationAdapter<ParkingGateContext>({
-          llm: this.llm,
-          defaultPaymentAddress: "",  // No payment required
-          defaultPubKey: this.remotePubKey,
-          systemPrompt: this.buildOfferCreationPrompt(),
-        });
-      }
+    const input: OfferNegotiationInput = {
+      message: incomingMessage,
+      role: "offerer",
+      context: this.context,
+    };
 
-      const offer = await this.offerCreator.createOffer(
-        {
-          userRequest: incomingMessage,
-          conversationContext: {},
-        },
-        this.context
-      );
+    const result: OfferNegotiationOutput = await this.offerChain.invoke(input);
 
-      this.lastOffer = offer;
-      this.offersSent++;
-      
-      // Track in context
+    if (result.error) {
+      console.error(`[Gate ${this.gateId}] Offer creation error: ${result.error}`);
+      return null;
+    }
+
+    if (result.offer && result.outgoingMessage) {
+      this.currentOffer = result.offer;
+      this.offersSent = result.offerCount;
       this.context.offersSent.push({
-        offer: offer,
+        offer: result.offer,
         sentAt: new Date(),
       });
 
       const { min, max, preferred } = this.context.rates;
-      console.log(`💰 [Gate ${this.gateId}] Created offer #${this.offersSent}/${MAX_OFFERS_TO_SEND}`);
-      console.log(`   Natural language: ${offer.naturalLanguageOfferContent}`);
+      console.log(`[Gate ${this.gateId}] Created offer #${this.offersSent}/${MAX_OFFERS_TO_SEND}`);
+      console.log(`   Natural language: ${result.offer.naturalLanguageOfferContent}`);
       console.log(`   Rate range: ${min}-${max} sat/hr (preferred: ${preferred} sat/hr)`);
-      console.log(`   Requirements: ${offer.requirements.size} requirement(s)`);
+      console.log(`   Requirements: ${result.offer.requirements.size} requirement(s)`);
 
-      // Log requirements details
-      for (const [id, req] of offer.requirements.entries()) {
+      for (const [id, req] of result.offer.requirements.entries()) {
         if (req.type === DaiaRequirementType.Payment) {
           console.log(
             `   - ${id}: Payment to ${req.to}${req.txId ? ` (${req.txId})` : " (self-paid)"}`
@@ -237,85 +230,79 @@ export class ParkingGateAgent {
         }
       }
 
-      // Send the offer
-      const serialized = serializeOfferContent(offer);
-      const offerMessage = `${MESSAGE_PREFIX.OFFER}${serialized}`;
-      this.context.messages.push(new AIMessage(offerMessage));
-      console.log(`🚧 [Gate ${this.gateId}] Sending offer to car...`);
-      
+      this.context.messages.push(new AIMessage(result.outgoingMessage));
+      console.log(` [Gate ${this.gateId}] Sending offer to car...`);
       this.state = ParkingGateState.WaitingForResponse;
-      return offerMessage;
+      
+      return result.outgoingMessage;
     }
-    
+
     return null;
   }
 
-  /**
-   * Handle agreement - verify signature and respond
-   */
-  private async handleAgreement(incomingMessage: string): Promise<string | null> {
-    this.context.messages.push(new HumanMessage(incomingMessage));
-    console.log(`🚧 [Gate ${this.gateId}] Received response: ${incomingMessage}`);
+  private async handleResponse(incomingMessage: string): Promise<string | null> {
+    console.log(`[Gate ${this.gateId}] Received response: ${incomingMessage}`);
     
     const parsed = parseIncomingMessage(incomingMessage);
 
-    // Check if it's a signed agreement
     if (parsed.type === DaiaMessageType.Agreement) {
-      console.log(`📝 [Gate ${this.gateId}] Received signed agreement. Verifying...`);
+      console.log(`[Gate ${this.gateId}] Received signed agreement. Verifying...`);
 
-      // Log agreement details including signatures
-      logAgreementDetails(this.gateId, parsed.agreement, this.lastOffer || undefined);
+      const input: AgreementInput = {
+        message: incomingMessage,
+        role: "verifier",
+      };
 
-      try {
-        // Verify the agreement
-        await this.agreementVerifier.verify({
-          agreement: parsed.agreement,
-        });
+      const result: AgreementOutput = await this.agreementChain.invoke(input);
 
-        console.log(`✅ [Gate ${this.gateId}] Agreement verification passed!`);
-        console.log(`✨ [Gate ${this.gateId}] Agreement accepted!`);
+      if (result.agreement) {
+        logAgreementDetails(this.gateId, result.agreement, this.currentOffer || undefined);
+      }
+
+      if (result.isVerified) {
+        console.log(`[Gate ${this.gateId}] Agreement verification passed!`);
+        console.log(`[Gate ${this.gateId}] Agreement accepted!`);
         
-        // Publish agreement to blockchain
-        const privateKey = PrivateKey.fromWif(this.privateKeyWif);
-        const testnetAddress = privateKey.toPublicKey().toAddress("testnet");
-        
-        const publishResult = await publishAgreementToBlockchain(
-          parsed.agreement,
-          privateKey,
-          testnetAddress,
-          "testnet"
-        );
+        if (result.agreement) {
+          const privateKey = PrivateKey.fromWif(this.privateKeyWif);
+          const testnetAddress = privateKey.toPublicKey().toAddress("testnet");
+          
+          const publishResult = await publishAgreementToBlockchain(
+            result.agreement,
+            privateKey,
+            testnetAddress,
+            "testnet"
+          );
 
-        if (publishResult.success) {
-          console.log(`🚧✅ [Gate ${this.gateId}] Gate is opening! Car may enter.`);
-        } else {
-          console.log(`⚠️  [Gate ${this.gateId}] Agreement accepted but blockchain publication failed`);
-          console.log(`🚧✅ [Gate ${this.gateId}] Gate is opening anyway (agreement is valid).`);
+          if (publishResult.success) {
+            console.log(`[Gate ${this.gateId}] Gate is opening! Car may enter.`);
+          } else {
+            console.log(`[Gate ${this.gateId}] Agreement accepted but blockchain publication failed`);
+            console.log(`[Gate ${this.gateId}] Gate is opening anyway (agreement is valid).`);
+          }
         }
         
         this.state = ParkingGateState.Accepted;
-        return null; // End conversation
-      } catch (error) {
-        console.log(`❌ [Gate ${this.gateId}] Agreement verification failed: ${error}`);
-        console.log(`🚧🚫 [Gate ${this.gateId}] Gate remains closed.`);
+        return null;
+      } else {
+        console.log(`[Gate ${this.gateId}] Agreement verification failed: ${result.error}`);
+        console.log(`[Gate ${this.gateId}] Gate remains closed.`);
         this.state = ParkingGateState.Rejected;
-        return null; // End conversation
+        return null;
       }
     }
     
-    // Check for rejection message
     const lowerMessage = incomingMessage.toLowerCase();
     if (lowerMessage.includes("cannot") || lowerMessage.includes("reject")) {
-      // Rejected - go back to waiting for request (if under offer limit)
-      console.log(`❌ [Gate ${this.gateId}] Offer was rejected by car.`);
+      console.log(` [Gate ${this.gateId}] Offer was rejected by car.`);
       
       if (this.offersSent >= MAX_OFFERS_TO_SEND) {
-        console.log(`🚧🚫 [Gate ${this.gateId}] Maximum offers reached. Gate remains closed.`);
+        console.log(` [Gate ${this.gateId}] Maximum offers reached. Gate remains closed.`);
         this.state = ParkingGateState.Rejected;
         return null;
       }
       
-      console.log(`🔄 [Gate ${this.gateId}] Ready for new parking request (${this.offersSent}/${MAX_OFFERS_TO_SEND} offers used).`);
+      console.log(` [Gate ${this.gateId}] Ready for new parking request (${this.offersSent}/${MAX_OFFERS_TO_SEND} offers used).`);
       this.state = ParkingGateState.WaitingForRequest;
       return null;
     }
@@ -323,9 +310,6 @@ export class ParkingGateAgent {
     return null;
   }
 
-  /**
-   * Build system prompt for offer creation
-   */
   private buildOfferCreationPrompt(): string {
     const { min, max, preferred } = this.context.rates;
 
@@ -359,30 +343,18 @@ CRITICAL REQUIREMENT SETTINGS:
 Be strategic - maximize your rate while securing the deal. Guard your minimum!`;
   }
 
-  /**
-   * Check if the conversation is done
-   */
   isDone(): boolean {
     return this.state === ParkingGateState.Done;
   }
 
-  /**
-   * Get current state
-   */
   getState(): ParkingGateState {
     return this.state;
   }
 
-  /**
-   * Get the conversation context
-   */
   getContext(): ParkingGateContext {
     return this.context;
   }
 
-  /**
-   * Get the public key
-   */
   getPublicKey(): string {
     return this.signingAdapter.getPublicKey();
   }

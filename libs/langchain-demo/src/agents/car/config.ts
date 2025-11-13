@@ -1,15 +1,11 @@
-/**
- * Car Agent Configuration
- */
-
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 
 export interface CarAgentConfig {
   llm: BaseChatModel;
   carId: string;
-  minAcceptableRate: number; // Minimum rate willing to pay (sat/hour)
-  maxAcceptableRate: number; // Maximum rate willing to pay (sat/hour)
-  privateKey: string; // WIF format
+  minAcceptableRate: number;
+  maxAcceptableRate: number;
+  privateKey: string;
 }
 
 export function createCarSystemPrompt(minRate: number, maxRate: number): string {

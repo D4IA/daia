@@ -1,7 +1,3 @@
-/**
- * Parking Gate Agent Types
- */
-
 import type { BaseMessage } from "@langchain/core/messages";
 import type { DaiaOfferContent } from "@d4ia/proto";
 

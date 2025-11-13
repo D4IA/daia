@@ -1,16 +1,12 @@
-/**
- * Parking Gate Agent Configuration
- */
-
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 
 export interface ParkingGateConfig {
   llm: BaseChatModel;
   gateId: string;
-  minHourlyRate: number; // minimum satoshis per hour
-  maxHourlyRate: number; // maximum satoshis per hour
-  preferredHourlyRate: number; // preferred satoshis per hour
-  privateKey: string; // WIF format
+  minHourlyRate: number;
+  maxHourlyRate: number;
+  preferredHourlyRate: number;
+  privateKey: string;
 }
 
 export function validateGateConfig(config: ParkingGateConfig): void {
@@ -30,9 +26,6 @@ export function validateGateConfig(config: ParkingGateConfig): void {
   }
 }
 
-/**
- * Build system prompt for gate agent
- */
 export function createGateSystemPrompt(config: ParkingGateConfig): string {
   return `You are a parking gate agent managing a parking spot. You are negotiating an hourly rate for unspecified parking duration.
 
