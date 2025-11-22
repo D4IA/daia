@@ -127,6 +127,9 @@ importers:
 
   demo/frontend:
     dependencies:
+      '@langchain/core':
+        specifier: ^0.3.79
+        version: 0.3.79(openai@5.23.2(ws@8.18.3)(zod@3.25.76))
       '@langchain/openai':
         specifier: ^0.5.12
         version: 0.5.18(@langchain/core@0.3.79(openai@5.23.2(ws@8.18.3)(zod@3.25.76)))(ws@8.18.3)
