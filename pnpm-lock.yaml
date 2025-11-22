@@ -43,12 +43,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  demo:
-    dependencies:
-      '@langchain/core':
-        specifier: ^0.3.49
-        version: 0.3.79(openai@5.23.2(ws@8.18.3)(zod@3.25.76))
-
   demo/backend:
     dependencies:
       '@langchain/community':

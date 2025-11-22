@@ -3,5 +3,4 @@ packages:
   - 'blockchain-api'
   - 'demo/*'
   - 'ui'
-  - "blockchain-bridge"
 

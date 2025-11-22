@@ -20,23 +20,10 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Handle root route
 app.get("/", (req, res) => {
   res.json({
     message: "Blockchain API Server",
-    endpoints: {
-      health: "/health",
-      addressHistory: "/address/:address/confirmed/history",
-    },
   });
-});
-
-// Handle .well-known requests (for Chrome DevTools and other tools)
-app.use((req, res, next) => {
-  if (req.path.startsWith("/.well-known/")) {
-    return res.status(404).json({ error: "Not found" });
-  }
-  next();
 });
 
 app.use(addressHistoryRouter);
