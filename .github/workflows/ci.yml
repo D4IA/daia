@@ -1,38 +1,42 @@
 name: CI
 
 on:
-  pull_request:
-    branches:
-      - '*'
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
 
 jobs:
-  build-and-test:
+  build:
+    name: Build and Test
+    timeout-minutes: 15
     runs-on: ubuntu-latest
-    
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+ 
     steps:
-      - name: Checkout code
+      - name: Check out code
         uses: actions/checkout@v4
-
-      - name: Install pnpm
+        with:
+          fetch-depth: 2
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.0.0
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-
+          node-version: 20
+          cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
+      - name: Authenticate Vercel for Turborepo Remote Cache
+        uses: vercel/turborepo-actions/auth@v2
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
       - name: Build
-        run: pnpm run build
-
-      - name: Run tests
-        run: pnpm run test
-
+        run: pnpm turbo run build
+      - name: Test
+        run: pnpm turbo run test
