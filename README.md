@@ -1,3 +1,21 @@
+# Implementing DAIA in your project
+TODO
+
+# Getting started as DAIA developer
+
+## Installation
+Install dependencies
+```
+pnpm i
+```
+
+## Start demo
+To run all packages
+```
+pnpm run dev
+```
+
+
 ## License
 
 DAIA is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).

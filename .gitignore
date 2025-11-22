@@ -16,3 +16,6 @@ dist/
 build/
 coverage/
 *.tsbuildinfo
+
+# Environmental variables
+.env
