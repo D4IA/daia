@@ -7,7 +7,7 @@ import {
 } from './gate/controls';
 import { CarControls } from './car/controls';
 import { MockConn } from '../conn';
-import { openAI41Mini, openAI41Nano } from '../models';
+import { openAI41Mini } from '../models';
 import { ParkingOffer } from './common/messages';
 
 // Mock implementation of GateControls for simulation
