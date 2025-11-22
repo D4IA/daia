@@ -1,5 +1,5 @@
 {
-  "name": "websocket-server",
+  "name": "demo-backend",
   "version": "1.0.0",
   "description": "WebSocket server using TypeScript and Socket.IO",
   "main": "dist/server.js",
