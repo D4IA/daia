@@ -27,6 +27,18 @@ export class CacheService {
   }
 
   get<T>(key: string): T | null {
+    const result = this.getWithMeta<T>(key);
+    if (!result) return null;
+    
+    if (result.isExpired) {
+      this.delete(key);
+      return null;
+    }
+    
+    return result.value;
+  }
+
+  getWithMeta<T>(key: string): { value: T; expiresAt: number; isExpired: boolean } | null {
     const stmt = this.db.prepare(
       "SELECT value, expires_at FROM response_cache WHERE key = ?"
     );
@@ -36,13 +48,13 @@ export class CacheService {
       return null;
     }
 
-    if (Date.now() > row.expires_at) {
-      this.delete(key);
-      return null;
-    }
-
     try {
-      return JSON.parse(row.value) as T;
+      const value = JSON.parse(row.value) as T;
+      return {
+        value,
+        expiresAt: row.expires_at,
+        isExpired: Date.now() > row.expires_at
+      };
     } catch (e) {
       console.error("Failed to parse cached value", e);
       return null;

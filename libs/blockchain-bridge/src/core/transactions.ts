@@ -3,7 +3,7 @@ import {
   GET_TRANSACTION_BY_TX_ID,
   GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS,
   GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS,
-} from "#src/constants/apiEndpoints.const";
+} from "#src/constants/apiEndpoints/index";
 import { TRANSACTIONS_PER_BATCH } from "#src/constants/transactions";
 import { chunkArray } from "#src/utils/chunkArray";
 import type { Transaction } from "#types/transaction";
@@ -46,6 +46,27 @@ const defaultFetcher: TransactionsByUserAddressFetcher = {
   },
 };
 
+/**
+ * Fetches a page of transaction hashes for a given address.
+ */
+export const fetchTransactionHashes = async (
+  address: string,
+  pageToken?: string,
+  fetcher: TransactionsByUserAddressFetcher = defaultFetcher
+) => {
+  return await fetcher.transactionIdsByAddressFetcher(address, { pageToken });
+};
+
+/**
+ * Fetches details for a list of transaction IDs.
+ */
+export const fetchBulkTransactionDetails = async (
+  txIds: string[],
+  fetcher: TransactionsByUserAddressFetcher = defaultFetcher
+) => {
+  return await fetcher.bulkTransactionDetailsFetcher(txIds);
+};
+
 /*
  * Fetches confirmed transactions for a given user wallet address in WIF format.
  * @param address - The wallet address to fetch transactions for.
@@ -61,10 +82,9 @@ export const fetchTransactionsByUserAddress = async (
   let transactionHashes: string[] = [];
 
   let pageToken: string | undefined = undefined;
+  let counter = 1;
   while (true) {
-    const transactions = await fetcher.transactionIdsByAddressFetcher(address, {
-      pageToken,
-    });
+    const transactions = await fetchTransactionHashes(address, pageToken, fetcher);
 
     if (!transactions) return [];
 
@@ -73,6 +93,8 @@ export const fetchTransactionsByUserAddress = async (
     );
 
     transactionHashes = [...transactionHashes, ...localTransactionHashes];
+
+    console.log(`Fetching page ${counter++}`)
 
     if (!transactions.nextPageToken) break;
     pageToken = transactions.nextPageToken;
@@ -84,8 +106,10 @@ export const fetchTransactionsByUserAddress = async (
   );
   const bulkTransactionDetails: Transaction[] = [];
 
-  for (const chunk of chunks) {
-    const details = await fetcher.bulkTransactionDetailsFetcher(chunk);
+  for (const chunkIdx in chunks) {
+    const chunk = chunks[chunkIdx];
+    console.log(`Fetching chunk ${+chunkIdx + 1} / ${chunks.length}`)
+    const details = await fetchBulkTransactionDetails(chunk, fetcher);
     if (details) {
       bulkTransactionDetails.push(...details);
     }
