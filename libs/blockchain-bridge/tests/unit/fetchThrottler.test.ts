@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { FetchThrottler } from "#src/adapters/fetchThrottler.ts";
+import { FetchThrottler } from "#src/adapters/fetchThrottler";
 import { afterEach } from "node:test";
 
 function createMockFetch(delay = 10) {

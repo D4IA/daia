@@ -3,14 +3,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   fetchTransactionsByUserAddress,
   type TransactionsByUserAddressFetcher,
-} from "#src/core/transactions.ts";
+} from "#src/core/transactions";
 
 import {
   createTxConfirmedHistoryPage,
   TEST_ADDRESS,
-} from "#tests/mocks/factories/addressConfirmedHistory.ts";
+} from "#tests/mocks/factories/addressConfirmedHistory";
 
-import { createTransaction } from "#tests/mocks/factories/bulkTransactionDetails.ts";
+import { createTransaction } from "#tests/mocks/factories/bulkTransactionDetails";
 
 describe("fetchTransactionsByUserAddress", () => {
   beforeEach(() => {

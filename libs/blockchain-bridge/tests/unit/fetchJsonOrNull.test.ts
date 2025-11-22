@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { fetchJsonOrNull } from "#src/adapters/httpAdapter.ts";
+import { fetchJsonOrNull } from "#src/adapters/httpAdapter";
 
 describe("fetchJsonOrNull", () => {
   beforeEach(() => {
