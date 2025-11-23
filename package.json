@@ -20,7 +20,14 @@
   "packageManager": "pnpm@10.0.0",
   "pnpm": {
     "overrides": {
-      "@types/node": "^24.8.1"
+      "@types/node": "^24.8.1",
+      "vite": "^6.4.1"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "@types/node": "^24.8.1"
+      },
+      "ignoreMissing": []
     }
   }
 }
