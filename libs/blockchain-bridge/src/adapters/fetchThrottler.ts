@@ -1,10 +1,15 @@
 // fetchThrottler.ts
 // Utility to throttle fetch requests to max N per interval
 
-import { REQUESTS_PER_SECOND } from "#src/constants/requests";
+import { getBridgeConfig } from "#src/config";
+import { DEFAULT_REQUESTS_PER_SECOND } from "#src/constants/requests";
 
 const SECOND_IN_MS = 1000;
 
+/**
+ * Singleton class to throttle fetch requests.
+ * Ensures that the number of requests does not exceed a specified limit per interval.
+ */
 export class FetchThrottler {
   private static instance: FetchThrottler;
   private queue: Array<() => void> = [];
@@ -13,7 +18,7 @@ export class FetchThrottler {
   private readonly intervalMs: number;
 
   private constructor(
-    maxRequests: number = REQUESTS_PER_SECOND,
+    maxRequests: number,
     intervalMs: number = SECOND_IN_MS
   ) {
     this.maxRequests = maxRequests;
@@ -21,12 +26,20 @@ export class FetchThrottler {
     setInterval(() => this.release(), this.intervalMs);
   }
 
+  /**
+   * Returns the singleton instance of FetchThrottler.
+   * Initializes the instance with configuration from `getBridgeConfig` if not already created.
+   *
+   * @param maxRequests - Optional override for max requests per interval.
+   * @param intervalMs - Interval in milliseconds (default: 1000ms).
+   */
   public static getInstance(
-    maxRequests: number = REQUESTS_PER_SECOND,
+    maxRequests?: number,
     intervalMs: number = SECOND_IN_MS
   ): FetchThrottler {
     if (!FetchThrottler.instance) {
-      FetchThrottler.instance = new FetchThrottler(maxRequests, intervalMs);
+      const configRps = getBridgeConfig().rps || DEFAULT_REQUESTS_PER_SECOND;
+      FetchThrottler.instance = new FetchThrottler(maxRequests ?? configRps, intervalMs);
     }
     return FetchThrottler.instance;
   }
@@ -46,6 +59,14 @@ export class FetchThrottler {
     }
   }
 
+  /**
+   * Performs a fetch request respecting the rate limit.
+   * If the limit is reached, the request is queued until the next interval.
+   *
+   * @param input - The resource URL or Request object.
+   * @param init - Optional configuration for the request.
+   * @returns A Promise resolving to the Response.
+   */
   public throttledFetch(
     input: RequestInfo,
     init?: RequestInit

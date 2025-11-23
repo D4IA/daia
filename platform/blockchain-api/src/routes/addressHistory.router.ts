@@ -6,6 +6,11 @@ export const addressHistoryRouter = Router();
 
 /**
  * GET /address/:address/confirmed/history
+ *
+ * Retrieves the **confirmed** transaction history for a specific wallet address.
+ * Unconfirmed transactions (mempool) are excluded from this history.
+ *
+ * Response is cached for 60 seconds.
  */
 addressHistoryRouter.get(
   "/address/:address/confirmed/history",

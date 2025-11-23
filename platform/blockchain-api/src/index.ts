@@ -1,5 +1,14 @@
 import express from "express";
 import { addressHistoryRouter } from "./routes/addressHistory.router";
+import { configureBridge } from "@d4ia/blockchain-bridge";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+configureBridge({
+  apiKey: process.env.BSV_API_KEY,
+  rps: Number(process.env.BSV_RPS) || undefined,
+});
 
 const app = express();
 

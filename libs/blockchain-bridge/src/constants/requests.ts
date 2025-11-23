@@ -1,1 +1,1 @@
-export const REQUESTS_PER_SECOND = 3;
+export const DEFAULT_REQUESTS_PER_SECOND = 3;

@@ -67,12 +67,16 @@ export const fetchBulkTransactionDetails = async (
   return await fetcher.bulkTransactionDetailsFetcher(txIds);
 };
 
-/*
- * Fetches confirmed transactions for a given user wallet address in WIF format.
+/**
+ * Fetches **confirmed** transactions for a given user wallet address.
+ *
+ * **Important:** This function only retrieves transactions that have been included in a block.
+ * Unconfirmed transactions (still in the mempool) are **ignored**.
+ *
  * @param address - The wallet address to fetch transactions for.
  * @param fetcher - Optional custom fetcher functions for fetching transaction IDs and details.
  * @param options - Optional settings, including batchSize for bulk fetching.
- * @returns An array of transaction objects.
+ * @returns An array of confirmed transaction objects.
  */
 export const fetchTransactionsByUserAddress = async (
   address: string,
