@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TOKEN: ${{ secrets.TURBOREPO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
     steps:
