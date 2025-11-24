@@ -3,6 +3,7 @@ import db from './db.service';
 export interface CachedPage {
   result: Array<{ tx_hash: string; height: number }>;
   nextPageToken?: string;
+  nextPageKey?: string; // Link to the next page cache key (first tx hash of next page)
 }
 
 export class PaginationCacheService {
@@ -42,6 +43,29 @@ export class PaginationCacheService {
     `);
     
     stmt.run(cacheKey, responseData, createdAt);
+  }
+
+  /**
+   * Update the link to the next page for a given cache key
+   */
+  updateNextPageLink(address: string, currentFirstTxHash: string, nextFirstTxHash: string): void {
+    const cacheKey = this.buildCacheKey(address, currentFirstTxHash);
+    
+    // First get existing data to preserve other fields
+    const stmtGet = db.prepare('SELECT response_data FROM cached_pages WHERE cache_key = ?');
+    const row = stmtGet.get(cacheKey) as { response_data: string } | undefined;
+    
+    if (!row) return; // Can't update if doesn't exist
+    
+    const data = JSON.parse(row.response_data) as CachedPage;
+    
+    // Only update if changed
+    if (data.nextPageKey !== nextFirstTxHash) {
+      data.nextPageKey = nextFirstTxHash;
+      
+      const stmtUpdate = db.prepare('UPDATE cached_pages SET response_data = ? WHERE cache_key = ?');
+      stmtUpdate.run(JSON.stringify(data), cacheKey);
+    }
   }
 
   /**
