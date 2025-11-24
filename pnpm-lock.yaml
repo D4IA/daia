@@ -25,31 +25,6 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
-  blockchain-api:
-    dependencies:
-      '@d4ia/blockchain-bridge':
-        specifier: workspace:*
-        version: link:../libs/blockchain-bridge
-      better-sqlite3:
-        specifier: ^12.4.1
-        version: 12.4.6
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
-    devDependencies:
-      '@types/express':
-        specifier: ^5.0.5
-        version: 5.0.5
-      '@types/node':
-        specifier: ^24.8.1
-        version: 24.10.0
-      tsx:
-        specifier: ^4.20.6
-        version: 4.20.6
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   demo/backend:
     dependencies:
       '@langchain/community':
@@ -235,6 +210,31 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1)
+
+  platform/blockchain-api:
+    dependencies:
+      '@d4ia/blockchain-bridge':
+        specifier: workspace:*
+        version: link:../../libs/blockchain-bridge
+      better-sqlite3:
+        specifier: ^12.4.1
+        version: 12.4.6
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+    devDependencies:
+      '@types/express':
+        specifier: ^5.0.5
+        version: 5.0.5
+      '@types/node':
+        specifier: ^24.8.1
+        version: 24.10.0
+      tsx:
+        specifier: ^4.20.6
+        version: 4.20.6
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
 packages:
 
