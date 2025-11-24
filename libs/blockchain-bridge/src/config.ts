@@ -1,4 +1,5 @@
 import {DEFAULT_REQUESTS_PER_SECOND} from "#src/constants/requests"
+import { type NetworkType, NETWORK_TYPES } from "#src/constants/networkType";
 
 /**
  * Configuration interface for the Blockchain Bridge library.
@@ -22,6 +23,15 @@ export interface BridgeConfig {
    * @default 3
    */
   rps?: number;
+
+  /**
+   * The blockchain network to connect to.
+   * - 'main': The main Bitcoin SV network.
+   * - 'test': The test network.
+   * 
+   * @default 'main'
+   */
+  network: NetworkType;
 }
 
 /**
@@ -32,6 +42,7 @@ export interface BridgeConfig {
 let config: BridgeConfig = {
   apiKey: undefined,
   rps: DEFAULT_REQUESTS_PER_SECOND,
+  network: NETWORK_TYPES.MAINNET,
 };
 
 /**
@@ -40,7 +51,7 @@ let config: BridgeConfig = {
  *
  * @param newConfig - The configuration object.
  */
-export const configureBridge = (newConfig: BridgeConfig) => {
+export const configureBridge = (newConfig: Partial<BridgeConfig>) => {
   config = { ...config, ...newConfig };
 };
 

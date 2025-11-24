@@ -4,13 +4,15 @@ import { paginatedHistoryRouter } from "./routes/paginatedHistory.router";
 import { configureBridge } from "@d4ia/blockchain-bridge";
 import dotenv from "dotenv";
 import "./services/db.service"; // Initialize database
+import type { NetworkType } from "@d4ia/blockchain-bridge/dist/constants/networkType";
 
 dotenv.config();
 
 configureBridge({
   apiKey: process.env.BSV_API_KEY,
   rps: Number(process.env.BSV_RPS) || undefined,
-});
+  network: process.env.BSV_NETWORK as NetworkType
+}); 
 
 const app = express();
 
