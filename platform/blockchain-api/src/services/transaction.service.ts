@@ -1,5 +1,6 @@
 import { fetchTransactionHashes, fetchBulkTransactionDetails } from "@d4ia/blockchain-bridge";
-import { paginationCacheService } from "./paginationCache.service";
+import { paginationCacheService, CachedPage } from "./paginationCache.service";
+import { WHATSONCHAIN_API } from "../constants/externalApi.const";
 
 export interface PaginatedHistoryResponse {
   address: string;
@@ -21,118 +22,27 @@ export class TransactionService {
     offset: number,
     limit: number
   ): Promise<PaginatedHistoryResponse> {
-    // Collect tx hashes needed for offset + limit
     const allHashes: string[] = [];
     let currentPageToken: string | undefined = undefined;
     let pageNumber = 0;
-
-    // Fetch pages until we have enough hashes
     let previousPageCacheKey: string | undefined = undefined;
 
+    // Fetch pages until we have enough hashes
     while (allHashes.length < offset + limit) {
-      let pageData;
-      let isFromCache = false;
+      let pageData: CachedPage | undefined;
 
       if (pageNumber === 0) {
-        // First page - ALWAYS fetch fresh (never cache)
-        console.log(`Fetching first page for ${address} (fresh)`);
-        const response = await fetchTransactionHashes(address, undefined);
-
-        if (!response) {
-          console.log("No response from first page");
-          break;
-        }
-
-        pageData = {
-          result: response.result,
-          nextPageToken: response.nextPageToken,
-        };
+        pageData = await this.fetchFirstPage(address);
       } else {
-        // Pages 2+
-        // Try to find the next page key from the previous page's cache link
-        let nextFirstTxHash: string | undefined = undefined;
-
-        if (previousPageCacheKey) {
-          const prevCached = paginationCacheService.getCachedPage(
-            address,
-            previousPageCacheKey
-          );
-          if (prevCached?.nextPageKey) {
-            nextFirstTxHash = prevCached.nextPageKey;
-            console.log(
-              `Found link to next page: ${nextFirstTxHash.substring(0, 16)}...`
-            );
-          }
-        }
-
-        // If we have a link, try to load directly from cache
-        if (nextFirstTxHash) {
-          const cached = paginationCacheService.getCachedPage(
-            address,
-            nextFirstTxHash
-          );
-          if (cached) {
-            console.log(
-              `Linked Cache HIT for: ${nextFirstTxHash.substring(0, 16)}...`
-            );
-            pageData = cached;
-            isFromCache = true;
-          }
-        }
-
-        // If not found in cache via link, fetch from API
-        if (!pageData) {
-          console.log(`Fetching page ${pageNumber} with token`);
-          const response = await fetchTransactionHashes(
-            address,
-            currentPageToken
-          );
-
-          if (!response) {
-            console.log(`No response for page ${pageNumber}`);
-            break;
-          }
-
-          // Use first tx_hash as cache key
-          const firstTxHash = response.result[0]?.tx_hash;
-
-          if (firstTxHash) {
-            // Check if we already have this exact page cached (fallback check)
-            const cached = paginationCacheService.getCachedPage(
-              address,
-              firstTxHash
-            );
-
-            if (cached) {
-              console.log(
-                `Cache HIT for first_tx: ${firstTxHash.substring(0, 16)}...`
-              );
-              pageData = cached;
-              isFromCache = true;
-            } else {
-              console.log(
-                `Cache MISS for first_tx: ${firstTxHash.substring(
-                  0,
-                  16
-                )}..., caching now`
-              );
-              pageData = {
-                result: response.result,
-                nextPageToken: response.nextPageToken,
-              };
-
-              // Cache using first tx_hash (immutable!)
-              paginationCacheService.cachePage(address, firstTxHash, pageData);
-            }
-          } else {
-            // No tx_hash (empty page?)
-            pageData = {
-              result: response.result,
-              nextPageToken: response.nextPageToken,
-            };
-          }
-        }
+        pageData = await this.fetchSubsequentPage(
+          address,
+          pageNumber,
+          currentPageToken,
+          previousPageCacheKey
+        );
       }
+
+      if (!pageData) break;
 
       // Add hashes from this page
       const hashes = pageData.result.map((tx) => tx.tx_hash);
@@ -167,6 +77,96 @@ export class TransactionService {
       pageNumber++;
     }
 
+    return this.prepareResponse(address, offset, limit, allHashes);
+  }
+
+  private async fetchFirstPage(address: string): Promise<CachedPage | undefined> {
+    console.log(`Fetching first page for ${address} (fresh)`);
+    const response = await fetchTransactionHashes(address, undefined);
+
+    if (!response) {
+      console.log("No response from first page");
+      return undefined;
+    }
+
+    return {
+      result: response.result,
+      nextPageToken: response.nextPageToken,
+    };
+  }
+
+  private async fetchSubsequentPage(
+    address: string,
+    pageNumber: number,
+    currentToken: string | undefined,
+    previousPageCacheKey: string | undefined
+  ): Promise<CachedPage | undefined> {
+    // Try to find the next page key from the previous page's cache link
+    if (previousPageCacheKey) {
+      const prevCached = paginationCacheService.getCachedPage(
+        address,
+        previousPageCacheKey
+      );
+      if (prevCached?.nextPageKey) {
+        const cached = paginationCacheService.getCachedPage(
+          address,
+          prevCached.nextPageKey
+        );
+        if (cached) {
+          console.log(
+            `Linked Cache HIT for: ${prevCached.nextPageKey.substring(
+              0,
+              16
+            )}...`
+          );
+          return cached;
+        }
+      }
+    }
+
+    // Fetch from API
+    console.log(`Fetching page ${pageNumber} with token`);
+    const response = await fetchTransactionHashes(address, currentToken);
+
+    if (!response) {
+      console.log(`No response for page ${pageNumber}`);
+      return undefined;
+    }
+
+    const firstTxHash = response.result[0]?.tx_hash;
+    const pageData: CachedPage = {
+      result: response.result,
+      nextPageToken: response.nextPageToken,
+    };
+
+    if (firstTxHash) {
+      const cached = paginationCacheService.getCachedPage(address, firstTxHash);
+
+      if (cached) {
+        console.log(
+          `Cache HIT for first_tx: ${firstTxHash.substring(0, 16)}...`
+        );
+        return cached;
+      } else {
+        console.log(
+          `Cache MISS for first_tx: ${firstTxHash.substring(
+            0,
+            16
+          )}..., caching now`
+        );
+        paginationCacheService.cachePage(address, firstTxHash, pageData);
+      }
+    }
+
+    return pageData;
+  }
+
+  private async prepareResponse(
+    address: string,
+    offset: number,
+    limit: number,
+    allHashes: string[]
+  ): Promise<PaginatedHistoryResponse> {
     // Extract requested slice
     const requestedHashes = allHashes.slice(offset, offset + limit);
 
@@ -180,17 +180,7 @@ export class TransactionService {
       };
     }
 
-    // Fetch transaction details in chunks of 20 (WhatsOnChain limit)
-    const BULK_TX_LIMIT = 20;
-    const allTransactions: any[] = [];
-
-    for (let i = 0; i < requestedHashes.length; i += BULK_TX_LIMIT) {
-      const chunk = requestedHashes.slice(i, i + BULK_TX_LIMIT);
-      const chunkTransactions = await fetchBulkTransactionDetails(chunk);
-      if (chunkTransactions) {
-        allTransactions.push(...chunkTransactions);
-      }
-    }
+    const allTransactions = await this.fetchBulkDetails(requestedHashes);
 
     return {
       address,
@@ -199,6 +189,21 @@ export class TransactionService {
       hasMore: allHashes.length > offset + limit,
       transactions: allTransactions,
     };
+  }
+
+  private async fetchBulkDetails(hashes: string[]): Promise<any[]> {
+    const BULK_TX_LIMIT = WHATSONCHAIN_API.BULK_TX_LIMIT;
+    const allTransactions: any[] = [];
+
+    for (let i = 0; i < hashes.length; i += BULK_TX_LIMIT) {
+      const chunk = hashes.slice(i, i + BULK_TX_LIMIT);
+      const chunkTransactions = await fetchBulkTransactionDetails(chunk);
+      if (chunkTransactions) {
+        allTransactions.push(...chunkTransactions);
+      }
+    }
+
+    return allTransactions;
   }
 }
 
