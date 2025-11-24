@@ -1,29 +1,10 @@
-import Database from "better-sqlite3";
-import path from "path";
-
-const DB_PATH = path.resolve(process.cwd(), "cache.db");
+import db from "./db.service";
 
 export class CacheService {
-  private db: Database.Database;
+  private db = db;
 
   constructor() {
-    this.db = new Database(DB_PATH);
-    this.init();
-  }
-
-  private init() {
-    this.db
-      .prepare(
-        `
-      CREATE TABLE IF NOT EXISTS response_cache (
-        key TEXT PRIMARY KEY,
-        value TEXT NOT NULL,
-        created_at INTEGER NOT NULL,
-        expires_at INTEGER NOT NULL
-      )
-    `
-      )
-      .run();
+    // Database and tables are initialized in db.service.ts
   }
 
   get<T>(key: string): T | null {

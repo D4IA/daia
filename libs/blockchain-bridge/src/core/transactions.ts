@@ -6,6 +6,7 @@ import {
 } from "#src/constants/apiEndpoints/index";
 import { TRANSACTIONS_PER_BATCH } from "#src/constants/transactions";
 import { chunkArray } from "#src/utils/chunkArray";
+import { promisePool } from "#src/utils/promisePool";
 import type { Transaction } from "#types/transaction";
 import type { WalletConfirmedHistoryTransactions } from "#types/wallet";
 
@@ -108,16 +109,19 @@ export const fetchTransactionsByUserAddress = async (
     transactionHashes,
     options?.batchSize ?? TRANSACTIONS_PER_BATCH
   );
-  const bulkTransactionDetails: Transaction[] = [];
 
-  for (const chunkIdx in chunks) {
-    const chunk = chunks[chunkIdx];
-    console.log(`Fetching chunk ${+chunkIdx + 1} / ${chunks.length}`)
-    const details = await fetchBulkTransactionDetails(chunk, fetcher);
-    if (details) {
-      bulkTransactionDetails.push(...details);
-    }
-  }
+  console.log(`Fetching ${chunks.length} chunks with concurrency limit...`);
+
+  // Fetch chunks with concurrency limit to prevent connection timeouts
+  const chunkTasks = chunks.map((chunk, idx) => () =>
+    fetchBulkTransactionDetails(chunk, fetcher).then(details => {
+      console.log(`Fetched chunk ${idx + 1} / ${chunks.length}`);
+      return details;
+    })
+  );
+
+  const results = await promisePool(chunkTasks, 50);
+  const bulkTransactionDetails = results.filter((r): r is Transaction[] => r !== null).flat();
 
   return bulkTransactionDetails;
 };

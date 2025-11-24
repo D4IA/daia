@@ -22,3 +22,8 @@ coverage/
 
 # Turborepo
 .turbo
+
+# SQLite Database
+*.db
+*.db-shm
+*.db-wal

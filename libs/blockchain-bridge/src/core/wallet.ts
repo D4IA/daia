@@ -19,10 +19,10 @@ export type AddressBalance = {
 };
 
 /**
- * Fetches the balance for a given BSV address.
+ * Fetches the **confirmed** balance for a given BSV address.
  *
  * @param address - The wallet address to fetch balance for.
- * @returns The balance object containing confirmed (and potentially unconfirmed) amounts.
+ * @returns The balance object.
  */
 export const fetchAddressBalance = async (address: string) => {
   return await throttleFetchJsonOrNull<AddressBalance>(

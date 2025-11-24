@@ -1,7 +1,9 @@
 import express from "express";
 import { addressHistoryRouter } from "./routes/addressHistory.router";
+import { paginatedHistoryRouter } from "./routes/paginatedHistory.router";
 import { configureBridge } from "@d4ia/blockchain-bridge";
 import dotenv from "dotenv";
+import "./services/db.service"; // Initialize database
 
 dotenv.config();
 
@@ -36,6 +38,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(addressHistoryRouter);
+app.use(paginatedHistoryRouter);
 
 const PORT = process.env.PORT ?? 3000;
 app.listen(PORT, () => console.log(`API running at http://localhost:${PORT}`));
