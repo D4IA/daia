@@ -2,11 +2,18 @@
 TODO
 
 # Library structure
+
 daia
-|- libs
-    |- ai
-
-
+├── platform
+│   ├── ui
+│   └── blockchain-api
+├── demo
+│   ├── frontend
+│   └── backend
+├── docs
+└── libs
+    ├── ai
+    └── blockchain-bridge
 
 # Getting started as DAIA developer
 
