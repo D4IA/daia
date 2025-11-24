@@ -1,6 +1,20 @@
 # Implementing DAIA in your project
 TODO
 
+# Library structure
+
+daia
+├── platform
+│   ├── ui
+│   └── blockchain-api
+├── demo
+│   ├── frontend
+│   └── backend
+├── docs
+└── libs
+    ├── ai
+    └── blockchain-bridge
+
 # Getting started as DAIA developer
 
 ## Installation
@@ -15,6 +29,19 @@ To run all packages
 pnpm run dev
 ```
 
+## Build packages
+To build everything
+```
+pnpm run build
+```
+
+> Or create Pull Request to main and It'll be handled by CI/CD.
+
+## Test packages
+To run tests
+```
+pnpm run test
+```
 
 ## License
 
