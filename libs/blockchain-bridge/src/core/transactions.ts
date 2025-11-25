@@ -3,6 +3,7 @@ import {
   GET_TRANSACTION_BY_TX_ID,
   GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS,
   GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS,
+  BROADCAST_TRANSACTION,
 } from "#src/constants/apiEndpoints/index";
 import { TRANSACTIONS_PER_BATCH } from "#src/constants/transactions";
 import { chunkArray } from "#src/utils/chunkArray";
@@ -66,6 +67,28 @@ export const fetchBulkTransactionDetails = async (
   fetcher: TransactionsByUserAddressFetcher = defaultFetcher
 ) => {
   return await fetcher.bulkTransactionDetailsFetcher(txIds);
+};
+
+/**
+ * Broadcasts a raw transaction to the network.
+ * @param txHex - The raw transaction hex string.
+ * @returns The transaction ID if successful.
+ * @throws Error if broadcast fails.
+ */
+export const broadcastTransaction = async (txHex: string): Promise<string> => {
+  const response = await throttleFetchJsonOrNull<{ txid: string }>(
+    BROADCAST_TRANSACTION(),
+    {
+      method: "POST",
+      body: JSON.stringify({ txhex: txHex }),
+    }
+  );
+
+  if (!response || !response.txid) {
+    throw new Error("Failed to broadcast transaction: No txid returned");
+  }
+
+  return response.txid;
 };
 
 /**
