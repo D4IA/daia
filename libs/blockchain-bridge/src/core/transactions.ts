@@ -3,9 +3,10 @@ import {
   GET_TRANSACTION_BY_TX_ID,
   GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS,
   GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS,
-} from "#src/constants/apiEndpoints.const";
+} from "#src/constants/apiEndpoints/index";
 import { TRANSACTIONS_PER_BATCH } from "#src/constants/transactions";
 import { chunkArray } from "#src/utils/chunkArray";
+import { promisePool } from "#src/utils/promisePool";
 import type { Transaction } from "#types/transaction";
 import type { WalletConfirmedHistoryTransactions } from "#types/wallet";
 
@@ -46,12 +47,37 @@ const defaultFetcher: TransactionsByUserAddressFetcher = {
   },
 };
 
-/*
- * Fetches confirmed transactions for a given user wallet address in WIF format.
+/**
+ * Fetches a page of transaction hashes for a given address.
+ */
+export const fetchTransactionHashes = async (
+  address: string,
+  pageToken?: string,
+  fetcher: TransactionsByUserAddressFetcher = defaultFetcher
+) => {
+  return await fetcher.transactionIdsByAddressFetcher(address, { pageToken });
+};
+
+/**
+ * Fetches details for a list of transaction IDs.
+ */
+export const fetchBulkTransactionDetails = async (
+  txIds: string[],
+  fetcher: TransactionsByUserAddressFetcher = defaultFetcher
+) => {
+  return await fetcher.bulkTransactionDetailsFetcher(txIds);
+};
+
+/**
+ * Fetches **confirmed** transactions for a given user wallet address.
+ *
+ * **Important:** This function only retrieves transactions that have been included in a block.
+ * Unconfirmed transactions (still in the mempool) are **ignored**.
+ *
  * @param address - The wallet address to fetch transactions for.
  * @param fetcher - Optional custom fetcher functions for fetching transaction IDs and details.
  * @param options - Optional settings, including batchSize for bulk fetching.
- * @returns An array of transaction objects.
+ * @returns An array of confirmed transaction objects.
  */
 export const fetchTransactionsByUserAddress = async (
   address: string,
@@ -61,10 +87,9 @@ export const fetchTransactionsByUserAddress = async (
   let transactionHashes: string[] = [];
 
   let pageToken: string | undefined = undefined;
+  let counter = 1;
   while (true) {
-    const transactions = await fetcher.transactionIdsByAddressFetcher(address, {
-      pageToken,
-    });
+    const transactions = await fetchTransactionHashes(address, pageToken, fetcher);
 
     if (!transactions) return [];
 
@@ -74,6 +99,8 @@ export const fetchTransactionsByUserAddress = async (
 
     transactionHashes = [...transactionHashes, ...localTransactionHashes];
 
+    console.log(`Fetching page ${counter++}`)
+
     if (!transactions.nextPageToken) break;
     pageToken = transactions.nextPageToken;
   }
@@ -82,14 +109,19 @@ export const fetchTransactionsByUserAddress = async (
     transactionHashes,
     options?.batchSize ?? TRANSACTIONS_PER_BATCH
   );
-  const bulkTransactionDetails: Transaction[] = [];
 
-  for (const chunk of chunks) {
-    const details = await fetcher.bulkTransactionDetailsFetcher(chunk);
-    if (details) {
-      bulkTransactionDetails.push(...details);
-    }
-  }
+  console.log(`Fetching ${chunks.length} chunks with concurrency limit...`);
+
+  // Fetch chunks with concurrency limit to prevent connection timeouts
+  const chunkTasks = chunks.map((chunk, idx) => () =>
+    fetchBulkTransactionDetails(chunk, fetcher).then(details => {
+      console.log(`Fetched chunk ${idx + 1} / ${chunks.length}`);
+      return details;
+    })
+  );
+
+  const results = await promisePool(chunkTasks, 50);
+  const bulkTransactionDetails = results.filter((r): r is Transaction[] => r !== null).flat();
 
   return bulkTransactionDetails;
 };

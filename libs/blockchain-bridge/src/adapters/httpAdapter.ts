@@ -1,3 +1,4 @@
+import { getBridgeConfig } from "#src/config";
 import { FetchThrottler } from "#src/adapters/fetchThrottler";
 
 /**
@@ -10,7 +11,14 @@ export async function fetchJsonOrNull<T>(
   fetchFn: (url: string, options?: RequestInit) => Promise<Response> = fetch
 ): Promise<T | null> {
   try {
-    const response = await fetchFn(url, options);
+    const { apiKey } = getBridgeConfig();
+
+    const headers = new Headers(options?.headers);
+    if (apiKey) {
+      headers.set("Authorization", apiKey);
+    }
+
+    const response = await fetchFn(url, { ...options, headers });
 
     if (response.status === 404) return null;
     if (!response.ok) {

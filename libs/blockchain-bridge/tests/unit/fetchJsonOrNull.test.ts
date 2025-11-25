@@ -61,6 +61,9 @@ describe("fetchJsonOrNull", () => {
 
     await fetchJsonOrNull("https://api.test/post", options);
 
-    expect(global.fetch).toHaveBeenCalledWith("https://api.test/post", options);
+    expect(global.fetch).toHaveBeenCalledWith("https://api.test/post", expect.objectContaining({
+      ...options,
+      headers: expect.anything(),
+    }));
   });
 });
