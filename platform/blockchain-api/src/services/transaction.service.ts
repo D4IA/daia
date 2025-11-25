@@ -16,6 +16,16 @@ export class TransactionService {
    * - First page (no token): always fresh
    * - Pages 2+ (with token): cached forever (immutable)
    * - Prefetches next 3 pages (sliding window) - TODO
+   *
+   * @note Caching Strategy:
+   * We use a "Linked Page" strategy where each page points to the next page's first transaction hash.
+   * WhatsOnChain API has a specific behavior where pages are ordered DESC (newest pages first),
+   * but transactions WITHIN a page are ordered ASC (oldest first in the chunk).
+   * 
+   * When a new transaction arrives, it is appended to the END of Page 1. This pushes the 
+   * FIRST transaction of Page 1 (the oldest in that chunk) to the END of Page 2.
+   * This shift changes the `firstTxHash` (our cache key) for every page, causing a "Cold Cache"
+   * cascade. The system self-heals by fetching fresh pages and updating the links.
    */
   async getPaginatedHistory(
     address: string,
