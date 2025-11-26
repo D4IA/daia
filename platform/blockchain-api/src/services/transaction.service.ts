@@ -99,6 +99,12 @@ export class TransactionService {
       return undefined;
     }
 
+    if(Array.isArray(response['result'])){
+      response['result'] = response['result'].sort((a,b) => {
+        return a['height'] - b['height'];
+      })
+    }
+
     return {
       result: response.result,
       nextPageToken: response.nextPageToken,
@@ -141,6 +147,12 @@ export class TransactionService {
     if (!response) {
       console.log(`No response for page ${pageNumber}`);
       return undefined;
+    }
+    
+    if(Array.isArray(response['result'])){
+      response['result'] = response['result'].sort((a,b) => {
+        return a['height'] - b['height'];
+      })
     }
 
     const firstTxHash = response.result[0]?.tx_hash;
