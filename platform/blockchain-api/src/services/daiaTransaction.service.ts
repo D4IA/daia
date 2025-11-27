@@ -2,9 +2,7 @@ import { transactionService } from "./transaction.service";
 import {
   DaiaAgreementSchema,
   DaiaOfferContentSchema,
-  type DaiaAgreement,
-  type DaiaOfferContent,
-} from "../../../../libs/proto/src/types/offer";
+} from "@d4ia/proto";
 import db from './db.service';
 
 
