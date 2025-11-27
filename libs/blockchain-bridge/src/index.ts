@@ -3,6 +3,7 @@ import {
   fetchTransactionsByUserAddress,
   fetchTransactionHashes,
   fetchBulkTransactionDetails,
+  broadcastTransaction,
 } from "./core/transactions";
 import { fetchAddressBalance } from "./core/wallet";
 
@@ -52,7 +53,15 @@ export {
    */
   configureBridge,
 
+  /**
+   * Broadcasts a raw transaction to the BSV network.
+   * @see {@link broadcastTransaction}
+   */
+  broadcastTransaction,
+
   type Transaction,
   type WalletConfirmedHistoryTransactions,
   type BridgeConfig
+
+  
 };

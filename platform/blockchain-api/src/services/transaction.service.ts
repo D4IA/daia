@@ -197,7 +197,7 @@ export class TransactionService {
       offset,
       limit,
       hasMore: allHashes.length > offset + limit,
-      transactions: allTransactions,
+      transactions: allTransactions.sort((a,b) => b.time - a.time),
     };
   }
 
