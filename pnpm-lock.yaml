@@ -330,6 +330,9 @@ importers:
       '@d4ia/blockchain-bridge':
         specifier: workspace:*
         version: link:../../libs/blockchain-bridge
+      '@d4ia/proto':
+        specifier: workspace:*
+        version: link:../../libs/proto
       better-sqlite3:
         specifier: ^12.4.6
         version: 12.4.6
