@@ -11,8 +11,14 @@ import db from './db.service';
 export interface DaiaTransaction {
   txId: string;
   agreements: {
-    agreement: DaiaAgreement;
-    offerContent: DaiaOfferContent;
+    agreement: {
+      offerContentSerialized: string;
+      proofs: Record<string, any>; // Plain object instead of Map
+    };
+    offerContent: {
+      naturalLanguageOfferContent: string;
+      requirements: Record<string, any>; // Plain object instead of Map
+    };
     vout: number;
   }[];
   timestamp: number;
@@ -155,7 +161,7 @@ export class DaiaTransactionService {
     `);
     
     const rows = stmt.all(address, limit, offset) as { data: string }[];
-    const transactions = rows.map(row => JSON.parse(row.data) as DaiaTransaction);
+    const transactions = rows.map(row => JSON.parse(row.data));
 
     // Check if there are more
     const countStmt = db.prepare("SELECT COUNT(*) as count FROM daia_transactions WHERE address = ?");
@@ -180,7 +186,17 @@ export class DaiaTransactionService {
       return null;
     }
 
-    const agreements: { agreement: DaiaAgreement; offerContent: DaiaOfferContent; vout: number }[] = [];
+    const agreements: {
+      agreement: {
+        offerContentSerialized: string;
+        proofs: Record<string, any>;
+      };
+      offerContent: {
+        naturalLanguageOfferContent: string;
+        requirements: Record<string, any>;
+      };
+      vout: number;
+    }[] = [];
 
     // Iterate over all outputs
     tx.vout.forEach((output: any, index: number) => {
@@ -195,7 +211,6 @@ export class DaiaTransactionService {
 
       try {
         const parsed = JSON.parse(jsonString);
-        
         if (parsed.proofs && typeof parsed.proofs === 'object') {
           parsed.proofs = new Map(Object.entries(parsed.proofs));
         }
@@ -210,13 +225,21 @@ export class DaiaTransactionService {
 
         const offerContent = DaiaOfferContentSchema.parse(contentParsed);
 
+        // Convert Maps back to plain objects for storage/API
         agreements.push({
-          agreement,
-          offerContent,
+          agreement: {
+            ...agreement,
+            proofs: Object.fromEntries(agreement.proofs)
+          },
+          offerContent: {
+            ...offerContent,
+            requirements: Object.fromEntries(offerContent.requirements)
+          },
           vout: index
         });
 
       } catch (e) {
+        // console.error("Invalid DAIA data in this output, skipping it", e);
         // Invalid DAIA data in this output, skip it
       }
     });
@@ -224,6 +247,7 @@ export class DaiaTransactionService {
     if (agreements.length === 0) {
       return null;
     }
+
 
     return {
       txId: tx.txid,
