@@ -5,7 +5,7 @@ import { PAGINATION } from "../constants/pagination.const";
 
 const router = Router();
 
-router.get("/history/:address", async (req: Request, res: Response) => {
+router.get("/agreements/:address", async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     const offset = clamp(

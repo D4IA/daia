@@ -153,20 +153,67 @@ export class DaiaTransactionService {
   }
 
   private queryCache(address: string, offset: number, limit: number) {
+    // Fetch all transactions for this address ordered by timestamp DESC
     const stmt = db.prepare(`
       SELECT data FROM daia_transactions 
       WHERE address = ? 
-      ORDER BY timestamp DESC 
-      LIMIT ? OFFSET ?
+      ORDER BY timestamp DESC
     `);
     
-    const rows = stmt.all(address, limit, offset) as { data: string }[];
-    const transactions = rows.map(row => JSON.parse(row.data));
+    const rows = stmt.all(address) as { data: string }[];
+    const transactions: DaiaTransaction[] = rows.map(row => JSON.parse(row.data));
 
-    // Check if there are more
-    const countStmt = db.prepare("SELECT COUNT(*) as count FROM daia_transactions WHERE address = ?");
-    const result = countStmt.get(address) as { count: number };
-    const total = result.count;
+    // Flatten all agreements from all transactions with their transaction context
+    const allAgreements: Array<{
+      txId: string;
+      timestamp: number;
+      agreement: {
+        offerContentSerialized: string;
+        proofs: Record<string, any>;
+      };
+      offerContent: {
+        naturalLanguageOfferContent: string;
+        requirements: Record<string, any>;
+      };
+      vout: number;
+    }> = [];
+
+    for (const tx of transactions) {
+      for (const agreementData of tx.agreements) {
+        allAgreements.push({
+          txId: tx.txId,
+          timestamp: tx.timestamp,
+          ...agreementData
+        });
+      }
+    }
+
+    // Apply offset and limit to the flattened agreements
+    const paginatedAgreements = allAgreements.slice(offset, offset + limit);
+    
+    // Group paginated agreements back by transaction for response structure
+    const transactionsMap = new Map<string, DaiaTransaction>();
+    
+    for (const agreement of paginatedAgreements) {
+      if (!transactionsMap.has(agreement.txId)) {
+        transactionsMap.set(agreement.txId, {
+          txId: agreement.txId,
+          timestamp: agreement.timestamp,
+          agreements: []
+        });
+      }
+      
+      transactionsMap.get(agreement.txId)!.agreements.push({
+        agreement: agreement.agreement,
+        offerContent: agreement.offerContent,
+        vout: agreement.vout
+      });
+    }
+
+    const paginatedTransactions = Array.from(transactionsMap.values());
+    
+    // Check if there are more agreements
+    const total = allAgreements.length;
     const hasMore = offset + limit < total;
 
     return {
@@ -174,7 +221,7 @@ export class DaiaTransactionService {
       offset,
       limit,
       hasMore,
-      transactions
+      transactions: paginatedTransactions
     };
   }
 
