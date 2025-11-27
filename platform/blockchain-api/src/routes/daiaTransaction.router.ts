@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { daiaTransactionService } from "../services/daiaTransaction.service";
 import { clamp } from "../utils/clamp";
 import { PAGINATION } from "../constants/pagination.const";
+import { HttpError } from "../utils/http-error";
 
 const router = Router();
 
@@ -28,7 +29,7 @@ router.get("/agreements/:address", async (req: Request, res: Response) => {
     res.json(result);
   } catch (error) {
     console.error("Error fetching DAIA history:", error);
-    res.status(500).json({ error: "Internal server error" });
+    HttpError.InternalServerError(res, "Failed to fetch DAIA history");
   }
 });
 
