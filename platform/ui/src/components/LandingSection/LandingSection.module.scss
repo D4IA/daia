@@ -1,0 +1,45 @@
+@use '../../styles/tailwind-vars' as tv;
+
+.container {
+    width: 100%;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: tv.$spacing-4;
+    padding-right: tv.$spacing-4;
+    overflow: hidden;
+    position: relative;
+    background-color: tv.$gray-100;
+}
+  
+.dynamicBackground {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    opacity: 1;
+}
+
+.landingContentPadding {
+    padding: tv.$spacing-10;
+}
+
+.title {
+    color: tv.$gray-900;
+    line-height: tv.$leading-tight;
+    font-family: 'Inter', sans-serif; 
+    font-weight: tv.$font-regular;
+    margin-bottom: 2rem;
+
+    font-size: tv.$text-4xl; 
+    line-height: 1.1;
+
+    @media (min-width: tv.$md) {
+        font-size: tv.$text-48px;
+        line-height: 1;
+    }
+}
