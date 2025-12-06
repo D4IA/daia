@@ -1,0 +1,75 @@
+$color-green: #38a169; 
+$color-blue: #4299e1;  
+$color-text-default: #1a202c;
+$color-label-grey: #4a5568;
+$color-background-light: #f7f7f7;
+
+.offerCardWrapper {
+  background-color: $color-background-light;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.offerTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: $color-text-default;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.offerDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.label {
+  font-size: 14px;
+  color: $color-label-grey;
+}
+
+.hashValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: $color-text-default;
+
+  word-break: break-all; 
+  text-align: right;     
+  max-width: 60%;        
+  line-height: 1.4;
+}
+
+.statusDisplay {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+
+  .statusIcon {
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    fill: currentColor; 
+  }
+}
+
+.textPublished {
+  color: $color-green;
+}
+
+.textPublishing {
+  color: $color-blue;
+}

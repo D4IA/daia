@@ -1,0 +1,116 @@
+@use '../../styles/tailwind-vars' as tv; 
+
+$white: #ffffff;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-600: #4b5563;
+$gray-700: #374151;
+$gray-900: #111827;
+$blue-500: #3b82f6; 
+$green-600: #10b981;
+
+$text-lg: 1rem;       
+$text-xl: 1.25rem;
+$font-regular: 400;
+$leading-tight: 1.25;
+
+$max-w-1000px: 1000px;
+
+
+
+.timelineWrapper {
+    max-width: $max-w-1000px; 
+    margin: tv.$spacing-8 auto; 
+    background-color: $white;
+    padding: tv.$spacing-6;
+    border-radius: tv.$spacing-2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.timelineHeader {
+    font-size: $text-xl; 
+    font-weight: $font-regular;
+    color: $gray-900;
+    margin-bottom: tv.$spacing-6;
+    padding-bottom: tv.$spacing-4;
+    text-align: left;
+}
+
+.timelineBody {
+    position: relative;
+    padding-left: 0; 
+}
+
+.timelineItem {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: tv.$spacing-8; 
+    position: relative;
+    padding-left: tv.$spacing-6;
+    text-align: left; 
+}
+
+.content {
+    flex-grow: 1;
+    margin-right: tv.$spacing-4;
+    padding-top: 0.1rem; 
+}
+
+.titleText {
+    font-weight: $font-regular;
+    color: $gray-900;
+    font-size: $text-lg; 
+    margin-bottom: tv.$spacing-2;
+}
+
+.actionText {
+    color: $gray-700;
+    font-size: $text-lg; 
+    line-height: $leading-tight; 
+    margin-bottom: tv.$spacing-2;
+}
+
+.timestamp {
+    color: $gray-600; 
+    font-size: $text-lg; 
+    white-space: nowrap;
+    text-align: right;
+}
+
+.timelineSegment {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    z-index: 2;
+    margin-bottom: tv.$spacing-4; 
+
+    &.colorPurple { background-color: $blue-500; }
+    &.colorGreen { background-color: $green-600; }
+}
+
+.transactionLink {
+    display: inline-flex;
+    align-items: center;
+    background-color: $gray-100;
+    padding: 0.3rem tv.$spacing-2;
+    border-radius: 9999px;
+    color: $gray-700; 
+    font-size: $text-lg; 
+    line-height: $leading-tight; 
+    text-decoration: none;
+    transition: background-color 0.2s;
+    font-weight: $font-regular; 
+
+    &:hover {
+        background-color: $gray-200;
+    }
+}
+
+.linkIcon {
+    width: tv.$spacing-4; 
+    height: tv.$spacing-4;
+    margin-right: 0.3rem;
+    fill: $gray-700;
+}

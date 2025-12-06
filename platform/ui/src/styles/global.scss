@@ -1,0 +1,60 @@
+@use "./tailwind-vars" as tv;
+
+.contentWrapper {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+.title {
+  max-width: 100%;
+  font-size: tv.$text-30px; 
+  margin-bottom: tv.$spacing-6;
+  color: tv.$gray-900;
+  line-height: tv.$leading-tight;
+  font-family: 'Inter', sans-serif; 
+  font-weight: tv.$font-regular;
+}
+
+.subtitle {
+  font-size: tv.$text-20px;
+  margin-bottom: tv.$spacing-10;
+  color: tv.$gray-700;
+  max-width: 770px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Inter', sans-serif; 
+  font-weight: tv.$font-regular;
+
+  @media (min-width: tv.$md) {
+    font-size: tv.$text-xl;
+  }
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.actionButton {
+  font-family: 'Inter', sans-serif; 
+  font-weight: tv.$font-regular;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-property: background-color, color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  font-size: tv.$text-20px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

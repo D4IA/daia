@@ -1,0 +1,38 @@
+@use '../../styles/tailwind-vars' as tv;
+
+.section {
+    background-color: tv.$gray-50;
+    
+    padding-top: 4rem; 
+    padding-bottom: 4rem;
+
+    @media (min-width: tv.$md) {
+        padding-top: tv.$spacing-24; 
+        padding-bottom: tv.$spacing-24;
+    }
+}
+
+.contentWrapper {
+    padding-left: tv.$spacing-4;
+    padding-right: tv.$spacing-4;
+
+    @media (min-width: tv.$lg) {
+        padding-left: tv.$spacing-50;
+        padding-right: tv.$spacing-50;
+    }
+}
+
+.cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: tv.$spacing-8; 
+    
+    margin-top: tv.$spacing-24; 
+    margin-bottom: tv.$spacing-24; 
+    
+    min-height: 20rem;
+
+    @media (min-width: tv.$md) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

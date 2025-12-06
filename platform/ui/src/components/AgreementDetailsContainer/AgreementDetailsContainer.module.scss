@@ -1,0 +1,31 @@
+.containerWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 60px 20px;
+    background-color: #f9fafb; 
+  }
+  
+  .detailsContent {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    max-width: 900px;
+    width: 100%;
+  }
+  
+  .membersColumn {
+    flex: 1;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+  }
+  
+  .blockchainColumn {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  

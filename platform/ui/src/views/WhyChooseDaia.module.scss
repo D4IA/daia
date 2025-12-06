@@ -1,0 +1,62 @@
+@use '../styles/tailwind-vars' as tv; 
+
+.sectionContainer {
+    background-color: tv.$gray-100;
+    padding-top: tv.$spacing-20;
+    padding-bottom: tv.$spacing-20;
+    padding-left: tv.$spacing-4;
+    padding-right: tv.$spacing-4;
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: tv.$spacing-12; 
+    align-items: center;
+
+    @media (min-width: tv.$md) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.featuresList {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: tv.$md) {
+        margin-top: tv.$spacing-12;
+        margin-left: tv.$spacing-32;
+        padding-right: tv.$spacing-16;
+    }
+}
+
+.imageContainer {
+    position: relative;
+    
+    @media (min-width: tv.$md) {
+        margin-right: tv.$spacing-32;
+        margin-left: tv.$spacing-16;
+    }
+}
+.imageStyle {
+    width: 100%;
+    height: auto;
+    max-height: 24rem; 
+    object-fit: cover;
+    border-radius: 0.75rem; 
+    box-shadow: tv.$shadow-xl; 
+    background-color: tv.$white; 
+}
+
+.sourceText {
+    color: tv.$gray-500;
+    font-size: 0.75rem; 
+    margin-top: 0.75rem; 
+    text-align: left;
+}
+
+.checkIconStyle {
+    width: 1.25rem; 
+    height: 1.25rem; 
+    filter: invert(100%); 
+}

@@ -1,0 +1,144 @@
+{
+  "navbar": {
+    "title": "Daia",
+    "button": "Find My Agreement",
+    "developers": "Developers",
+    "about_us": "About us"
+  },
+  "landing_screen": {
+    "title": "Let AI Agents Agree - and Record It for You",
+    "subtitle_1": "Your devices talk, negotiate, and align on terms.",
+    "subtitle_2": "DAIA makes sure those agreements are recorded and verifiable - automatically.",
+    "button": "Find My Agreement"
+  },
+  "how_daia_works": {
+    "title": "How DAIA Works",
+    "cards": [
+      {
+        "id": "1",
+        "iconKey": "Negotiate",
+        "title": "AI Agents Negotiate",
+        "description": "AI agents communicate and negotiate with each other to reach mutually beneficial agreements automatically."
+      },
+      {
+        "id": "2",
+        "iconKey": "Secure",
+        "title": "Secure Blockchain Recording",
+        "description": "DAIA records their agreement securely on blockchain, creating an immutable and transparent record."
+      },
+      {
+        "id": "3",
+        "iconKey": "Encrypted",
+        "title": "Encrypted & Verifiable",
+        "description": "Agreements are encrypted for privacy while remaining verifiable by authorized parties when needed."
+      }
+    ]
+  },
+  "why_choose_daia": {
+    "title": "Why Choose DAIA?",
+    "features": [
+      {
+        "title": "Automatic Agreement Recording",
+        "description": "No manual intervention required - agreements are recorded automatically when AI agents reach consensus."
+      },
+      {
+        "title": "Immutable & Transparent",
+        "description": "Blockchain technology ensures agreements cannot be altered and remain verifiable by all parties."
+      },
+      {
+        "title": "Privacy Protected",
+        "description": "Advanced encryption keeps sensitive agreement details private while maintaining verifiability."
+      }
+    ],
+    "source": "source: https://share.google/images/EFEfDvK70ZGFHyGcn"
+  },
+  "explore_section": {
+    "title": "Ready to Explore DAIA?",
+    "subtitle": "Start by searching for existing agreements or learn more about how DAIA can help your AI agents work together.",
+    "button": "Find My Agreement"
+  },
+  "search_view": {
+    "title": "Search for Your Agreement",
+    "subtitle": "Enter your wallet address or transaction hash to find and verify your AI agent agreements.",
+    "placeholder": "Wallet address",
+    "button": "Search Agreement"
+  },
+  "footer": {
+    "slogan": "Secure agreement recording for AI agents on blockchain.",
+    "product_col": {
+      "title": "Product",
+      "links": ["How it Works", "Features", "Pricing", "Support"]
+    },
+    "developers_col": {
+      "title": "Developers",
+      "links": ["Documentation", "API Reference"]
+    },
+    "copyright": "© 2025 DAIA. All rights reserved."
+  },
+  "search_agreement": {
+    "placeholder": "Wallet address",
+    "button": "Search"
+  },
+  "agreement_list": {
+    "title": "Find Your Agreement",
+    "subtitle": "Enter your wallet address to find agreements made by your AI agents."
+  },
+  "no_agreements_found": {
+    "title": "No agreements found!",
+    "description": "Looks like there are no agreements tied to this address. Is it a valid one?"
+  },
+  "sdk_screen": {
+    "title": "Integrate DAIA SDK into Your AI Agents",
+    "subtitle_1": "From proposal to blockchain in seconds",
+    "subtitle_2": "DAIA SDK handles the entire agreement lifecycle for your agents.",
+    "button": "Get Started"
+  },
+  "sdk_features": {
+    "title": "SDK Features",
+    "subtitle": "Built for modern AI agents and blockchain integration",
+    "cards": [
+      {
+        "id": "1",
+        "iconKey": "EncryptedBlockchainStorage",
+        "title": "Encrypted blockchain storage",
+        "description": "Protect sensitive data on-chain. DAIA encrypts content before storage, keeping agreements private without losing transparency."
+      },
+      {
+        "id": "2",
+        "iconKey": "Lightweight",
+        "title": "Lightweight SDK",
+        "description": "Optimized for edge and serverless. No bloat — just clean, async code. Plug and go."
+      },
+      {
+        "id": "3",
+        "iconKey": "SimpleIntegration",
+        "title": "Simple integration",
+        "description": "Drop DAIA into any AI logic reactive, stateful, or event-driven. Works out of the box with your existing setup."
+      }
+    ]
+  },
+  "sdk_integration_steps": {
+    "title": "Quick Integration",
+    "subtitle": "Get started with JavaScript in minutes",
+    "step1": {
+      "number": 1,
+      "title": "Install SDK",
+      "codeSnippet": "npm install @daia/sdk"
+    },
+    "step2": {
+      "number": 2,
+      "title": "Initialize Agent",
+      "codeSnippet": "import { DaiaAgent } from '@daia/sdk'\nconst agent = new DaiaAgent({ id: 'AGENT-01', wallet: '0xabc...' })"
+    },
+    "step3": {
+      "number": 3,
+      "title": "Save Propose Offer on blockchain",
+      "codeSnippet": "const proposeOfferId = await agent.recordProposeOffer({\n  content: \"\nProposing an offer:\n  • Duration: 3 hours\n  • Base rate: 6 PLN/h\n  • Eco vehicle discount: -1 PLN/h\n  • Final rate: 5 PLN/h\n  • Total cost: 15 PLN\n\",\n  encryptKey: 'xyz' // or undefined to display data without being encrypted\n});"
+    },
+    "step4": {
+      "number": 4,
+      "title": "Save Accept Offer on blockchain using other agent",
+      "codeSnippet": "await otherAgent.recordAcceptOffer({\n  proposeOfferId: proposeOfferId\n});"
+    }
+  }
+}
