@@ -3,15 +3,30 @@ import translations from "../translations/en-us.json";
 import Button from "../components/Button/Button";
 import searchIcon from "../assets/search.svg";
 import styles from "./SearchForYourAgreement.module.scss";
+import { useNavigate } from "react-router-dom";
 
 const T = translations.search_view;
+const ERROR_MESSAGE = "Pole wyszukiwania nie może być puste.";
 
 const SearchForYourAgreementView: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
+    setInputValue(e.target.value);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Searching for:", inputValue);
+    const query = inputValue.trim();
+    if (!query) {
+      setError(ERROR_MESSAGE);
+      return;
+    }
+    setError(null);
+    navigate(`/list_of_agreements/${query}`);
   };
 
   return (
@@ -26,7 +41,7 @@ const SearchForYourAgreementView: React.FC = () => {
             type="text"
             placeholder={T.placeholder}
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={handleInputChange}
             className={styles.inputField}
           />
 
@@ -35,6 +50,7 @@ const SearchForYourAgreementView: React.FC = () => {
             {T.button}
           </Button>
         </form>
+        {error && <p className={styles.errorMessage}>{error}</p>}
       </div>
     </section>
   );

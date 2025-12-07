@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./AgreementsListSearchBar.module.scss";
 import SearchBar from "../SearchBar/SearchBar";
 import Button from "../Button/Button";
@@ -6,37 +6,61 @@ import translations from "../../translations/en-us.json";
 
 interface SearchForAgreementBarProps {
   onSearch: (walletAddress: string) => void;
+  initialValue?: string;
+  onErrorChange: (error: string | null) => void;
 }
 
 const T = translations.search_agreement;
+const ERROR_MESSAGE = T.error_empty;
 
-const SearchForAgreementBar: React.FC<SearchForAgreementBarProps> = ({
+const AgreementsListSearchBar: React.FC<SearchForAgreementBarProps> = ({
   onSearch,
+  initialValue = "",
+  onErrorChange,
 }) => {
-  const [walletAddress, setWalletAddress] = useState("");
+  const [walletAddress, setWalletAddress] = useState(initialValue);
 
-  const handleLocalSearch = () => {
-    onSearch(walletAddress);
+  useEffect(() => {
+    setWalletAddress(initialValue);
+    if (initialValue) {
+      onErrorChange(null);
+    }
+  }, [initialValue, onErrorChange]);
+
+  const handleInputChange = (value: string) => {
+    onErrorChange(null);
+    setWalletAddress(value);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const trimmedAddress = walletAddress.trim();
+
+    if (!trimmedAddress) {
+      onErrorChange(ERROR_MESSAGE);
+      return;
+    }
+
+    onErrorChange(null);
+    onSearch(trimmedAddress);
   };
 
   return (
-    <div className={styles.container}>
+    <form onSubmit={handleSubmit} className={styles.container}>
       <div className={styles.inputBarWrapper}>
         <SearchBar
           value={walletAddress}
-          onChange={setWalletAddress}
+          onChange={handleInputChange}
           placeholder={T.placeholder}
         />
 
-        <Button
-          onClick={handleLocalSearch}
-          className={`actionButton ${styles.searchButton}`}
-        >
+        <Button type="submit" className={`actionButton ${styles.searchButton}`}>
           {T.button}
         </Button>
       </div>
-    </div>
+    </form>
   );
 };
 
-export default SearchForAgreementBar;
+export default AgreementsListSearchBar;

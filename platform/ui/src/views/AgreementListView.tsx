@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./AgreementListView.module.scss";
 import AgreementListItem from "../components/AgreementsListItem/AgreementsListItem";
 import AgreementsListSearchBar from "../components/AgreementsListSearchBar/AgreementsListSearchBar";
+import AgreementFilters from "../components/AgreementFilters/AgreementFilters";
 import translations from "../translations/en-us.json";
 import NoAgreementsFound from "../components/NoAgreementsFound/NoAgreementsFound";
 
@@ -46,24 +47,51 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
   onSearch,
 }) => {
   const navigate = useNavigate();
+  const { query } = useParams<{ query: string }>();
 
-  const [walletAddress, setWalletAddress] = useState("");
+  const [walletAddress, setWalletAddress] = useState(query || "");
   const [agreements, setAgreements] = useState<Agreement[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const [txIdFilter, setTxIdFilter] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+
+  const [hasSearched, setHasSearched] = useState(!!query);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
 
-  const filteredAgreements = agreements;
+  const filteredAgreements = agreements.filter((item) => {
+    const matchesTxId = txIdFilter
+      ? item.txId.toLowerCase().includes(txIdFilter.toLowerCase())
+      : true;
+
+    let matchesDate = true;
+    if (dateFilter) {
+      try {
+        const itemDate = new Date(item.date);
+        const yyyy = itemDate.getFullYear();
+        const mm = String(itemDate.getMonth() + 1).padStart(2, "0");
+        const dd = String(itemDate.getDate()).padStart(2, "0");
+        const formattedItemDate = `${yyyy}-${mm}-${dd}`;
+
+        matchesDate = formattedItemDate === dateFilter;
+      } catch (e) {
+        matchesDate = false;
+      }
+    }
+
+    return matchesTxId && matchesDate;
+  });
 
   const totalPages = Math.ceil(filteredAgreements.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentAgreements = filteredAgreements.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE,
+    startIndex + ITEMS_PER_PAGE
   );
 
   useEffect(() => {
@@ -77,12 +105,13 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
     setIsLoading(true);
     setError(null);
     setAgreements([]);
+    setValidationError(null);
 
     try {
       const response = await fetch(`${API_BASE_URL}/agreements/${address}`);
 
       if (!response.ok) {
-        throw new Error("Błąd podczas pobierania danych");
+        throw new Error(T.msg_api_error);
       }
 
       const data: ApiResponse = await response.json();
@@ -100,33 +129,49 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
             minute: "2-digit",
           }),
           status: "Published",
-        })),
+        }))
       );
 
       setAgreements(mappedAgreements);
     } catch (err) {
       console.error(err);
-      setError(
-        "Nie udało się pobrać umów. Sprawdź adres portfela lub połączenie.",
-      );
+      setError(T.msg_api_error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
+  useEffect(() => {
+    if (query) {
+      setValidationError(null);
+      handleSearchAction(query, false);
+    }
+  }, [query]);
 
-  const handleSearchAction = (address: string) => {
-    if (!address.trim()) return;
+  const handleSearchAction = (
+    address: string,
+    isManualSearch: boolean = true
+  ) => {
+    const trimmedAddress = address.trim();
+    if (!trimmedAddress) return;
 
-    setWalletAddress(address);
+    if (isManualSearch) {
+      navigate(`/list_of_agreements/${trimmedAddress}`);
+    }
+
+    setTxIdFilter("");
+    setDateFilter("");
+
+    setWalletAddress(trimmedAddress);
     setHasSearched(true);
     setCurrentPage(1);
-    onSearch(address);
+    onSearch(trimmedAddress);
 
-    fetchAgreementsFromApi(address);
+    fetchAgreementsFromApi(trimmedAddress);
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   const getPaginationRange = () => {
@@ -206,7 +251,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
             >
               {page}
             </button>
-          ),
+          )
         )}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
@@ -220,15 +265,35 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
   };
 
   const handleItemClick = (txId: string) => {
-    console.log(`Navigating to agreement details for TxID: ${txId}`);
-    navigate(`/negotiate_timeline/${txId}`);
+    const currentWallet = walletAddress.trim();
+
+    if (!currentWallet) {
+      console.error("Cannot navigate: Wallet address is missing.");
+      return;
+    }
+    navigate(`/agreement_details/${txId}/${currentWallet}`);
   };
 
-  const renderAgreementsList = () => {
+  const renderHeader = () => {
+    return (
+      <div className={styles.searchBarHeader}>
+        <h1 className="title">{T.title}</h1>
+        <p className="subtitle">{T.subtitle}</p>
+
+        <AgreementsListSearchBar
+          onSearch={handleSearchAction}
+          initialValue={walletAddress}
+          onErrorChange={setValidationError}
+        />
+      </div>
+    );
+  };
+
+  const renderContent = () => {
     if (isLoading) {
       return (
         <div style={{ textAlign: "center", padding: "20px" }}>
-          Loading transactions...
+          {T.msg_loading}
         </div>
       );
     }
@@ -241,6 +306,21 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
       );
     }
 
+    if (validationError) {
+      return (
+        <div
+          style={{
+            textAlign: "center",
+            color: "red",
+            padding: "40px",
+            fontWeight: "600",
+          }}
+        >
+          {validationError}
+        </div>
+      );
+    }
+
     if (hasSearched && agreements.length === 0) {
       return <NoAgreementsFound />;
     }
@@ -248,43 +328,64 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
     if (!hasSearched) {
       return (
         <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
-          Enter a wallet address above to see agreements.
+          {T.msg_default_prompt}
         </div>
       );
     }
 
-    return (
-      <>
-        <div className={styles.agreementsList}>
-          {currentAgreements.map((item) => (
-            <AgreementListItem
-              key={item.id}
-              title={item.title}
-              date={item.date}
-              status={item.status}
-              txId={item.txId}
-              onClick={() => handleItemClick(item.txId)}
-            />
-          ))}
-        </div>
-        <Pagination />
-      </>
-    );
+    if (agreements.length > 0) {
+      const filterBar = (
+        <AgreementFilters
+          txIdFilter={txIdFilter}
+          dateFilter={dateFilter}
+          onTxIdChange={setTxIdFilter}
+          onDateChange={setDateFilter}
+        />
+      );
+
+      if (filteredAgreements.length === 0 && (txIdFilter || dateFilter)) {
+        return (
+          <>
+            {filterBar}
+            <div
+              style={{ textAlign: "center", padding: "40px", color: "#666" }}
+            >
+              {T.msg_no_filter_match}
+            </div>
+          </>
+        );
+      }
+
+      return (
+        <>
+          {filterBar}
+
+          <div className={styles.agreementsList}>
+            {currentAgreements.map((item) => (
+              <AgreementListItem
+                key={item.id}
+                title={item.title}
+                date={item.date}
+                status={item.status}
+                txId={item.txId}
+                onClick={() => handleItemClick(item.txId)}
+              />
+            ))}
+          </div>
+          <Pagination />
+        </>
+      );
+    }
+
+    return null;
   };
 
   return (
     <main className={styles.agreementsPageContainer}>
       <div className={styles.contentWrapper}>
-        <div className={styles.searchBarHeader}>
-          <h1 className="title">{T.title}</h1>
-          <p className="subtitle">{T.subtitle}</p>
+        {renderHeader()}
 
-          <AgreementsListSearchBar onSearch={handleSearchAction} />
-        </div>
-
-        <div className={styles.agreementsListContainer}>
-          {renderAgreementsList()}
-        </div>
+        <div className={styles.agreementsListContainer}>{renderContent()}</div>
       </div>
     </main>
   );

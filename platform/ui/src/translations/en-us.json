@@ -1,7 +1,7 @@
 {
   "navbar": {
     "title": "Daia",
-    "button": "Find My Agreement",
+    "button": "Enter wallet address",
     "developers": "Developers",
     "about_us": "About us"
   },
@@ -61,7 +61,11 @@
     "title": "Search for Your Agreement",
     "subtitle": "Enter your wallet address or transaction hash to find and verify your AI agent agreements.",
     "placeholder": "Wallet address",
-    "button": "Search Agreement"
+    "button": "Search Agreement",
+    "msg_loading": "Loading agreements...",
+    "msg_api_error": "Unable to download agreements. Check wallet address or connection.",
+    "msg_default_prompt": "Enter a wallet address above to see agreements.",
+    "msg_no_filter_match": "No agreements found matching the current filters."
   },
   "footer": {
     "slogan": "Secure agreement recording for AI agents on blockchain.",
@@ -77,7 +81,8 @@
   },
   "search_agreement": {
     "placeholder": "Wallet address",
-    "button": "Search"
+    "button": "Search",
+    "error_empty": "Wallet address cannot be empty"
   },
   "agreement_list": {
     "title": "Find Your Agreement",
@@ -140,5 +145,22 @@
       "title": "Save Accept Offer on blockchain using other agent",
       "codeSnippet": "await otherAgent.recordAcceptOffer({\n  proposeOfferId: proposeOfferId\n});"
     }
+  },
+  "agreement_details_tooltips": {
+    "req_type": "The type of cryptographic requirement needed to fulfill this agreement (e.g., 'sign' requires a digital signature).",
+    "proposer_pubkey": "The full public key of the party that initiated this agreement offer.",
+    "offerer_nonce": "A unique, random number used by the initiator to prevent replay attacks and ensure transaction uniqueness."
+  },
+  "details_view": {
+    "msg_loading": "Loading details...",
+    "msg_error": "Error: ",
+    "btn_try_again": "Try Again",
+    "err_missing_params": "Wallet address or transaction ID missing from URL.",
+    "err_tx_not_found": "Transaction not found in the wallet history.",
+    "err_failed_load": "Failed to load transaction details.",
+    "title_tx_id": "Transaction ID:",
+    "label_published_at": "Published at: ",
+    "label_description": "Agreement Description:",
+    "msg_content_unavailable": "Details not available"
   }
 }

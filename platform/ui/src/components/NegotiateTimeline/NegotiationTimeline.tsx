@@ -1,14 +1,13 @@
 import React from "react";
 import styles from "./NegotiationTimeline.module.scss";
 
-// Interfejs pojedynczego zdarzenia na osi czasu
 export interface TimelineEvent {
-  id: string; // Unikalne ID (np. vout)
-  title: string; // Tytuł (np. treść oferty)
-  action: string; // Np. "Agreement Published"
+  id: string;
+  title: string;
+  action: string;
   timestamp: string;
   txId: string;
-  isSigned: boolean; // Czy ma podpis (proofs)
+  isSigned: boolean;
 }
 
 interface NegotiationTimelineProps {
@@ -25,7 +24,6 @@ const TimelineItem: React.FC<TimelineEvent> = ({
   const shortHash = txId
     ? `${txId.substring(0, 6)}...${txId.substring(txId.length - 4)}`
     : "Pending";
-  // Kolor zielony jeśli podpisane, fioletowy jeśli tylko propozycja
   const colorClass = isSigned ? styles.colorGreen : styles.colorPurple;
 
   return (

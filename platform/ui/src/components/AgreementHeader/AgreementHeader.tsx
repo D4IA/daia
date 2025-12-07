@@ -37,17 +37,17 @@ const AgreementHeader: React.FC<AgreementHeaderProps> = ({
         ))}
       </div>
 
-      <div className={styles.contentRow}>
-        <div className={styles.titles}>
-          <h1 className={styles.mainTitle}>{mainTitle}</h1>
-          <h2 className={styles.subTitle}>{subTitle}</h2>
-          <p className={styles.createdDate}>{createdDate}</p>
-        </div>
-
+      <div className={styles.buttonRow}>
         <button className={styles.pdfButton} onClick={onGenerateReport}>
           <FaFilePdf className={styles.pdfIcon} />
           Generate PDF Report
         </button>
+      </div>
+
+      <div className={styles.titles}>
+        <h1 className={styles.mainTitle}>{mainTitle}</h1>
+        <h2 className={styles.subTitle}>{subTitle}</h2>
+        <p className={styles.createdDate}>{createdDate}</p>
       </div>
     </div>
   );

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import AgreementHeader from "./components/AgreementHeader/AgreementHeader";
 import AgreementDetailsContainer from "./components/AgreementDetailsContainer/AgreementDetailsContainer";
-import NegotiationTimeline from "./components/NegotiateTimeline/NegotiationTimeline";
 import AgreementsListSearchBar from "./components/AgreementsListSearchBar/AgreementsListSearchBar";
 import NoAgreementsFound from "./components/NoAgreementsFound/NoAgreementsFound";
 
@@ -18,22 +17,11 @@ import AgreementListView from "./views/AgreementListView";
 import SdkScreen from "./views/SdkScreen";
 import SdkFeatures from "./views/SdkFeatures";
 import SDKIntegrationSteps from "./views/SDKIntegrationSteps";
-
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import translations from "./translations/en-us.json";
 
 const API_BASE_URL = "http://localhost:3000";
-const DEMO_WALLET_ADDRESS = "mnqfyNfFeDLtfzNQEUkzqKdxSyJ5cSyixW";
-
-
-interface TimelineEvent {
-  id: string;
-  title: string;
-  action: string;
-  timestamp: string;
-  txId: string;
-  isSigned: boolean;
-  colorClass?: "colorPurple" | "colorGreen";
-}
+const T = translations.details_view;
 
 interface ApiOfferContent {
   naturalLanguageOfferContent: string;
@@ -48,6 +36,7 @@ interface ApiAgreementItem {
   offerContent: ApiOfferContent;
   proofs?: any;
   vout: number;
+  offerContentSerialized?: string;
 }
 
 interface ApiTransaction {
@@ -62,63 +51,71 @@ interface ApiResponse {
 }
 
 const AgreementDetailsPage = () => {
-  const { txId } = useParams();
+  const { txId, walletAddress } = useParams();
 
+  const effectiveWalletAddress = walletAddress;
+
+  const contentRef = useRef<HTMLDivElement>(null);
   const [transactionData, setTransactionData] = useState<ApiTransaction | null>(
-    null,
+    null
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTransactionDetails = async () => {
-      if (!txId) return;
+      if (!txId || !effectiveWalletAddress) {
+        setLoading(false);
+        setError(T.err_missing_params);
+        return;
+      }
+
       setLoading(true);
       setError(null);
 
       try {
+        const apiUrl = `${API_BASE_URL}/agreements/${effectiveWalletAddress}?limit=50`;
+
         console.log(
-          `Fetching agreements for demo address to find TxID: ${txId}`,
+          `Fetching agreements from URL: ${apiUrl} to find TxID: ${txId}`
         );
-        const response = await fetch(
-          `${API_BASE_URL}/agreements/${DEMO_WALLET_ADDRESS}`,
-        );
+
+        const response = await fetch(apiUrl);
 
         if (!response.ok) {
           throw new Error(
-            `Failed to fetch agreements (Status: ${response.status})`,
+            `Failed to fetch agreements (Status: ${response.status})`
           );
         }
 
         const data: ApiResponse = await response.json();
-
         const foundTx = data.transactions.find((tx) => tx.txId === txId);
 
         if (foundTx) {
           setTransactionData(foundTx);
         } else {
-          throw new Error("Transaction not found in the demo wallet history.");
+          setError(T.err_tx_not_found);
         }
       } catch (err: any) {
         console.error(err);
-        setError(err.message || "Failed to load transaction details.");
+        setError(T.err_failed_load);
       } finally {
         setLoading(false);
       }
     };
 
     fetchTransactionDetails();
-  }, [txId]);
+  }, [txId, effectiveWalletAddress]);
 
   const handleGenerateReport = () => {
-    console.log(`Generowanie raportu PDF dla TxID: ${txId}`);
+    window.print();
   };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-xl font-semibold text-gray-600">
-          Loading details...
+          {T.msg_loading}
         </div>
       </div>
     );
@@ -127,29 +124,50 @@ const AgreementDetailsPage = () => {
   if (error || !transactionData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <div className="text-xl font-semibold text-red-500">Error: {error}</div>
+        <div className="text-xl font-semibold text-red-500">
+          {T.msg_error} {error}
+        </div>
         <button
           onClick={() => window.location.reload()}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
-          Try Again
+          {T.btn_try_again}
         </button>
       </div>
     );
   }
 
+  const agreements = transactionData.agreements;
+  const lastAgreement = agreements[agreements.length - 1];
+  const signedAgreement = agreements.find((a) => a.proofs);
 
-  const firstAgreement = transactionData.agreements[0];
-  const mainTitle =
-    firstAgreement?.offerContent.naturalLanguageOfferContent ||
-    "Unknown Content";
+  let offerContent = T.msg_content_unavailable;
+  let requirementsData = {};
+
+  if ((lastAgreement as any).offerContentSerialized) {
+    try {
+      const parsed = JSON.parse((lastAgreement as any).offerContentSerialized);
+      offerContent = parsed.naturalLanguageOfferContent || offerContent;
+      requirementsData = parsed.requirements || {};
+    } catch (err) {
+      console.error("Error parsing offerContentSerialized:", err);
+    }
+  } else {
+    offerContent =
+      lastAgreement.offerContent?.naturalLanguageOfferContent || offerContent;
+    requirementsData = lastAgreement.offerContent?.requirements || {};
+  }
+
+  const proofsData = signedAgreement?.proofs || null;
+  const mainTitle = `${T.title_tx_id} ${txId}`;
+  const subTitle = "";
 
   const dateStr = new Date(transactionData.timestamp * 1000).toLocaleString(
     "en-US",
     {
       dateStyle: "medium",
       timeStyle: "short",
-    },
+    }
   );
 
   const breadcrumbsData = [
@@ -157,52 +175,55 @@ const AgreementDetailsPage = () => {
     { label: `Transaction ${txId?.substring(0, 6)}...`, path: "#" },
   ];
 
-  const proposerPubKey =
-    firstAgreement?.offerContent?.requirements?.req_signature?.pubKey;
-  const shortProposer = proposerPubKey
-    ? `${proposerPubKey.substring(0, 15)}...`
-    : "Unknown Proposer";
-
-  const members = [
-    { address: shortProposer, status: "Primary" as const },
-    { address: "Responder (Signed)", status: "Secondary" as const },
-  ];
-
-  const blockchainInfo = {
-    status: "Published",
-    transactionHash: transactionData.txId,
-  };
-
-  const timelineEvents: TimelineEvent[] = transactionData.agreements.map(
-    (agr, index) => ({
-      id: `${transactionData.txId}-${agr.vout || index}`,
-      title: agr.offerContent.naturalLanguageOfferContent,
-      action: agr.proofs ? "Agreement Signed" : "Offer Proposed",
-      timestamp: dateStr,
-      txId: transactionData.txId,
-      isSigned: !!agr.proofs,
-      colorClass: agr.proofs ? "colorGreen" : "colorPurple",
-    }),
-  );
-
   return (
-    <>
+    <div ref={contentRef}>
       <AgreementHeader
         breadcrumbs={breadcrumbsData}
         mainTitle={mainTitle}
-        subTitle={`TxID: ${txId}`}
-        createdDate={`Mined at: ${dateStr}`}
+        subTitle={subTitle}
+        createdDate={`${T.label_published_at}${dateStr}`}
         onGenerateReport={handleGenerateReport}
       />
 
-      <AgreementDetailsContainer
-        members={members}
-        proposerOffer={blockchainInfo}
-        responderOffer={blockchainInfo}
-      />
+      <div
+        className="agreement-description-wrapper"
+        style={{
+          maxWidth: "1000px",
+          margin: "0 auto",
+          padding: "0 16px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          marginBottom: "30px",
+        }}
+      >
+        <p
+          style={{
+            fontSize: "1.2rem",
+            fontWeight: 600,
+            color: "#333",
+            marginBottom: "5px",
+          }}
+        >
+          {T.label_description}
+        </p>
+        <p
+          style={{
+            fontSize: "1rem",
+            color: "#555",
+            marginBottom: "20px",
+          }}
+        >
+          {offerContent}
+        </p>
+      </div>
 
-      <NegotiationTimeline events={timelineEvents} />
-    </>
+      <AgreementDetailsContainer
+        requirements={requirementsData}
+        proofs={proofsData}
+        naturalLanguageOfferContent={offerContent}
+      />
+    </div>
   );
 };
 
@@ -230,7 +251,7 @@ function App() {
           />
 
           <Route
-            path="/list_of_agreements"
+            path="/list_of_agreements/:query?"
             element={
               <>
                 <AgreementListView onSearch={handleAgreementSearch} />
@@ -250,7 +271,7 @@ function App() {
           />
 
           <Route
-            path="/negotiate_timeline/:txId"
+            path="/agreement_details/:txId/:walletAddress?"
             element={<AgreementDetailsPage />}
           />
 

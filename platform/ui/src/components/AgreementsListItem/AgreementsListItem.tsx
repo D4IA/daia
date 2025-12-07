@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./AgreementListItem.module.scss";
+import styles from "./AgreementsListItem.module.scss";
 
 import CheckIcon from "../../assets/check.svg";
 import CloseIcon from "../../assets/close.svg";
@@ -11,12 +11,11 @@ interface AgreementListItemProps {
   title: string;
   date: string;
   status: AgreementStatus;
-  txId: string; // Nowe pole
+  txId: string;
   onClick?: () => void;
 }
 
 const AgreementListItem: React.FC<AgreementListItemProps> = ({
-  title,
   date,
   status,
   txId,
@@ -57,17 +56,20 @@ const AgreementListItem: React.FC<AgreementListItemProps> = ({
 
   const statusInfo = getStatusInfo(status);
 
-  // Funkcja skracająca hash dla lepszego wyglądu (np. d57a...f24c)
   const formatTxId = (hash: string) => {
     if (!hash) return "";
-    return `${hash.slice(0, 6)}...${hash.slice(-4)}`;
+    return hash;
   };
+
+  const mainTxIdDisplay = formatTxId(txId);
 
   return (
     <div className={styles.itemContainer} onClick={onClick}>
       <div className={styles.itemContent}>
         <div className={styles.mainInfo}>
-          <span className={styles.titleText}>{title}</span>
+          <span className={styles.titleText} title={txId}>
+            {mainTxIdDisplay}
+          </span>
 
           <span className={`${styles.statusBadge} ${statusInfo.badgeClass}`}>
             <img
@@ -82,23 +84,7 @@ const AgreementListItem: React.FC<AgreementListItemProps> = ({
           {statusInfo.text}
         </div>
 
-        {/* Sekcja meta danych (TxID + Data) */}
         <div className={styles.metaDataWrapper}>
-          {/* Wyświetlanie TxID nad datą */}
-          <div
-            className={styles.dateText}
-            style={{
-              marginBottom: "4px",
-              fontSize: "0.85em",
-              opacity: 0.7,
-              fontFamily: "monospace",
-            }}
-            title={txId} // Pełny hash po najechaniu myszką
-          >
-            TxID: {formatTxId(txId)}
-          </div>
-
-          {/* Data */}
           <div className={styles.dateText}>{date}</div>
         </div>
       </div>

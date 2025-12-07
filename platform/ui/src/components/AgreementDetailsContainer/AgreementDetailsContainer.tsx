@@ -1,43 +1,25 @@
 import React from "react";
-import AgreementMembers from "../AgreementDetailsCard/AgreementMembers/AgreementMembers";
-import BlockchainDetails from "../AgreementDetailsCard/BlockchainDetails/BlockchainDetails";
+import AgreementRequirements from "../AgreementDetailsCard/AgreementRequirements/AgreementRequirements";
+import AgreementProofs from "../AgreementDetailsCard/AgreementProofs/AgreementProofs";
 import styles from "./AgreementDetailsContainer.module.scss";
 
-// Luźniejsze typy dla danych z API
-interface OfferDetails {
-  status: string;
-  transactionHash: string;
-}
-
-interface AgreementMember {
-  address: string;
-  status: "Primary" | "Secondary";
-}
-
 interface AgreementDetailsContainerProps {
-  members: AgreementMember[];
-  proposerOffer: OfferDetails;
-  responderOffer: OfferDetails;
+  requirements: any;
+  proofs: any;
 }
 
 const AgreementDetailsContainer: React.FC<AgreementDetailsContainerProps> = ({
-  members,
-  proposerOffer,
-  responderOffer,
+  requirements,
+  proofs,
 }) => {
   return (
-    <div className={styles.containerWrapper}>
-      <div className={styles.detailsContent}>
-        <div className={styles.membersColumn}>
-          <AgreementMembers members={members} />
-        </div>
+    <div className={styles.detailsContent}>
+      <div className={styles.requirementsColumn}>
+        <AgreementRequirements requirements={requirements} />
+      </div>
 
-        <div className={styles.blockchainColumn}>
-          <BlockchainDetails
-            proposerOffer={proposerOffer}
-            responderOffer={responderOffer}
-          />
-        </div>
+      <div className={styles.proofsColumn}>
+        <AgreementProofs proofs={proofs} />
       </div>
     </div>
   );

@@ -5,11 +5,16 @@ import styles from "./Navbar.module.scss";
 import translations from "../../translations/en-us.json";
 import hamburgerSvgUrl from "../../assets/hamburger.svg";
 import closeSvgUrl from "../../assets/close.svg";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const T = translations.navbar;
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -20,6 +25,23 @@ const Navbar: React.FC = () => {
   };
 
   const MenuIcon = ({ src, alt }) => <img src={src} alt={alt} />;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const trimmedValue = searchValue.trim();
+
+    if (trimmedValue) {
+      navigate(`/list_of_agreements/${trimmedValue}`);
+      setSearchValue("");
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const hideSearch = location.pathname.startsWith("/list_of_agreements");
 
   return (
     <div className={styles.navbarContainer}>
@@ -33,29 +55,37 @@ const Navbar: React.FC = () => {
         </button>
 
         <div className={styles.logoCol}>
-          <a href="#" className={styles.brandLink}>
+          <Link to="/" className={styles.brandLink}>
             <img src={DIcon} alt="DAIA Icon" className={styles.iconStyle} />
             <span className={styles.brandTitleDark}>{T.title}</span>
-          </a>
+          </Link>
         </div>
 
         <div className={styles.spacer}></div>
 
-        <div className={styles.searchWrapper}>
-          <div className={styles.searchContainer}>
-            <img src={SearchIcon} alt="Search" className={styles.searchIcon} />
-            <input
-              type="text"
-              placeholder={T.button}
-              className={styles.searchInput}
-            />
+        {!hideSearch && (
+          <div className={styles.searchWrapper}>
+            <form onSubmit={handleSubmit} className={styles.searchContainer}>
+              <img
+                src={SearchIcon}
+                alt="Search"
+                className={styles.searchIcon}
+              />
+              <input
+                type="text"
+                placeholder={T.button}
+                className={styles.searchInput}
+                value={searchValue}
+                onChange={handleSearchChange}
+              />
+            </form>
           </div>
-        </div>
+        )}
 
         <div className={styles.linksCol}>
-          <a href="#" className={styles.navLink}>
+          <Link to="/developers" className={styles.navLink}>
             {T.developers}
-          </a>
+          </Link>
           <a href="#" className={styles.navLink}>
             {T.about_us}
           </a>
@@ -67,9 +97,13 @@ const Navbar: React.FC = () => {
           isMenuOpen ? styles.mobileMenuOpen : ""
         }`}
       >
-        <a href="#" className={styles.mobileNavLink} onClick={closeMenu}>
+        <Link
+          to="/developers"
+          className={styles.mobileNavLink}
+          onClick={closeMenu}
+        >
           {T.developers}
-        </a>
+        </Link>
         <a href="#" className={styles.mobileNavLink} onClick={closeMenu}>
           {T.about_us}
         </a>

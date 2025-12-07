@@ -1,0 +1,48 @@
+@use '../../../styles/tailwind-vars' as tv; 
+
+.requirementRowContainer {
+    background-color: tv.$gray-50;
+    border-radius: tv.$spacing-2;
+    padding: tv.$spacing-2;
+    margin-bottom: tv.$spacing-4;
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.labelWrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: tv.$spacing-2;
+}
+
+.requirementLabel {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: black;
+}
+
+.tooltipIcon {
+    margin-left: 5px;
+    cursor: help;
+    color: tv.$gray-600;
+    font-weight: 600;
+}
+
+.requirementValue {
+    font-size: 0.85rem;
+    color: black;
+    overflow-wrap: break-word;
+    text-align: left;
+    padding-top: 2px;
+}
+
+.hashValue {
+    font-family: monospace;
+}
+
+.requirementsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

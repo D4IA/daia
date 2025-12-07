@@ -1,23 +1,31 @@
 import React, { ReactNode } from "react";
 import styles from "./AgreementDetailsCard.module.scss";
-import { FaUserFriends, FaLink } from "react-icons/fa";
+import { FaUserFriends, FaLink, FaLock, FaBook } from "react-icons/fa";
 
-interface CardContainerProps {
-  icon: "members" | "blockchain";
-  title: string;
-  children: ReactNode;
-}
-
-const getIcon = (iconType: "members" | "blockchain") => {
+const getIcon = (
+  iconType: "members" | "blockchain" | "document" | "lock" | "book"
+) => {
   switch (iconType) {
     case "members":
       return <FaUserFriends className={styles.icon} />;
     case "blockchain":
       return <FaLink className={styles.icon} />;
+    case "document":
+      return <FaUserFriends className={styles.icon} />;
+    case "lock":
+      return <FaLock className={styles.icon} />;
+    case "book":
+      return <FaBook className={styles.icon} />;
     default:
       return null;
   }
 };
+
+interface CardContainerProps {
+  icon: "members" | "blockchain" | "document" | "lock";
+  title: string;
+  children: ReactNode;
+}
 
 const CardContainer: React.FC<CardContainerProps> = ({
   icon,
