@@ -4,13 +4,14 @@ import {
   fetchTransactionHashes,
   fetchBulkTransactionDetails,
   broadcastTransaction,
-} from "./core/transactions";
-import { fetchAddressBalance } from "./core/wallet";
+} from "./api/transactions";
 
 import type { Transaction } from "../types/transaction";
 import type { WalletConfirmedHistoryTransactions } from "../types/wallet";
 
 import { configureBridge, type BridgeConfig } from "./config";
+
+import {createAndPublishTransaction} from "./services/createAndPublishTransaction"
 
 export {
   /**
@@ -41,11 +42,6 @@ export {
    */
   fetchBulkTransactionDetails,
 
-  /**
-   * Fetches the current balance and UTXO script info for an address.
-   * @see {@link fetchAddressBalance}
-   */
-  fetchAddressBalance,
 
   /**
    * Configures the library with API keys and rate limits.
@@ -59,9 +55,16 @@ export {
    */
   broadcastTransaction,
 
+  /**
+   * Creates and publishes a transaction.
+   * @see {@link createAndPublishTransaction}
+   */
+  createAndPublishTransaction,
+
   type Transaction,
   type WalletConfirmedHistoryTransactions,
   type BridgeConfig
+
 
   
 };

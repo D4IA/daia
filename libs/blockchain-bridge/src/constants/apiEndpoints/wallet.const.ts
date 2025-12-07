@@ -21,3 +21,7 @@ export const GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS = (
 export const GET_ADDRESS_BALANCE = (address: string): string => {
   return `${GET_BASE_URL()}/address/${address}/confirmed/balance`;
 };
+
+export const GET_ADDRESS_UNSPENT_TRANSACTIONS = (address: string): string => {
+  return `${GET_BASE_URL()}/address/${address}/unspent`;
+};

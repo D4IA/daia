@@ -1,14 +1,15 @@
-import { throttleFetchJsonOrNull } from "#src/adapters/httpAdapter";
+import { throttleFetchJsonOrNull, throttleFetchTextOrNull } from "#src/adapters/httpAdapter";
 import {
   GET_TRANSACTION_BY_TX_ID,
   GET_CONFIRMED_TRANSACTIONS_BY_WALLET_ADDRESS,
   GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS,
   BROADCAST_TRANSACTION,
+  GET_BULK_RAW_TRANSACTION_DATA
 } from "#src/constants/apiEndpoints/index";
 import { TRANSACTIONS_PER_BATCH } from "#src/constants/transactions";
 import { chunkArray } from "#src/utils/chunkArray";
 import { promisePool } from "#src/utils/promisePool";
-import type { Transaction } from "#types/transaction";
+import type { Transaction, TransactionShortDetails } from "#types/transaction";
 import type { WalletConfirmedHistoryTransactions } from "#types/wallet";
 
 /*
@@ -76,7 +77,7 @@ export const fetchBulkTransactionDetails = async (
  * @throws Error if broadcast fails.
  */
 export const broadcastTransaction = async (txHex: string): Promise<string> => {
-  const response = await throttleFetchJsonOrNull<{ txid: string }>(
+  const txid = await throttleFetchTextOrNull(
     BROADCAST_TRANSACTION(),
     {
       method: "POST",
@@ -84,11 +85,11 @@ export const broadcastTransaction = async (txHex: string): Promise<string> => {
     }
   );
 
-  if (!response || !response.txid) {
+  if (!txid) {
     throw new Error("Failed to broadcast transaction: No txid returned");
   }
 
-  return response.txid;
+  return txid;
 };
 
 /**
@@ -147,4 +148,14 @@ export const fetchTransactionsByUserAddress = async (
   const bulkTransactionDetails = results.filter((r): r is Transaction[] => r !== null).flat();
 
   return bulkTransactionDetails;
+};
+
+export const fetchBulkRawTransactionData = async (txIds: string[]) => {
+  return await throttleFetchJsonOrNull<TransactionShortDetails[]>(
+    GET_BULK_RAW_TRANSACTION_DATA(),
+    {
+      method: "POST",
+      body: JSON.stringify({ txids: txIds }),
+    }
+  );
 };

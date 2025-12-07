@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   fetchTransactionsByUserAddress,
   type TransactionsByUserAddressFetcher,
-} from "#src/core/transactions";
+} from "#src/api/transactions";
 
 import {
   createTxConfirmedHistoryPage,
