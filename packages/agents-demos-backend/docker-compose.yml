@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      # Use the repository root as the context so pnpm workspace installs work
+      context: ..
+      dockerfile: packages/agents-demos-backend/Dockerfile
+    image: agents-demos-backend:local
+    ports:
+      - "3000:3000"
+    environment:
+      # Set these in an .env file next to this compose file or export them locally
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PROXY_API_KEY=${PROXY_API_KEY}
+    restart: unless-stopped

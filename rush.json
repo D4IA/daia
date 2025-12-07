@@ -308,8 +308,28 @@
    */
   "projects": [
     { 
-      "packageName": "@daia/proto",
-      "projectFolder": "packages/proto"
+      "packageName": "@daia/agents-demo-ui",
+      "projectFolder": "packages/agents-demo-ui"
+    },
+    { 
+      "packageName": "@daia/core",
+      "projectFolder": "packages/core"
+    },
+    {
+      "packageName": "@daia/langchain",
+      "projectFolder": "packages/langchain"
+    },
+    {
+      "packageName": "@daia/blockchain",
+      "projectFolder": "packages/blockchain"
+    },
+        {
+      "packageName": "@daia/agents-demos",
+      "projectFolder": "packages/agents-demos"
+    },
+    {
+      "packageName": "@daia/agents-demos-backend",
+      "projectFolder": "packages/agents-demos-backend"
     }
     // {
     //   /**

@@ -1,0 +1,12 @@
+# Ignore local artifacts
+node_modules
+**/node_modules
+dist
+.DS_Store
+.git
+.gitignore
+.env
+*.log
+.vscode
+.idea
+coverage
