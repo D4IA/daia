@@ -1,0 +1,50 @@
+{
+  "name": "@daia/core",
+  "version": "0.0.1",
+  "description": "DAIA protocol utilities",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "format:fix": "prettier ./src --write",
+    "format:check": "prettier ./src --check",
+    "format:check:cached": "prettier ./src --check --cache",
+    "lint": "eslint ./src --max-warnings 0",
+    "lint:cached": "eslint ./src --max-warnings 0 --cache",
+    "lint:fix": "eslint ./src --fix",
+    "test:mutate": "stryker run",
+    "test": "vitest",
+    "test:ss": "vitest -u",
+    "build": "rimraf dist && tsc --project tsconfig.prod.json",
+    "build:check": "tsc --noEmit",
+    "fix": "npm run format:fix && npm run lint:fix",
+    "pre-commit-check": "npm run build:check && npm run lint:cached && npm run format:check:cached",
+    "pre-push-check": "npm run build:check && npm run lint:cached && npm run format:check:cached && npm run test",
+    "prepublishOnly": "npm run build && npm run lint && npm run format:check && npm run test"
+  },
+  "author": "teawithsand",
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "@typescript-eslint/parser": "^8.32.0",
+    "@vitest/coverage-istanbul": "~3.2.4",
+    "eslint": "^9.26.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "eslint-config-prettier": "^10.0.1",
+    "globals": "^16.1.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.0",
+    "vitest": "3.2.4",
+    "rimraf": "~6.0.1",
+    "jsdom": "~27.2.0",
+    "zod": "~4.1.13",
+    "@bsv/sdk": "~1.9.29"
+  },
+  "peerDependencies": {
+    "zod": "~4.1.13"
+  },
+  "dependencies": {
+    "@daia/blockchain": "workspace:*"
+  }
+}
