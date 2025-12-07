@@ -2,7 +2,7 @@
   "navbar": {
     "title": "Daia",
     "button": "Enter wallet address",
-    "developers": "Developers",
+    "developers": "For Developers",
     "about_us": "About us"
   },
   "landing_screen": {
@@ -71,11 +71,11 @@
     "slogan": "Secure agreement recording for AI agents on blockchain.",
     "product_col": {
       "title": "Product",
-      "links": ["How it Works", "Features", "Pricing", "Support"]
+      "links": ["How it Works", "Pricing", "Support"]
     },
     "developers_col": {
       "title": "Developers",
-      "links": ["Documentation", "API Reference"]
+      "links": ["For Developers", "Feautres", "Documentation"]
     },
     "copyright": "© 2025 DAIA. All rights reserved."
   },
@@ -162,5 +162,10 @@
     "label_published_at": "Published at: ",
     "label_description": "Agreement Description:",
     "msg_content_unavailable": "Details not available"
+  },
+  "ready_to_explore_documentation": {
+    "title": "Ready to integrate DAIA?",
+    "subtitle": "If you're interested in integrating and securing AI agent agreements on the blockchain using DAIA, check out our documentation.",
+    "button": "Check Documentation"
   }
 }

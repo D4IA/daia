@@ -86,7 +86,7 @@ const Navbar: React.FC = () => {
           <Link to="/developers" className={styles.navLink}>
             {T.developers}
           </Link>
-          <a href="#" className={styles.navLink}>
+          <a href="/oops" className={styles.navLink}>
             {T.about_us}
           </a>
         </div>

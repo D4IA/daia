@@ -6,7 +6,7 @@ import styles from "./SearchForYourAgreement.module.scss";
 import { useNavigate } from "react-router-dom";
 
 const T = translations.search_view;
-const ERROR_MESSAGE = "Pole wyszukiwania nie może być puste.";
+const ERROR_MESSAGE = translations.search_agreement.error_empty;
 
 const SearchForYourAgreementView: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -50,7 +50,7 @@ const SearchForYourAgreementView: React.FC = () => {
             {T.button}
           </Button>
         </form>
-        {error && <p className={styles.errorMessage}>{error}</p>}
+        <p className={styles.errorMessage}>{error}</p>
       </div>
     </section>
   );

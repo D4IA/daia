@@ -5,13 +5,13 @@ import searchIcon from "../assets/search.svg";
 import styles from "./ReadyToExploreDaia.module.scss";
 import { useNavigate } from "react-router-dom";
 
-const T = translations.explore_section;
+const T = translations.ready_to_explore_documentation;
 
-const ReadyToExploreDaia: React.FC = () => {
+const CheckDocumentationView: React.FC = () => {
   const navigate = useNavigate();
 
   const handleNavigation = () => {
-    navigate("/list_of_agreements");
+    navigate("/oops");
   };
 
   return (
@@ -24,7 +24,11 @@ const ReadyToExploreDaia: React.FC = () => {
             className="actionButton bg-white text-black border-black hover:bg-gray-700"
             onClick={handleNavigation}
           >
-            <img src={searchIcon} alt="Search Icon" className="h-5 w-5 mr-2" />
+            <img
+              src={searchIcon}
+              alt="Documentation Icon"
+              className="h-5 w-5 mr-2"
+            />
             {T.button}
           </Button>
         </div>
@@ -33,4 +37,4 @@ const ReadyToExploreDaia: React.FC = () => {
   );
 };
 
-export default ReadyToExploreDaia;
+export default CheckDocumentationView;

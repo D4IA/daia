@@ -17,8 +17,15 @@ import AgreementListView from "./views/AgreementListView";
 import SdkScreen from "./views/SdkScreen";
 import SdkFeatures from "./views/SdkFeatures";
 import SDKIntegrationSteps from "./views/SDKIntegrationSteps";
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useParams,
+  useLocation,
+} from "react-router-dom";
 import translations from "./translations/en-us.json";
+import CheckDocumentationView from "./views/CheckDocumentationView";
 
 const API_BASE_URL = "http://localhost:3000";
 const T = translations.details_view;
@@ -227,22 +234,48 @@ const AgreementDetailsPage = () => {
   );
 };
 
-function App() {
+const AppRoutes = () => {
+  const location = useLocation();
+
   const handleAgreementSearch = (walletAddress: string) => {
     console.log("Searching for agreements by wallet:", walletAddress);
   };
 
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.substring(1);
+      const element = document.getElementById(id);
+
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
+
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
+    <div
+      className="bg-gray-50"
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Navbar />
+      <div style={{ flexGrow: 1 }}>
         <Routes>
           <Route
             path="/"
             element={
               <>
                 <LandingScreen />
-                <HowDaiaWorks />
+                <div id="how-daia-works">
+                  <HowDaiaWorks />
+                </div>
                 <SearchForYourAgreementView />
                 <WhyChooseDAIAView />
                 <ReadyToExploreDaia />
@@ -264,8 +297,13 @@ function App() {
             element={
               <>
                 <SdkScreen />
-                <SDKIntegrationSteps />
-                <SdkFeatures />
+                <div id="quick-integration">
+                  <SDKIntegrationSteps />
+                </div>
+                <div id="sdk-features">
+                  <SdkFeatures />
+                </div>
+                <CheckDocumentationView />
               </>
             }
           />
@@ -285,9 +323,16 @@ function App() {
             }
           />
         </Routes>
-
-        <Footer />
       </div>
+      <Footer />
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   );
 }
