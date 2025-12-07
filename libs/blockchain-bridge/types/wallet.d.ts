@@ -8,3 +8,10 @@ export type WalletConfirmedHistoryTransactions = {
   nextPageToken?: string;
   error: string;
 };
+
+export type Utxo = {
+  tx_hash: string;
+  tx_pos: number;
+  value: number;
+  height: number;
+};

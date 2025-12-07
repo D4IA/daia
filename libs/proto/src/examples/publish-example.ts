@@ -16,6 +16,8 @@ import {
 } from "../types/offer";
 import { serializeOfferContent } from "../verification/serialization";
 import { OpReturnTemplate } from "./templates";
+import {createAndPublishTransaction, configureBridge} from "../../../blockchain-bridge"
+
 
 // --- Configuration ---
 const NETWORK = "test"; // 'main' or 'test'
@@ -57,7 +59,7 @@ async function broadcastTx(txHex: string): Promise<string> {
 }
 
 
-const generateDaiaTransactionOutputPayload = (content: string, signeePrivateKey: PrivateKey, parentTxHex: string) => {
+const generateDaiaContent = (content: string, signeePrivateKey: PrivateKey) => {
     const offerContent: DaiaOfferContent = {
     naturalLanguageOfferContent: content + Date.now().toString(),
     requirements: new Map([
@@ -116,7 +118,11 @@ const generateDaiaTransactionOutputPayload = (content: string, signeePrivateKey:
     proofs: Object.fromEntries(agreement.proofs),
   });
 
-  const dataScript = new OpReturnTemplate().lock(agreementJson);
+  return agreementJson;
+}
+
+const generateDaiaTransactionOutputPayload = (content: string, signeePrivateKey: PrivateKey, parentTxHex: string) => {
+  const dataScript = new OpReturnTemplate().lock(generateDaiaContent(content, signeePrivateKey));
 
   return {
     satoshis: 1,
@@ -146,45 +152,35 @@ const generateDaiaOrSimpleTransactionOutputPayload = (content: string, signeePri
 // --- Main Example ---
 
 async function main() {
-  console.log("--- DAIA Transaction Example ---");
 
-  // 1. Setup Identity (Offerer and Signee)
-  const signeePrivateKey = PrivateKey.fromWif(PRIVATE_KEY_WIF);
-  const parentTxHex = PARENT_TX_HEX
-  const signeeAddress = signeePrivateKey.toAddress();
-  console.log(`Signee Address: ${signeeAddress.toString()}`);
-
-  const newTx = new Transaction();
-  newTx.addInput({
-    sourceTransaction: Transaction.fromHex(parentTxHex),
-    sourceOutputIndex: VOUT_INDEX,
-    unlockingScriptTemplate: new P2PKH().unlock(signeePrivateKey),
+  configureBridge({
+    network: "test"
   })
 
-  for (let i = 0; i < TX_TO_GENERATE; i++) {
-    const content = SAMPLE_OFFER_LANGUAGE_CONTENTS[i % SAMPLE_OFFER_LANGUAGE_CONTENTS.length];
-    const { satoshis, lockingScript } = generateDaiaOrSimpleTransactionOutputPayload(content, signeePrivateKey, parentTxHex);
+  const privateKey = PrivateKey.fromWif(PRIVATE_KEY_WIF);
 
-    newTx.addOutput({
-      satoshis,
-      lockingScript
-    })
-  }
+  // console.log("PUBLISHING TRANSACTION WITH DAIA CONTENT")
+  // console.log(await createAndPublishTransaction({
+  //   privateKey: PRIVATE_KEY_WIF,
+  //   toAddress: privateKey.toAddress([0x6f]),
+  //   content:  generateDaiaContent("Test", privateKey)
+  // }))
 
-  newTx.addOutput({
-    change: true,
-    lockingScript: new P2PKH().lock(signeePrivateKey.toAddress())
-  })
+  console.log("PAYMENT")
+  // console.log(await createAndPublishTransaction({
+  //   privateKey: PRIVATE_KEY_WIF,
+  //   toAddress: "mnqfyNfFeDLtfzNQEUkzqKdxSyJ5cSyixW",
+  //   amount: 1
+  // }))
 
-  await newTx.fee(new SatoshisPerKilobyte(SATOSHI_FEE_PER_KB))
-
-  await newTx.sign();
-
-  console.log("Broadcasting transaction...");
-  const txId = await broadcastTx(newTx.toHex());
-
-  console.log(newTx.getFee());
-  console.log('txId', txId);
+  // console.log("CONTENT + PAYMENT")
+  console.log(await createAndPublishTransaction({
+    privateKey: PRIVATE_KEY_WIF,
+    toAddress: "mhZL5AvE2ZncDw3JXx9iaDGHQdUE5LDowG",
+    content: "Test",
+    amount: 1
+    
+  }))
 
 }
 

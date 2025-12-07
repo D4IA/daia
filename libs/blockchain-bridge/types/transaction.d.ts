@@ -40,3 +40,12 @@ export type Transaction = {
   blocktime: number;
   blockheight: number;
 };
+
+export type TransactionShortDetails = {
+  txid: string;
+  hex: string;
+  blockhash: string;
+  blockheight: number;
+  blocktime: number;
+  confirmations: number;
+}
