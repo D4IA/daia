@@ -1,0 +1,61 @@
+@use '../../styles/tailwind-vars' as tv;
+
+$gray-text-darker: #525252; 
+
+.stepContainer {
+    max-width: tv.$max-w-1000px;
+    width: 100%;
+    margin: 0 auto; 
+    padding: tv.$spacing-5; 
+    margin-bottom: 20px;
+    background-color: tv.$gray-50;
+    border-radius: tv.$spacing-2;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+.header {
+    display: flex;
+    align-items: center;
+    margin-bottom: tv.$spacing-4;
+    text-align: left;
+}
+
+.stepNumberCircle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    
+    background-color: tv.$black;
+    color: tv.$white;
+    font-size: tv.$text-20px    ;
+    font-weight: tv.$font-regular;
+    flex-shrink: 0;
+}
+
+.title {
+    margin-left: tv.$spacing-4;
+    font-size: tv.$text-20px;
+    color: $gray-text-darker; 
+    font-weight: tv.$font-regular;
+    text-align: left;
+}
+
+.codeBlock {
+    background-color: tv.$gray-900;
+    border-radius: tv.$spacing-2;
+    padding: tv.$spacing-4;
+    overflow-x: auto; 
+    
+    text-align: left;
+}
+
+.codeSnippet {
+    font-family: monospace;
+    font-size: tv.$text-20px; 
+    color: tv.$white;
+    white-space: pre; 
+}

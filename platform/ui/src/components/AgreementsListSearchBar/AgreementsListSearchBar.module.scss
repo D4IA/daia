@@ -1,0 +1,39 @@
+@use '../../styles/tailwind-vars' as tv;
+
+.container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: tv.$spacing-12;
+    margin-bottom: tv.$spacing-12;
+
+    padding: 0 tv.$spacing-4; 
+}
+
+.inputBarWrapper {
+    display: flex;
+    align-items: center;
+    
+     width: 95%; 
+     max-width: 95%; 
+     
+     gap: tv.$spacing-10px;
+     @media (max-width: 767px) {
+        flex-direction: column;
+     }
+ 
+     @media (min-width: tv.$md) {
+         max-width: tv.$max-w-1000px; 
+         width: 100%; 
+     }
+}
+
+.inputBarWrapper > :nth-child(1) { 
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.searchButton {
+    background-color: tv.$black;
+    color: tv.$white;
+}

@@ -1,0 +1,90 @@
+@use '../styles/tailwind-vars' as tv; 
+
+
+.section {
+    background-color: tv.$white;
+    padding-top: tv.$spacing-20; 
+    padding-bottom: tv.$spacing-20;
+}
+
+.contentWrapper {
+    max-width: tv.$max-w-xl; 
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: tv.$spacing-4;
+    padding-right: tv.$spacing-4;
+    text-align: center;
+}
+
+.subtitle {
+    color: tv.$gray-600;
+    margin-bottom: tv.$spacing-8;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inputField {
+    width: 100%; 
+    max-width: tv.$width-input-xl;
+    height: tv.$height-input-xl;
+    padding: 0 1rem;
+    
+    border-width: 1px; 
+    border-style: solid;
+    border-radius: 0.5rem; 
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
+
+    background-color: tv.$white;
+    color: tv.$black;
+    border-color: tv.$gray-300; 
+    
+    margin-bottom: tv.$spacing-6; 
+
+    &:focus {
+        border-color: tv.$purple-500;
+        outline: none;
+        box-shadow: 0 0 0 1px tv.$purple-500, 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
+    }
+
+    &::placeholder {
+        color: tv.$gray-500;
+    }
+}
+
+
+.actionButton {
+    width: 100%;
+    max-width: tv.$width-input-xl; 
+    height: tv.$height-input-xl;
+
+    background-color: tv.$black;
+    color: tv.$white;
+    border-color: tv.$black;
+
+    font-family: 'Inter', sans-serif; 
+    font-weight: tv.$font-regular;
+    font-size: tv.$text-20px;
+  
+    &:hover {
+      background-color: tv.$gray-800;
+    }
+  }
+  
+.icon {
+    height: tv.$spacing-5; 
+    width: tv.$spacing-5;
+    margin-right: tv.$spacing-2;
+    filter: invert(100%);
+}
+
+.errorMessage {
+    color: red;
+    margin-top: 10px;
+    font-weight:500;
+    min-height: 1.5em;
+}
+
