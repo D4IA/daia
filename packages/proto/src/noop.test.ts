@@ -1,7 +1,5 @@
-import { test, describe } from "vitest"
+import { test, describe } from "vitest";
 
 describe("asdf", () => {
-    test("noop", () => {
-
-    })
-})
+	test("noop", () => {});
+});
