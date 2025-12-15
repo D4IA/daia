@@ -1,17 +1,28 @@
 import React, { useState } from "react";
-import translations from "../translations/en-us.json";
+import { useTranslation } from "react-i18next";
 import Button from "../components/Button/Button";
 import searchIcon from "../assets/search.svg";
 import styles from "./SearchForYourAgreement.module.scss";
+import animationStyles from "../styles/_animations.module.scss";
+import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 
-const T = translations.search_view;
-const ERROR_MESSAGE = translations.search_agreement.error_empty;
-
 const SearchForYourAgreementView: React.FC = () => {
+  const { t } = useTranslation();
+
+  const ERROR_MESSAGE = t("search_agreement.error_empty");
+
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const animationClass = `${animationStyles.reveal} ${
+    animationStyles.slideLeft
+  } ${inView ? animationStyles.isVisible : ""}`;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
@@ -31,23 +42,27 @@ const SearchForYourAgreementView: React.FC = () => {
 
   return (
     <section className={styles.section}>
-      <div className={styles.contentWrapper}>
-        <h2 className="title">{T.title}</h2>
+      <div ref={ref} className={`${styles.contentWrapper} ${animationClass}`}>
+        <h2 className="title">{t("search_view.title")}</h2>
 
-        <p className="subtitle">{T.subtitle}</p>
+        <p className="subtitle">{t("search_view.subtitle")}</p>
 
         <form onSubmit={handleSubmit} className={styles.formContainer}>
           <input
             type="text"
-            placeholder={T.placeholder}
+            placeholder={t("search_view.placeholder")}
             value={inputValue}
             onChange={handleInputChange}
             className={styles.inputField}
           />
 
           <Button className={styles.actionButton}>
-            <img src={searchIcon} alt="Search Icon" className={styles.icon} />
-            {T.button}
+            <img
+              src={searchIcon}
+              alt={t("search_view.button_alt", "Search Icon")}
+              className={styles.icon}
+            />
+            {t("search_view.button")}
           </Button>
         </form>
         <p className={styles.errorMessage}>{error}</p>

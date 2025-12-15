@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./AgreementsListSearchBar.module.scss";
 import SearchBar from "../SearchBar/SearchBar";
 import Button from "../Button/Button";
-import translations from "../../translations/en-us.json";
 
 interface SearchForAgreementBarProps {
   onSearch: (walletAddress: string) => void;
@@ -10,15 +10,15 @@ interface SearchForAgreementBarProps {
   onErrorChange: (error: string | null) => void;
 }
 
-const T = translations.search_agreement;
-const ERROR_MESSAGE = T.error_empty;
-
 const AgreementsListSearchBar: React.FC<SearchForAgreementBarProps> = ({
   onSearch,
   initialValue = "",
   onErrorChange,
 }) => {
+  const { t } = useTranslation();
   const [walletAddress, setWalletAddress] = useState(initialValue);
+
+  const ERROR_MESSAGE = t("search_agreement.error_empty");
 
   useEffect(() => {
     setWalletAddress(initialValue);
@@ -52,11 +52,11 @@ const AgreementsListSearchBar: React.FC<SearchForAgreementBarProps> = ({
         <SearchBar
           value={walletAddress}
           onChange={handleInputChange}
-          placeholder={T.placeholder}
+          placeholder={t("search_agreement.placeholder")}
         />
 
         <Button type="submit" className={`actionButton ${styles.searchButton}`}>
-          {T.button}
+          {t("search_agreement.button")}
         </Button>
       </div>
     </form>

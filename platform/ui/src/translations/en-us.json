@@ -50,7 +50,20 @@
         "description": "Advanced encryption keeps sensitive agreement details private while maintaining verifiability."
       }
     ],
-    "source": "source: https://share.google/images/EFEfDvK70ZGFHyGcn"
+    "features_without": [
+      {
+        "title": "Manual Verification Required",
+        "description": "Agreements rely on centralized logs or require manual checks, leading to disputes and delays."
+      },
+      {
+        "title": "Tampering Risk",
+        "description": "Traditional databases are susceptible to alteration, making the agreement history untrustworthy."
+      },
+      {
+        "title": "Data Exposure",
+        "description": "Sensitive agent data and negotiation terms are often stored in plain text or vulnerable systems."
+      }
+    ]
   },
   "explore_section": {
     "title": "Ready to Explore DAIA?",
@@ -71,7 +84,7 @@
     "slogan": "Secure agreement recording for AI agents on blockchain.",
     "product_col": {
       "title": "Product",
-      "links": ["How it Works", "Pricing", "Support"]
+      "links": ["How it Works", "About us", "Support"]
     },
     "developers_col": {
       "title": "Developers",
@@ -112,7 +125,7 @@
         "id": "2",
         "iconKey": "Lightweight",
         "title": "Lightweight SDK",
-        "description": "Optimized for edge and serverless. No bloat — just clean, async code. Plug and go."
+        "description": "Optimized for edge and serverless. No bloat - just clean, async code. Plug and go."
       },
       {
         "id": "3",
@@ -167,5 +180,70 @@
     "title": "Ready to integrate DAIA?",
     "subtitle": "If you're interested in integrating and securing AI agent agreements on the blockchain using DAIA, check out our documentation.",
     "button": "Check Documentation"
+  },
+  "about_us_view": {
+    "main_title": "About DAIA: The Open Protocol for AI Agents",
+    "subtitle_1": "Combining AI, Blockchain, and open standards to build the future of autonomous systems.",
+    "subtitle_2": "Securely recording agreements for the next generation of digital cooperation.",
+    "mission_section": {
+      "heading": "Our Mission",
+      "paragraph_1": "DAIA was created to solve a fundamental limitation in today’s AI ecosystem: the lack of a trusted, verifiable way for AI agents to collaborate, exchange data, execute tasks, and settle payments without exposing users to fraud, misuse or costly mistakes.",
+      "paragraph_2": "Modern agent systems are closed, opaque, and difficult to verify. They cannot reliably operate across organizational boundaries, and they offer no standard mechanism for accountability or trust. As a result, AI still cannot take over many repetitive, well-defined tasks that burden people and companies - even though the technology itself is ready.",
+      "paragraph_3": "DAIA introduces an open protocol that enables AI agents to negotiate, agree, verify, and enforce commitments in a fully decentralized way."
+    },
+    "goal_section": {
+      "heading": "Our Goal",
+      "intro": "Our goal is to provide an open standard that allows:",
+      "goals_list": [
+        "AI agents to operate like real economic actors - forming agreements, negotiating terms, keeping a verifiable history, settling payments, and taking responsibility for their actions.",
+        "People and organizations to offload repetitive, routine processes to autonomous agents without sacrificing trust or control.",
+        "Developers to build interoperable applications and services that can communicate and transact reliably with agents from other systems.",
+        "AI to become socially useful at scale, grounded in transparency, auditability, and a shared protocol rather than proprietary black boxes."
+      ],
+      "technology_paragraph": "To achieve this, we leverage the BSV blockchain - a low-cost, scalable BTC fork - to record interactions and micropayments as immutable, auditable events accessible to all participants without intermediaries."
+    },
+    "transparency_section": {
+      "heading": "Trust & Transparency",
+      "open_source": "DAIA is fully open source because broad adoption and trust cannot be built behind closed doors. Our mission is not to create another walled garden, but to provide public infrastructure for autonomous systems - combining AI with verifiable, low-cost blockchain technology.",
+      "belief": "We believe AI should work for people, not the other way around.",
+      "protocol": "And for AI to assist humanity safely and at scale, it needs a protocol everyone can trust. DAIA is designed to be that protocol."
+    },
+    "team_section": {
+      "heading": "Meet the Team",
+      "members": [
+        {
+          "name": "Przemysław Głowacki",
+          "role": "Co-founder, Fullstack Developer"
+        },
+        {
+          "name": "Stanisław Jarocki",
+          "role": "Co-founder, Fullstack Developer"
+        },
+        { "name": "Szymon Jóźwiak", "role": "Co-founder, Fullstack Developer" },
+        {
+          "name": "Władysław Kuczerenko",
+          "role": "Co-founder, Fullstack Developer"
+        }
+      ]
+    }
+  },
+  "support_view": {
+    "title": "Need Help? Contact Support.",
+    "subtitle": "Submit a bug report, request a new feature, or ask a question directly on our GitHub repository.",
+    "form_type_label": "Type of Request",
+    "form_title_label": "Issue Title",
+    "form_content_label": "Details and Steps to Reproduce",
+    "placeholder_title": "e.g., Error on agreement details page",
+    "placeholder_content": "Describe the issue or feature request in detail.",
+    "button": "Submit Issue on GitHub",
+    "type_bug": "Bug Report",
+    "type_feature": "Feature Request",
+    "type_question": "Question"
+  },
+  "language_names": {
+    "en": "English",
+    "pl": "Polish",
+    "hi": "Hindi",
+    "pz": "Poznań Dialect"
   }
 }

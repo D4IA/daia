@@ -1,27 +1,87 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import DIcon from "../../assets/D.svg";
 import SearchIcon from "../../assets/search.svg";
 import styles from "./Navbar.module.scss";
-import translations from "../../translations/en-us.json";
 import hamburgerSvgUrl from "../../assets/hamburger.svg";
 import closeSvgUrl from "../../assets/close.svg";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-const T = translations.navbar;
+import logoPoznanUrl from "../../assets/PoznanLogo.png";
+
+const AVAILABLE_LANGUAGES = [
+  { code: "en", labelKey: "language_names.en" },
+  { code: "pl", labelKey: "language_names.pl" },
+  { code: "hi", labelKey: "language_names.hi" },
+  { code: "pz", labelKey: "language_names.pz" },
+];
+
+const getLanguageIcon = (code: string): string => {
+  switch (code) {
+    case "en":
+      return "🇺🇸";
+    case "pl":
+      return "🇵🇱";
+    case "hi":
+      return "🇮🇳";
+    case "pz":
+      return logoPoznanUrl;
+    default:
+      return DIcon;
+  }
+};
+
+const LanguageIconRenderer: React.FC<{ code: string }> = ({ code }) => {
+  const icon = getLanguageIcon(code);
+
+  if (code === "pz") {
+    return (
+      <img
+        src={icon}
+        alt={code.toUpperCase() + " logo"}
+        className={styles.langIcon}
+      />
+    );
+  }
+
+  return (
+    <span
+      className={styles.langEmoji}
+      role="img"
+      aria-label={code.toUpperCase()}
+    >
+      {icon}
+    </span>
+  );
+};
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+
+  const { t, i18n } = useTranslation();
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
+    setIsLangDropdownOpen(false);
   };
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+    setIsLangDropdownOpen(false);
+  };
+
+  const toggleLangDropdown = () => {
+    setIsLangDropdownOpen((prev) => !prev);
+  };
+
+  const changeLanguage = (code: string) => {
+    i18n.changeLanguage(code);
+    setIsLangDropdownOpen(false);
   };
 
   const MenuIcon = ({ src, alt }) => <img src={src} alt={alt} />;
@@ -34,6 +94,7 @@ const Navbar: React.FC = () => {
     if (trimmedValue) {
       navigate(`/list_of_agreements/${trimmedValue}`);
       setSearchValue("");
+      closeMenu();
     }
   };
 
@@ -42,6 +103,43 @@ const Navbar: React.FC = () => {
   };
 
   const hideSearch = location.pathname.startsWith("/list_of_agreements");
+
+  const currentLangCode = i18n.language.toLowerCase();
+  const displayLangCode = AVAILABLE_LANGUAGES.find(
+    (lang) => lang.code === currentLangCode
+  )
+    ? currentLangCode
+    : currentLangCode.split("-")[0];
+
+  const LanguageDropdown: React.FC = () => (
+    <div className={styles.langDropdownContainer}>
+      <button
+        className={`${styles.navLink} ${styles.langButton}`}
+        onClick={toggleLangDropdown}
+        title={t(
+          AVAILABLE_LANGUAGES.find((l) => l.code === displayLangCode)
+            ?.labelKey || "language_names.en"
+        )}
+      >
+        <LanguageIconRenderer code={displayLangCode} />
+      </button>
+
+      {isLangDropdownOpen && (
+        <div className={styles.langDropdownMenu}>
+          {AVAILABLE_LANGUAGES.map((lang) => (
+            <button
+              key={lang.code}
+              className={`${styles.langDropdownItem} ${displayLangCode === lang.code ? styles.langActive : ""}`}
+              onClick={() => changeLanguage(lang.code)}
+            >
+              <LanguageIconRenderer code={lang.code} />
+              {t(lang.labelKey)}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className={styles.navbarContainer}>
@@ -57,7 +155,7 @@ const Navbar: React.FC = () => {
         <div className={styles.logoCol}>
           <Link to="/" className={styles.brandLink}>
             <img src={DIcon} alt="DAIA Icon" className={styles.iconStyle} />
-            <span className={styles.brandTitleDark}>{T.title}</span>
+            <span className={styles.brandTitleDark}>{t("navbar.title")}</span>
           </Link>
         </div>
 
@@ -73,7 +171,7 @@ const Navbar: React.FC = () => {
               />
               <input
                 type="text"
-                placeholder={T.button}
+                placeholder={t("navbar.button")}
                 className={styles.searchInput}
                 value={searchValue}
                 onChange={handleSearchChange}
@@ -83,12 +181,13 @@ const Navbar: React.FC = () => {
         )}
 
         <div className={styles.linksCol}>
-          <Link to="/developers" className={styles.navLink}>
-            {T.developers}
+          <Link to="/developers" className={styles.navLink} onClick={closeMenu}>
+            {t("navbar.developers")}
           </Link>
-          <a href="/oops" className={styles.navLink}>
-            {T.about_us}
-          </a>
+          <Link to="/about_us" className={styles.navLink} onClick={closeMenu}>
+            {t("navbar.about_us")}
+          </Link>
+          <LanguageDropdown />
         </div>
       </div>
 
@@ -97,16 +196,48 @@ const Navbar: React.FC = () => {
           isMenuOpen ? styles.mobileMenuOpen : ""
         }`}
       >
+        {!hideSearch && (
+          <form
+            onSubmit={handleSubmit}
+            className={styles.mobileSearchContainer}
+          >
+            <input
+              type="text"
+              placeholder={t("navbar.button")}
+              className={styles.mobileSearchInput}
+              value={searchValue}
+              onChange={handleSearchChange}
+            />
+          </form>
+        )}
+
         <Link
           to="/developers"
           className={styles.mobileNavLink}
           onClick={closeMenu}
         >
-          {T.developers}
+          {t("navbar.developers")}
         </Link>
-        <a href="#" className={styles.mobileNavLink} onClick={closeMenu}>
-          {T.about_us}
-        </a>
+        <Link
+          to="/about_us"
+          className={styles.mobileNavLink}
+          onClick={closeMenu}
+        >
+          {t("navbar.about_us")}
+        </Link>
+
+        <div className={styles.mobileLangList}>
+          {AVAILABLE_LANGUAGES.map((lang) => (
+            <button
+              key={lang.code}
+              className={`${styles.mobileNavLink} ${styles.langMobileItem} ${displayLangCode === lang.code ? styles.langActive : ""}`}
+              onClick={() => changeLanguage(lang.code)}
+            >
+              <LanguageIconRenderer code={lang.code} />
+              {t(lang.labelKey)}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

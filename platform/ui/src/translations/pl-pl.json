@@ -1,0 +1,239 @@
+{
+  "navbar": {
+    "title": "Daia",
+    "button": "Wprowadź adres portfela",
+    "developers": "Dla Deweloperów",
+    "about_us": "O nas"
+  },
+  "landing_screen": {
+    "title": "Pozwól Agentom AI Uzgadniać – i Rejestrować to dla Ciebie",
+    "subtitle_1": "Twoje urządzenia rozmawiają, negocjują i uzgadniają warunki.",
+    "subtitle_2": "DAIA zapewnia, że te umowy są rejestrowane i weryfikowalne — automatycznie.",
+    "button": "Znajdź Moją Umowę"
+  },
+  "how_daia_works": {
+    "title": "Jak Działa DAIA",
+    "cards": [
+      {
+        "id": "1",
+        "iconKey": "Negotiate",
+        "title": "Agenci AI Negocjują",
+        "description": "Agenci AI komunikują się i negocjują ze sobą, aby automatycznie osiągnąć wzajemnie korzystne porozumienia."
+      },
+      {
+        "id": "2",
+        "iconKey": "Secure",
+        "title": "Bezpieczne Rejestrowanie na Blockchain",
+        "description": "DAIA rejestruje ich umowę bezpiecznie na blockchainie, tworząc niezmienny i przejrzysty zapis."
+      },
+      {
+        "id": "3",
+        "iconKey": "Encrypted",
+        "title": "Szyfrowane i Weryfikowalne",
+        "description": "Umowy są szyfrowane dla zachowania prywatności, jednocześnie pozostając weryfikowalne przez upoważnione strony, gdy zajdzie taka potrzeba."
+      }
+    ]
+  },
+  "why_choose_daia": {
+    "title": "Dlaczego DAIA?",
+    "features": [
+      {
+        "title": "Automatyczne Rejestrowanie Umów",
+        "description": "Nie jest wymagana ręczna interwencja — umowy są rejestrowane automatycznie, gdy agenci AI osiągną konsensus."
+      },
+      {
+        "title": "Niezmienne i Przejrzyste",
+        "description": "Technologia Blockchain zapewnia, że umów nie można zmieniać i pozostają one weryfikowalne przez wszystkie strony."
+      },
+      {
+        "title": "Ochrona Prywatności",
+        "description": "Zaawansowane szyfrowanie chroni poufne szczegóły umowy, zachowując jednocześnie możliwość weryfikacji."
+      }
+    ],
+    "source": "źródło: https://share.google/images/EFEfDvK70ZGFHyGcn"
+  },
+  "explore_section": {
+    "title": "Gotowy, aby Odkryć DAIA?",
+    "subtitle": "Zacznij od wyszukiwania istniejących umów lub dowiedz się więcej o tym, jak DAIA może pomóc Twoim agentom AI współpracować.",
+    "button": "Znajdź Moją Umowę"
+  },
+  "search_view": {
+    "title": "Wyszukaj Swoją Umowę",
+    "subtitle": "Wprowadź adres swojego portfela lub hash transakcji, aby znaleźć i zweryfikować umowy swoich agentów AI.",
+    "placeholder": "Adres portfela",
+    "button": "Wyszukaj Umowę",
+    "msg_loading": "Ładowanie umów...",
+    "msg_api_error": "Nie można pobrać umów. Sprawdź adres portfela lub połączenie.",
+    "msg_default_prompt": "Wprowadź adres portfela powyżej, aby zobaczyć umowy.",
+    "msg_no_filter_match": "Nie znaleziono umów pasujących do obecnych filtrów."
+  },
+  "footer": {
+    "slogan": "Bezpieczna rejestracja umów dla agentów AI na blockchainie.",
+    "product_col": {
+      "title": "Produkt",
+      "links": ["Jak to Działa", "O nas", "Wsparcie"]
+    },
+    "developers_col": {
+      "title": "Deweloperzy",
+      "links": ["Dla Deweloperów", "Funkcje", "Dokumentacja"]
+    },
+    "copyright": "© 2025 DAIA. Wszelkie prawa zastrzeżone."
+  },
+  "search_agreement": {
+    "placeholder": "Adres portfela",
+    "button": "Szukaj",
+    "error_empty": "Adres portfela nie może być pusty"
+  },
+  "agreement_list": {
+    "title": "Znajdź Swoją Umowę",
+    "subtitle": "Wprowadź adres swojego portfela, aby znaleźć umowy zawarte przez Twoich agentów AI."
+  },
+  "no_agreements_found": {
+    "title": "Nie znaleziono umów!",
+    "description": "Wygląda na to, że nie ma umów powiązanych z tym adresem. Czy jest on prawidłowy?"
+  },
+  "sdk_screen": {
+    "title": "Zintegruj SDK DAIA ze Swoimi Agentami AI",
+    "subtitle_1": "Od propozycji do blockchaina w kilka sekund",
+    "subtitle_2": "SDK DAIA obsługuje cały cykl życia umowy dla Twoich agentów.",
+    "button": "Rozpocznij"
+  },
+  "sdk_features": {
+    "title": "Funkcje SDK",
+    "subtitle": "Zbudowany dla nowoczesnych agentów AI i integracji z blockchainem",
+    "cards": [
+      {
+        "id": "1",
+        "iconKey": "EncryptedBlockchainStorage",
+        "title": "Szyfrowane przechowywanie na blockchainie",
+        "description": "Chroń wrażliwe dane on-chain. DAIA szyfruje zawartość przed zapisem, zachowując prywatność umów bez utraty przejrzystości."
+      },
+      {
+        "id": "2",
+        "iconKey": "Lightweight",
+        "title": "Lekkie SDK",
+        "description": "Zoptymalizowany dla urządzeń brzegowych i serwerów bezserwerowych. Bez zbędnych elementów — czysty, asynchroniczny kod. Podłącz i działaj."
+      },
+      {
+        "id": "3",
+        "iconKey": "SimpleIntegration",
+        "title": "Prosta integracja",
+        "description": "Dodaj DAIA do dowolnej logiki AI — reaktywnej, stanowej lub sterowanej zdarzeniami. Działa od razu z Twoją obecną konfiguracją."
+      }
+    ]
+  },
+  "sdk_integration_steps": {
+    "title": "Szybka Integracja",
+    "subtitle": "Rozpocznij z JavaScript w kilka minut",
+    "step1": {
+      "number": 1,
+      "title": "Instalacja SDK",
+      "codeSnippet": "npm install @daia/sdk"
+    },
+    "step2": {
+      "number": 2,
+      "title": "Inicjalizacja Agenta",
+      "codeSnippet": "import { DaiaAgent } from '@daia/sdk'\nconst agent = new DaiaAgent({ id: 'AGENT-01', wallet: '0xabc...' })"
+    },
+    "step3": {
+      "number": 3,
+      "title": "Zapisz Propozycję Oferty na blockchainie",
+      "codeSnippet": "const proposeOfferId = await agent.recordProposeOffer({\n  content: \"\nProponuję ofertę:\n  • Czas trwania: 3 godziny\n  • Stawka bazowa: 6 PLN/h\n  • Zniżka na pojazd ekologiczny: -1 PLN/h\n  • Stawka końcowa: 5 PLN/h\n  • Całkowity koszt: 15 PLN\n\",\n  encryptKey: 'xyz' // lub undefined, aby wyświetlić dane bez szyfrowania\n});"
+    },
+    "step4": {
+      "number": 4,
+      "title": "Zapisz Akceptację Oferty na blockchainie używając innego agenta",
+      "codeSnippet": "await otherAgent.recordAcceptOffer({\n  proposeOfferId: proposeOfferId\n});"
+    }
+  },
+  "agreement_details_tooltips": {
+    "req_type": "Typ wymogu kryptograficznego potrzebny do spełnienia tej umowy (np. 'sign' wymaga podpisu cyfrowego).",
+    "proposer_pubkey": "Pełny klucz publiczny strony, która zainicjowała tę propozycję umowy.",
+    "offerer_nonce": "Unikalny, losowy numer używany przez inicjatora, aby zapobiec atakom powtórzeniowym i zapewnić unikalność transakcji."
+  },
+  "details_view": {
+    "msg_loading": "Ładowanie szczegółów...",
+    "msg_error": "Błąd: ",
+    "btn_try_again": "Spróbuj Ponownie",
+    "err_missing_params": "Brakuje adresu portfela lub ID transakcji w URL.",
+    "err_tx_not_found": "Transakcja nie znaleziona w historii portfela.",
+    "err_failed_load": "Nie udało się załadować szczegółów transakcji.",
+    "title_tx_id": "ID Transakcji:",
+    "label_published_at": "Opublikowano: ",
+    "label_description": "Opis Umowy:",
+    "msg_content_unavailable": "Szczegóły niedostępne"
+  },
+  "ready_to_explore_documentation": {
+    "title": "Gotowy do integracji DAIA?",
+    "subtitle": "Jeśli jesteś zainteresowany integracją i zabezpieczaniem umów agentów AI na blockchainie za pomocą DAIA, sprawdź naszą dokumentację.",
+    "button": "Sprawdź Dokumentację"
+  },
+  "about_us_view": {
+    "main_title": "O DAIA: Otwarty Protokół dla Agentów AI",
+    "subtitle_1": "Łączymy AI, Blockchain i otwarte standardy, aby budować przyszłość autonomicznych systemów.",
+    "subtitle_2": "Bezpiecznie rejestrujemy umowy dla następnej generacji cyfrowej współpracy.",
+    "mission_section": {
+      "heading": "Nasza Misja",
+      "paragraph_1": "DAIA została stworzona, aby rozwiązać fundamentalne ograniczenie w dzisiejszym ekosystemie AI: brak zaufanego, weryfikowalnego sposobu, w jaki agenci AI mogą współpracować, wymieniać dane, wykonywać zadania i rozliczać płatności bez narażania użytkowników na oszustwa, nadużycia lub kosztowne błędy.",
+      "paragraph_2": "Współczesne systemy agentów są zamknięte, nieprzejrzyste i trudne do zweryfikowania. Nie mogą niezawodnie działać poza granicami organizacyjnymi i nie oferują standardowego mechanizmu odpowiedzialności ani zaufania. W rezultacie AI nadal nie może przejąć wielu powtarzalnych, dobrze zdefiniowanych zadań, które obciążają ludzi i firmy — mimo że sama technologia jest już gotowa.",
+      "paragraph_3": "DAIA wprowadza otwarty protokół, który umożliwia agentom AI negocjowanie, uzgadnianie, weryfikowanie i egzekwowanie zobowiązań w pełni zdecentralizowany sposób."
+    },
+    "goal_section": {
+      "heading": "Nasz Cel",
+      "intro": "Naszym celem jest dostarczenie otwartego standardu, który umożliwia:",
+      "goals_list": [
+        "Agentom AI działanie jako prawdziwi aktorzy gospodarczy — zawieranie umów, negocjowanie warunków, prowadzenie weryfikowalnej historii, rozliczanie płatności i ponoszenie odpowiedzialności za swoje działania.",
+        "Ludziom i organizacjom przekazywanie powtarzalnych, rutynowych procesów autonomicznym agentom bez poświęcania zaufania lub kontroli.",
+        "Deweloperom tworzenie interoperacyjnych aplikacji i usług, które mogą niezawodnie komunikować się i dokonywać transakcji z agentami z innych systemów.",
+        "AI stanie się społecznie użyteczne na dużą skalę, oparte na przejrzystości, możliwości audytu i wspólnym protokole, a nie na zastrzeżonych 'czarnych skrzynkach'."
+      ],
+      "technology_paragraph": "Aby to osiągnąć, wykorzystujemy blockchain BSV — tani, skalowalny fork BTC — do rejestrowania interakcji i mikropłatności jako niezmiennych, audytowalnych zdarzeń dostępnych dla wszystkich uczestników bez pośredników."
+    },
+    "transparency_section": {
+      "heading": "Zaufanie i Przejrzystość",
+      "open_source": "DAIA jest w pełni otwartym oprogramowaniem, ponieważ szerokie przyjęcie i zaufanie nie mogą być budowane za zamkniętymi drzwiami. Naszą misją nie jest tworzenie kolejnego zamkniętego ekosystemu, ale dostarczanie infrastruktury publicznej dla systemów autonomicznych — łączącej AI z weryfikowalną, tanią technologią blockchain.",
+      "belief": "Wierzymy, że AI powinno działać dla ludzi, a nie odwrotnie.",
+      "protocol": "A aby AI mogło bezpiecznie i na dużą skalę pomagać ludzkości, potrzebuje protokołu, któremu każdy może zaufać. DAIA jest zaprojektowana, by być tym protokołem."
+    },
+    "team_section": {
+      "heading": "Poznaj Zespół",
+      "members": [
+        {
+          "name": "Przemysław Głowacki",
+          "role": "Współzałożyciel, Fullstack Developer"
+        },
+        {
+          "name": "Stanisław Jarocki",
+          "role": "Współzałożyciel, Fullstack Developer"
+        },
+        {
+          "name": "Szymon Jóźwiak",
+          "role": "Współzałożyciel, Fullstack Developer"
+        },
+        {
+          "name": "Władysław Kuczerenko",
+          "role": "Współzałożyciel, Fullstack Developer"
+        }
+      ]
+    }
+  },
+  "support_view": {
+    "title": "Potrzebujesz Pomocy? Skontaktuj się z Wsparciem.",
+    "subtitle": "Prześlij zgłoszenie błędu, poproś o nową funkcję lub zadaj pytanie bezpośrednio w naszym repozytorium GitHub.",
+    "form_type_label": "Typ Zgłoszenia",
+    "form_title_label": "Tytuł Issue",
+    "form_content_label": "Szczegóły i Kroki do Reprodukcji",
+    "placeholder_title": "np. Błąd na stronie szczegółów umowy",
+    "placeholder_content": "Opisz szczegółowo problem lub prośbę o funkcję.",
+    "button": "Wyślij Issue na GitHub",
+    "type_bug": "Zgłoszenie Błędu",
+    "type_feature": "Prośba o Funkcję",
+    "type_question": "Pytanie"
+  },
+  "language_names": {
+    "en": "Angielski",
+    "pl": "Polski",
+    "hi": "Hindi",
+    "pz": "Gwara Poznańska"
+  }
+}

@@ -150,6 +150,100 @@ $font-semibold: 600;
     }
 }
 
+.langIcon {
+    width: 1.75rem;
+    object-fit: contain;
+    margin-right: tv.$spacing-2;
+}
+
+.langEmoji {
+    font-size: 1.75rem;
+    line-height: 1;
+    margin-right: tv.$spacing-2;
+    display: inline-block;
+}
+
+
+.langDropdownContainer {
+    position: relative;
+    display: inline-block;
+    margin-left: tv.$spacing-4;
+}
+
+.langButton {
+    composes: navLink;
+    padding: tv.$spacing-2 tv.$spacing-2;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: tv.$spacing-2;
+    transition: background-color 0.2s;
+    display: flex; 
+    align-items: center;
+
+    &:hover {
+        background-color: tv.$gray-100;
+        border-color: tv.$gray-300;
+        text-decoration: none;
+    }
+}
+
+.langDropdownMenu {
+    position: absolute;
+    top: 100%; 
+    right: 0;
+    z-index: 1000;
+    background-color: tv.$white;
+    border: 1px solid tv.$gray-200;
+    border-radius: 0.5rem;
+    box-shadow: tv.$shadow-md;
+    min-width: 120px;
+    padding: tv.$spacing-2 0;
+    margin-top: tv.$spacing-2;
+}
+
+.langDropdownItem {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: tv.$spacing-2 tv.$spacing-4;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: tv.$gray-700;
+    font-size: tv.$text-base;
+
+    &:hover {
+        background-color: tv.$gray-50;
+        color: tv.$black;
+    }
+}
+
+.langActive {
+    font-weight: 600;
+    color: tv.$purple-600 !important;
+}
+
+.mobileSearchContainer {
+    padding: 0 tv.$spacing-6 tv.$spacing-4;
+    width: 100%;
+}
+
+.mobileSearchInput {
+    height: 2.5rem;
+    width: 100%;
+    padding: 0 1rem;
+    border: 1px solid tv.$gray-300;
+    border-radius: 0.5rem;
+    font-size: tv.$text-base;
+    
+    &:focus {
+        border-color: tv.$purple-500;
+        outline: none;
+        box-shadow: 0 0 0 1px tv.$purple-500;
+    }
+}
+
 .mobileMenu {
     width: 100%;
     background-color: tv.$white; 
@@ -184,4 +278,26 @@ $font-semibold: 600;
     &:hover {
         background-color: tv.$gray-100;
     }
+}
+
+.mobileLangList {
+    display: flex;
+    flex-direction: column;
+    margin-top: tv.$spacing-4;
+    padding: tv.$spacing-2 0;
+    border-top: 1px solid tv.$gray-200; 
+    width: 100%;
+}
+
+.langMobileItem {
+    composes: mobileNavLink;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: tv.$spacing-2 0; 
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

@@ -1,9 +1,7 @@
 import React from "react";
 import CardContainer from "../AgreementDetailsCard";
-import translations from "../../../translations/en-us.json";
+import { useTranslation } from "react-i18next";
 import styles from "./AgreementRequirements.module.scss";
-
-const T = translations.agreement_details_tooltips;
 
 interface AgreementRequirementsProps {
   requirements: any;
@@ -35,6 +33,7 @@ const RequirementRow: React.FC<{
 const AgreementRequirements: React.FC<AgreementRequirementsProps> = ({
   requirements,
 }) => {
+  const { t } = useTranslation();
   const reqSignature = requirements?.req_signature;
 
   const type = reqSignature?.type || "N/A";
@@ -46,21 +45,21 @@ const AgreementRequirements: React.FC<AgreementRequirementsProps> = ({
       <RequirementRow
         label="Requirement Type"
         value={type}
-        tooltip={T.req_type}
+        tooltip={t("agreement_details_tooltips.req_type")}
       />
 
       <RequirementRow
         label="Proposer Public Key (Pubkey)"
         value={pubKey}
         isHash={true}
-        tooltip={T.proposer_pubkey}
+        tooltip={t("agreement_details_tooltips.proposer_pubkey")}
       />
 
       <RequirementRow
         label="Offerer Nonce"
         value={offererNonce}
         isHash={true}
-        tooltip={T.offerer_nonce}
+        tooltip={t("agreement_details_tooltips.offerer_nonce")}
       />
     </CardContainer>
   );

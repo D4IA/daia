@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import styles from "./AgreementListView.module.scss";
 import AgreementListItem from "../components/AgreementsListItem/AgreementsListItem";
 import AgreementsListSearchBar from "../components/AgreementsListSearchBar/AgreementsListSearchBar";
 import AgreementFilters from "../components/AgreementFilters/AgreementFilters";
-import translations from "../translations/en-us.json";
 import NoAgreementsFound from "../components/NoAgreementsFound/NoAgreementsFound";
 
 interface AgreementsListViewProps {
@@ -40,12 +41,13 @@ interface ApiResponse {
 }
 
 const ITEMS_PER_PAGE = 8;
-const T = translations.search_view;
 const API_BASE_URL = "http://localhost:3000";
 
 const AgreementsListView: React.FC<AgreementsListViewProps> = ({
   onSearch,
 }) => {
+  const { t, i18n } = useTranslation();
+
   const navigate = useNavigate();
   const { query } = useParams<{ query: string }>();
 
@@ -63,6 +65,74 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+
+  const fetchAgreementsFromApi = useCallback(
+    async (address: string) => {
+      setIsLoading(true);
+      setError(null);
+      setAgreements([]);
+      setValidationError(null);
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/agreements/${address}`);
+
+        if (!response.ok) {
+          throw new Error(t("search_view.msg_api_error"));
+        }
+
+        const data: ApiResponse = await response.json();
+
+        const mappedAgreements: Agreement[] = data.transactions.flatMap((tx) =>
+          tx.agreements.map((agr, index) => ({
+            id: `${tx.txId}-${agr.vout || index}`,
+            txId: tx.txId,
+            title: agr.offerContent.naturalLanguageOfferContent,
+            date: new Date(tx.timestamp * 1000).toLocaleDateString(
+              i18n.language,
+              {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            ),
+            status: "Published",
+          }))
+        );
+
+        setAgreements(mappedAgreements);
+      } catch (err) {
+        console.error(err);
+        setError(t("search_view.msg_api_error"));
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [t, i18n]
+  );
+
+  const handleSearchAction = useCallback(
+    (address: string, isManualSearch: boolean = true) => {
+      const trimmedAddress = address.trim();
+      if (!trimmedAddress) return;
+
+      if (isManualSearch) {
+        navigate(`/list_of_agreements/${trimmedAddress}`);
+      }
+
+      setTxIdFilter("");
+      setDateFilter("");
+
+      setWalletAddress(trimmedAddress);
+      setHasSearched(true);
+      setCurrentPage(1);
+      onSearch(trimmedAddress);
+
+      fetchAgreementsFromApi(trimmedAddress);
+    },
+    [navigate, onSearch, fetchAgreementsFromApi]
+  );
 
   const filteredAgreements = agreements.filter((item) => {
     const matchesTxId = txIdFilter
@@ -101,74 +171,12 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const fetchAgreementsFromApi = async (address: string) => {
-    setIsLoading(true);
-    setError(null);
-    setAgreements([]);
-    setValidationError(null);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/agreements/${address}`);
-
-      if (!response.ok) {
-        throw new Error(T.msg_api_error);
-      }
-
-      const data: ApiResponse = await response.json();
-
-      const mappedAgreements: Agreement[] = data.transactions.flatMap((tx) =>
-        tx.agreements.map((agr, index) => ({
-          id: `${tx.txId}-${agr.vout || index}`,
-          txId: tx.txId,
-          title: agr.offerContent.naturalLanguageOfferContent,
-          date: new Date(tx.timestamp * 1000).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          status: "Published",
-        }))
-      );
-
-      setAgreements(mappedAgreements);
-    } catch (err) {
-      console.error(err);
-      setError(T.msg_api_error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (query) {
       setValidationError(null);
       handleSearchAction(query, false);
     }
-  }, [query]);
-
-  const handleSearchAction = (
-    address: string,
-    isManualSearch: boolean = true
-  ) => {
-    const trimmedAddress = address.trim();
-    if (!trimmedAddress) return;
-
-    if (isManualSearch) {
-      navigate(`/list_of_agreements/${trimmedAddress}`);
-    }
-
-    setTxIdFilter("");
-    setDateFilter("");
-
-    setWalletAddress(trimmedAddress);
-    setHasSearched(true);
-    setCurrentPage(1);
-    onSearch(trimmedAddress);
-
-    fetchAgreementsFromApi(trimmedAddress);
-  };
+  }, [query, handleSearchAction]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -277,8 +285,8 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
   const renderHeader = () => {
     return (
       <div className={styles.searchBarHeader}>
-        <h1 className="title">{T.title}</h1>
-        <p className="subtitle">{T.subtitle}</p>
+        <h1 className="title">{t("agreement_list.title")}</h1>
+        <p className="subtitle">{t("agreement_list.subtitle")}</p>
 
         <AgreementsListSearchBar
           onSearch={handleSearchAction}
@@ -293,7 +301,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
     if (isLoading) {
       return (
         <div style={{ textAlign: "center", padding: "20px" }}>
-          {T.msg_loading}
+          {t("search_view.msg_loading")}
         </div>
       );
     }
@@ -328,7 +336,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
     if (!hasSearched) {
       return (
         <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
-          {T.msg_default_prompt}
+          {t("search_view.msg_default_prompt")}
         </div>
       );
     }
@@ -350,7 +358,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
             <div
               style={{ textAlign: "center", padding: "40px", color: "#666" }}
             >
-              {T.msg_no_filter_match}
+              {t("search_view.msg_no_filter_match")}
             </div>
           </>
         );

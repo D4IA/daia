@@ -1,3 +1,6 @@
+// _tailwind-vars.scss
+
+// --- Kolory ---
 $gray-900: #111827;
 $gray-800: #1f2937;
 $gray-700: #374151;
@@ -12,6 +15,7 @@ $white: #ffffff;
 $purple-600: #9333ea;
 $purple-500: #a855f7;
 
+// --- Spacing / Odstępy (rem) ---
 $spacing-2: 0.5rem;
 $spacing-4: 1rem;
 $spacing-5: 1.25rem;
@@ -24,33 +28,49 @@ $spacing-20: 5rem;
 $spacing-24: 6rem;
 $spacing-32: 8rem;
 $spacing-50: 12.5rem;
+// Dodatkowe, mniejsze jednostki spacingu
+$spacing-10px: 0.625rem; 
 
+// --- Font Size / Rozmiary czcionek (rem) ---
 $text-3xl: 1.875rem; 
 $text-4xl: 2.25rem;
 $text-5xl: 3rem;
 $text-6xl: 3.75rem;
 $text-lg: 1.125rem;
 $text-xl: 1.25rem;
-$leading-tight: 1.25;
-$leading-loose: 2.5rem;
-$max-w-xl: 40rem;
-$max-w-sm: 24rem;
+// Zmienna, która była używana, ale nie zdefiniowana w bloku vars:
+$text-base: 1rem; 
+
+// Specjalne rozmiary tekstu
 $text-20px: 1.25rem; 
+$text-30px: 1.875rem;
 $text-48px: 3rem;
 
-$md: 768px;
-$lg: 1024px;
+// --- Line Height / Wysokość linii ---
+$leading-tight: 1.25;
+$leading-loose: 2.5rem;
 
-$shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+// --- Max Width / Maksymalna szerokość ---
+$max-w-xl: 40rem;
+$max-w-sm: 24rem;
 $max-w-6xl: 72rem;
 $max-w-4xl: 56rem;
 $max-w-2xl: 42rem;
-
-$font-regular: 400;
-
-$width-input-xl: 448px; 
-$height-input-xl: 50px; 
-$text-30px: 1.875rem;
-
 $max-w-1000px: 62.5rem;
-$spacing-10px: 0.625rem;
+
+// --- Breakpoints / Punkty przełamania (px) ---
+$md: 768px;
+$lg: 1024px;
+
+// --- Shadow / Cienie ---
+$shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+
+// --- Font Weight / Grubość czcionki ---
+$font-regular: 400;
+// Zmienna, która była używana, ale nie zdefiniowana w bloku vars:
+$font-semibold: 600;
+
+// --- Component Specific / Specyficzne dla komponentów ---
+$width-input-xl: 448px; 
+$height-input-xl: 50px;

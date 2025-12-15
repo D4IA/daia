@@ -1,18 +1,32 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import CodeStep from "../components/CodeStep/CodeStep";
-import translations from "../translations/en-us.json";
 import styles from "./SDKIntegrationSteps.module.scss";
 
-const T = translations.sdk_integration_steps;
+interface Step {
+  number: number;
+  title: string;
+  codeSnippet: string;
+}
 
 const SDKIntegrationSteps: React.FC = () => {
-  const steps = [T.step1, T.step2, T.step3, T.step4];
+  const { t } = useTranslation();
+
+  const steps: Step[] = [
+    t("sdk_integration_steps.step1", { returnObjects: true }),
+    t("sdk_integration_steps.step2", { returnObjects: true }),
+    t("sdk_integration_steps.step3", { returnObjects: true }),
+    t("sdk_integration_steps.step4", { returnObjects: true }),
+  ] as Step[];
 
   return (
     <section className={styles.sectionContainer}>
       <div className={styles.contentWrapper}>
-        <h2 className={`title ${styles.sectionTitle}`}>{T.title}</h2>
-        <p className="subtitle">{T.subtitle}</p>
+        <h2 className={`title ${styles.sectionTitle}`}>
+          {t("sdk_integration_steps.title")}
+        </h2>
+        <p className="subtitle">{t("sdk_integration_steps.subtitle")}</p>
+
         {steps.map((step) => (
           <CodeStep
             key={step.number}

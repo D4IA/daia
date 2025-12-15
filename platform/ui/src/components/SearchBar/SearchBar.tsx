@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./SearchBar.module.scss";
 import SearchIconUrl from "../../assets/search.svg";
-import translations from "../../translations/en-us.json";
 
 interface WalletAddressInputProps {
   value: string;
@@ -10,14 +10,15 @@ interface WalletAddressInputProps {
   onSearch?: (value: string) => void;
 }
 
-const T = translations.search_view;
-
 const WalletAddressInput: React.FC<WalletAddressInputProps> = ({
   value,
   onChange,
-  placeholder = T.placeholder,
+  placeholder,
   onSearch,
 }) => {
+  const { t } = useTranslation();
+
+  const effectivePlaceholder = placeholder || t("search_view.placeholder");
   const handleSearchClick = () => {
     if (onSearch) {
       onSearch(value);
@@ -29,7 +30,7 @@ const WalletAddressInput: React.FC<WalletAddressInputProps> = ({
       <input
         type="text"
         className={styles.inputField}
-        placeholder={placeholder}
+        placeholder={effectivePlaceholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyPress={(e) => {

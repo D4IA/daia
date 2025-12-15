@@ -1,13 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import DIcon from "../../assets/D.svg";
 import styles from "./Footer.module.scss";
-import translations from "../../translations/en-us.json";
-
-const T = translations.footer;
-const T_PRODUCT = T.product_col;
-const T_DEVELOPERS = T.developers_col;
 
 const Footer: React.FC = () => {
+  const { t } = useTranslation();
   const FooterLink: React.FC<{ href: string; children: React.ReactNode }> = ({
     href,
     children,
@@ -17,24 +14,34 @@ const Footer: React.FC = () => {
     </a>
   );
 
+  const productLinks = t("footer.product_col.links", {
+    returnObjects: true,
+  }) as string[];
+  const developersLinks = t("footer.developers_col.links", {
+    returnObjects: true,
+  }) as string[];
+
   const getProductHref = (linkText: string): string => {
-    if (linkText === T_PRODUCT.links[0]) {
+    if (linkText === productLinks[0]) {
       return "/#how-daia-works";
     }
-    if (linkText === T_PRODUCT.links[1] || linkText === T_PRODUCT.links[2]) {
-      return "/oops";
+    if (linkText === productLinks[1]) {
+      return "/about_us";
+    }
+    if (linkText === productLinks[2]) {
+      return "/support";
     }
     return "#";
   };
 
   const getDevelopersHref = (linkText: string): string => {
-    if (linkText === T_DEVELOPERS.links[0]) {
+    if (linkText === developersLinks[0]) {
       return "/developers";
     }
-    if (linkText === T_DEVELOPERS.links[1]) {
+    if (linkText === developersLinks[1]) {
       return "/developers#sdk-features";
     }
-    if (linkText === T_DEVELOPERS.links[2]) {
+    if (linkText === developersLinks[2]) {
       return "/oops";
     }
     return "#";
@@ -47,16 +54,16 @@ const Footer: React.FC = () => {
           <div className={styles.brandColumn}>
             <div className={styles.logoWrapper}>
               <img src={DIcon} alt="DAIA Icon" className={styles.iconStyle} />
-              <span className={styles.brandTitle}>
-                {translations.navbar.title}
-              </span>
+              <span className={styles.brandTitle}>{t("navbar.title")}</span>
             </div>
-            <p className={styles.sloganText}>{T.slogan}</p>
+            <p className={styles.sloganText}>{t("footer.slogan")}</p>
           </div>
 
           <div className={styles.linkColumn}>
-            <h4 className={styles.headingTitle}>{T.product_col.title}</h4>
-            {T.product_col.links.map((link, index) => (
+            <h4 className={styles.headingTitle}>
+              {t("footer.product_col.title")}
+            </h4>
+            {productLinks.map((link, index) => (
               <FooterLink key={index} href={getProductHref(link)}>
                 {link}
               </FooterLink>
@@ -64,8 +71,10 @@ const Footer: React.FC = () => {
           </div>
 
           <div className={styles.linkColumn}>
-            <h4 className={styles.headingTitle}>{T.developers_col.title}</h4>
-            {T.developers_col.links.map((link, index) => (
+            <h4 className={styles.headingTitle}>
+              {t("footer.developers_col.title")}
+            </h4>
+            {developersLinks.map((link, index) => (
               <FooterLink key={index} href={getDevelopersHref(link)}>
                 {link}
               </FooterLink>
@@ -73,7 +82,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.copyrightText}>{T.copyright}</div>
+        <div className={styles.copyrightText}>{t("footer.copyright")}</div>
       </div>
     </footer>
   );

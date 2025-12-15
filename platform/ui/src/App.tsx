@@ -7,7 +7,7 @@ import AgreementHeader from "./components/AgreementHeader/AgreementHeader";
 import AgreementDetailsContainer from "./components/AgreementDetailsContainer/AgreementDetailsContainer";
 import AgreementsListSearchBar from "./components/AgreementsListSearchBar/AgreementsListSearchBar";
 import NoAgreementsFound from "./components/NoAgreementsFound/NoAgreementsFound";
-
+import AboutUsView from "./views/AboutUsView";
 import HowDaiaWorks from "./views/HowDaiaWorks";
 import SearchForYourAgreementView from "./views/SearchForYourAgreement";
 import WhyChooseDAIAView from "./views/WhyChooseDaia";
@@ -24,11 +24,11 @@ import {
   useParams,
   useLocation,
 } from "react-router-dom";
-import translations from "./translations/en-us.json";
+import { useTranslation } from "react-i18next";
 import CheckDocumentationView from "./views/CheckDocumentationView";
+import SupportView from "./views/SupportView";
 
 const API_BASE_URL = "http://localhost:3000";
-const T = translations.details_view;
 
 interface ApiOfferContent {
   naturalLanguageOfferContent: string;
@@ -57,9 +57,9 @@ interface ApiResponse {
   transactions: ApiTransaction[];
 }
 
-const AgreementDetailsPage = () => {
+const AgreementDetailsPage: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const { txId, walletAddress } = useParams();
-
   const effectiveWalletAddress = walletAddress;
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -73,7 +73,7 @@ const AgreementDetailsPage = () => {
     const fetchTransactionDetails = async () => {
       if (!txId || !effectiveWalletAddress) {
         setLoading(false);
-        setError(T.err_missing_params);
+        setError(t("details_view.err_missing_params"));
         return;
       }
 
@@ -101,18 +101,18 @@ const AgreementDetailsPage = () => {
         if (foundTx) {
           setTransactionData(foundTx);
         } else {
-          setError(T.err_tx_not_found);
+          setError(t("details_view.err_tx_not_found"));
         }
       } catch (err: any) {
         console.error(err);
-        setError(T.err_failed_load);
+        setError(t("details_view.err_failed_load"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchTransactionDetails();
-  }, [txId, effectiveWalletAddress]);
+  }, [txId, effectiveWalletAddress, t]);
 
   const handleGenerateReport = () => {
     window.print();
@@ -122,7 +122,7 @@ const AgreementDetailsPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-xl font-semibold text-gray-600">
-          {T.msg_loading}
+          {t("details_view.msg_loading")}
         </div>
       </div>
     );
@@ -132,13 +132,13 @@ const AgreementDetailsPage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <div className="text-xl font-semibold text-red-500">
-          {T.msg_error} {error}
+          {t("details_view.msg_error")} {error}
         </div>
         <button
           onClick={() => window.location.reload()}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
-          {T.btn_try_again}
+          {t("details_view.btn_try_again")}
         </button>
       </div>
     );
@@ -148,7 +148,7 @@ const AgreementDetailsPage = () => {
   const lastAgreement = agreements[agreements.length - 1];
   const signedAgreement = agreements.find((a) => a.proofs);
 
-  let offerContent = T.msg_content_unavailable;
+  let offerContent = t("details_view.msg_content_unavailable");
   let requirementsData = {};
 
   if ((lastAgreement as any).offerContentSerialized) {
@@ -166,11 +166,11 @@ const AgreementDetailsPage = () => {
   }
 
   const proofsData = signedAgreement?.proofs || null;
-  const mainTitle = `${T.title_tx_id} ${txId}`;
+  const mainTitle = `${t("details_view.title_tx_id")} ${txId}`;
   const subTitle = "";
 
   const dateStr = new Date(transactionData.timestamp * 1000).toLocaleString(
-    "en-US",
+    i18n.language,
     {
       dateStyle: "medium",
       timeStyle: "short",
@@ -178,8 +178,11 @@ const AgreementDetailsPage = () => {
   );
 
   const breadcrumbsData = [
-    { label: "Agreements search", path: "/list_of_agreements" },
-    { label: `Transaction ${txId?.substring(0, 6)}...`, path: "#" },
+    { label: t("agreement_list.title"), path: "/list_of_agreements" },
+    {
+      label: `${t("details_view.title_tx_id")} ${txId?.substring(0, 6)}...`,
+      path: "#",
+    },
   ];
 
   return (
@@ -188,7 +191,7 @@ const AgreementDetailsPage = () => {
         breadcrumbs={breadcrumbsData}
         mainTitle={mainTitle}
         subTitle={subTitle}
-        createdDate={`${T.label_published_at}${dateStr}`}
+        createdDate={`${t("details_view.label_published_at")}${dateStr}`}
         onGenerateReport={handleGenerateReport}
       />
 
@@ -212,7 +215,7 @@ const AgreementDetailsPage = () => {
             marginBottom: "5px",
           }}
         >
-          {T.label_description}
+          {t("details_view.label_description")}
         </p>
         <p
           style={{
@@ -322,6 +325,8 @@ const AppRoutes = () => {
               </>
             }
           />
+          <Route path="/about_us" element={<AboutUsView />} />
+          <Route path="/support" element={<SupportView />} />
         </Routes>
       </div>
       <Footer />

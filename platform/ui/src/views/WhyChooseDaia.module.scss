@@ -8,14 +8,62 @@
     padding-right: tv.$spacing-4;
 }
 
+.toggleContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: tv.$spacing-8;
+    margin-bottom: tv.$spacing-12;
+    background-color: tv.$gray-200; 
+    border-radius: 9999px;
+    padding: 0.25rem;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.toggleButton {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-weight: 600;
+    color: tv.$gray-700; 
+    border-radius: 9999px;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.toggleActive {
+    background-color: tv.$white; 
+    color: tv.$purple-600; 
+    box-shadow: tv.$shadow-md;
+}
 .contentGrid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; 
     gap: tv.$spacing-12; 
     align-items: center;
 
     @media (min-width: tv.$md) {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: tv.$spacing-16;
+    }
+}
+
+.gridReversed {
+    @media (min-width: tv.$md) {
+        grid-template-areas: "image features";
+    }
+
+    & > :nth-child(1) {
+        @media (min-width: tv.$md) {
+            grid-area: features;
+        }
+    }
+    & > :nth-child(2) {
+        @media (min-width: tv.$md) {
+            grid-area: image;
+        }
     }
 }
 
@@ -25,8 +73,8 @@
 
     @media (min-width: tv.$md) {
         margin-top: tv.$spacing-12;
-        margin-left: tv.$spacing-32;
-        padding-right: tv.$spacing-16;
+        margin-left: tv.$spacing-16;
+        padding-right: tv.$spacing-8;
     }
 }
 
@@ -34,15 +82,16 @@
     position: relative;
     
     @media (min-width: tv.$md) {
-        margin-right: tv.$spacing-32;
-        margin-left: tv.$spacing-16;
+        margin-right: tv.$spacing-16;
+        margin-left: tv.$spacing-8;
     }
 }
+
 .imageStyle {
     width: 100%;
     height: auto;
     max-height: 24rem; 
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 0.75rem; 
     box-shadow: tv.$shadow-xl; 
     background-color: tv.$white; 
@@ -59,4 +108,8 @@
     width: 1.25rem; 
     height: 1.25rem; 
     filter: invert(100%); 
+}
+
+.crossIconStyle {
+    filter: invert(20%) sepia(80%) saturate(6000%) hue-rotate(350deg) brightness(80%);
 }
