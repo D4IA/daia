@@ -2,7 +2,7 @@ import {
 	DaiaAgreementReferenceResult,
 	DaiaAgreementSchema,
 	DaiaOfferContentSchema,
-} from "@daia/proto";
+} from "@daia/core";
 import z from "zod/v3";
 
 export enum DaiaLanggraphMethodId {

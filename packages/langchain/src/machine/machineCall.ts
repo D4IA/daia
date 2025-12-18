@@ -3,18 +3,18 @@ import {
 	DaiaMessage,
 	DaiaMessageType,
 	DaiaMessageUtil,
-} from "@daia/proto";
+} from "@daia/core";
 import { Draft, produce } from "immer";
 import { DaiaLanggraphMethodId, DaiaLanggraphState } from "../state";
 import { DaiaLanggraphMachineStatus } from "../state/innerState";
-import { DaiaStateMachineContext } from "./machine";
+import { DaiaStateMachineConfig } from "./machine";
 import { DaiaStateMachineOutput, DaiaStateMachineTargetNode } from "./machineDefines";
 
 export class DaiaStateMachineCall {
 	private cachedMessage: DaiaMessage | null | undefined = undefined;
 	constructor(
 		private readonly state: Readonly<DaiaLanggraphState>,
-		private readonly context: DaiaStateMachineContext,
+		private readonly context: DaiaStateMachineConfig,
 	) {}
 
 	private get input() {

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { KeysetOfferSigner, SecretKey, MapOfferAgreementReferencer } from "../../sign";
+import { KeysetOfferSigner, SecretKey, MapOfferAgreementReferencer } from "..";
 
 describe("KeysetOfferSigner", () => {
 	const signedByA = "sig-a";

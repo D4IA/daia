@@ -1,4 +1,4 @@
-import { DaiaAgreementResponseSchema, DaiaOfferContentSchema } from "@daia/proto";
+import { DaiaAgreementResponseSchema, DaiaOfferContentSchema } from "@daia/core";
 import z from "zod/v3";
 
 export const DaiaLanggraphStateOutput = z.object({

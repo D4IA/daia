@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
-import { OfferSignerImpl } from "../../sign";
+import { OfferSignerImpl } from "..";
 import { AgreementVerifierImpl } from "../../verify";
 import { TransactionLoader } from "../../blockchain";
 import { DaiaPaymentRequirementAuthType, DaiaRequirementType } from "../../defines";
 import { DaiaTransactionData, DaiaTransactionDataType } from "../../blockchain/data";
 import { AgreementVerifyQueryType } from "../../verify/defines";
-import { UnsatisfiedOfferRequirementsError } from "../../sign/errors";
+import { UnsatisfiedOfferRequirementsError } from "../errors";
 
 const makeOffer = (requirements: Record<string, any>) => ({
 	offerTypeIdentifier: "offer",

@@ -1,4 +1,4 @@
-import { DaiaOfferContent } from "@daia/proto";
+import { DaiaOfferContent } from "@daia/core";
 import { DaiaLanggraphNamespacedState, DaiaLanggraphState } from "./state";
 import { DaiaLanggraphMethodCall } from "./input";
 

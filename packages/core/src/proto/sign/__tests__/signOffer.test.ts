@@ -1,10 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { DaiaPaymentRequirementAuthType, DaiaRequirementType, DaiaProofSign } from "../../defines";
-import {
-	OfferSignerImpl,
-	UnsatisfiedOfferRequirementsError,
-	SYMBOL_OFFER_SELF_PAID,
-} from "../../sign";
+import { OfferSignerImpl, UnsatisfiedOfferRequirementsError, SYMBOL_OFFER_SELF_PAID } from "..";
 
 const makeOffer = (requirements: Record<string, any>) => ({
 	offerTypeIdentifier: "offer",
