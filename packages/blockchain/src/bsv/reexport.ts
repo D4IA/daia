@@ -1,3 +1,3 @@
-import { PrivateKey, PublicKey } from "@bsv/sdk";
+import { PrivateKey, PublicKey, Signature } from "@bsv/sdk";
 
-export { PrivateKey, PublicKey };
+export { PrivateKey, PublicKey, Signature };

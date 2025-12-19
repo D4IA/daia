@@ -11,7 +11,7 @@ export const DaiaAgreementSchema = z.object({
 	/**
 	 * Map of requirement id to proof for that requirement.
 	 */
-	proofs: z.map(z.string(), DaiaOfferProofSchema),
+	proofs: z.record(DaiaOfferProofSchema),
 });
 
 export type DaiaAgreement = z.infer<typeof DaiaAgreementSchema>;

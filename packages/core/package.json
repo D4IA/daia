@@ -38,9 +38,13 @@
     "vitest": "3.2.4",
     "rimraf": "~6.0.1",
     "jsdom": "~27.2.0",
-    "zod": "~4.1.13"
+    "zod": "~4.1.13",
+    "@bsv/sdk": "~1.9.29"
   },
   "peerDependencies": {
     "zod": "~4.1.13"
+  },
+  "dependencies": {
+    "@daia/blockchain": "workspace:*"
   }
 }

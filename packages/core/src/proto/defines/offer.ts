@@ -9,7 +9,7 @@ export const DaiaOfferContentSchema = z.object({
 	/**
 	 * Map of requirement id to requirement.
 	 */
-	requirements: z.map(z.string(), DaiaOfferRequirementSchema),
+	requirements: z.record(DaiaOfferRequirementSchema),
 });
 
 export type DaiaOfferContent = z.infer<typeof DaiaOfferContentSchema>;

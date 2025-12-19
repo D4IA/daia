@@ -56,21 +56,29 @@ export const DaiaRequirementPaymentSchema = z.object({
 			type: z.literal(DaiaPaymentRequirementAuthType.REMOTE),
 
 			/**
-			 * Nonce, which identifies transaction that would staify this requirement.
+			 * Nonce, which identifies transaction that would satisfy this requirement.
 			 *
-			 * Used to prevent old trnasaction reusing
+			 * Used to prevent old transaction reusing.
 			 */
 			paymentNonce: z.string(),
-
-			/**
-			 * If self-paid, this one is empty string.
-			 */
-			txId: z.string(),
 		}),
 	]),
 });
 
-export const DataRequirementAgreementReferneceSchema = z.object({
+export enum DaiaRemoteAgreementPointerType {
+	TX_ID = "tx-id",
+}
+
+export const DaiaRemoteAgreementPointerSchema = z.discriminatedUnion("type", [
+	z.object({
+		type: z.literal(DaiaRemoteAgreementPointerType.TX_ID),
+		txId: z.string(),
+	}),
+]);
+
+export type DaiaRemoteAgreementPointer = z.infer<typeof DaiaRemoteAgreementPointerSchema>;
+
+export const DataRequirementAgreementReferenceSchema = z.object({
 	type: z.literal(DaiaRequirementType.AGREEMENT_REFERENCE),
 
 	/**
@@ -83,7 +91,7 @@ export const DataRequirementAgreementReferneceSchema = z.object({
 	/**
 	 * Used when agreement creator wants to reference some agreement.
 	 */
-	url: z.string().nullable(),
+	pointer: DaiaRemoteAgreementPointerSchema,
 });
 
 export const DaiaProofAgreementReferenceSchema = z.object({
@@ -98,7 +106,7 @@ export const DaiaProofAgreementReferenceSchema = z.object({
 export const DaiaOfferRequirementSchema = z.discriminatedUnion("type", [
 	DaiaRequirementSignSchema,
 	DaiaRequirementPaymentSchema,
-	DataRequirementAgreementReferneceSchema,
+	DataRequirementAgreementReferenceSchema,
 ]);
 
 export const DaiaProofSignSchema = z.object({
@@ -114,7 +122,7 @@ export const DaiaProofSignSchema = z.object({
 	signeeNonce: z.string(),
 
 	/**
-	 * Signed offer in serailized form along with both nonces.
+	 * Signed offer in serialized form along with both nonces.
 	 */
 	signature: z.string(),
 });
@@ -135,14 +143,20 @@ export const DaiaOfferProofSchema = z.discriminatedUnion("type", [
 ]);
 
 export type DaiaOfferRequirement = z.infer<typeof DaiaOfferRequirementSchema>;
-export type DaiaRequirementSign = Extract<DaiaOfferRequirement, { type: "sign" }>;
-export type DaiaRequirementPayment = Extract<DaiaOfferRequirement, { type: "payment" }>;
+export type DaiaRequirementSign = Extract<DaiaOfferRequirement, { type: DaiaRequirementType.SIGN }>;
+export type DaiaRequirementPayment = Extract<
+	DaiaOfferRequirement,
+	{ type: DaiaRequirementType.PAYMENT }
+>;
 export type DaiaRequirementAgreementReference = Extract<
 	DaiaOfferRequirement,
-	{ type: "agreement-reference" }
+	{ type: DaiaRequirementType.AGREEMENT_REFERENCE }
 >;
 
 export type DaiaOfferProof = z.infer<typeof DaiaOfferProofSchema>;
-export type DaiaProofSign = Extract<DaiaOfferProof, { type: "sign" }>;
-export type DaiaProofPayment = Extract<DaiaOfferProof, { type: "payment" }>;
-export type DaiaProofAgreementReference = Extract<DaiaOfferProof, { type: "agreement-reference" }>;
+export type DaiaOfferProofSign = Extract<DaiaOfferProof, { type: DaiaRequirementType.SIGN }>;
+export type DaiaOfferProofPayment = Extract<DaiaOfferProof, { type: DaiaRequirementType.PAYMENT }>;
+export type DaiaOfferProofAgreementReference = Extract<
+	DaiaOfferProof,
+	{ type: DaiaRequirementType.AGREEMENT_REFERENCE }
+>;

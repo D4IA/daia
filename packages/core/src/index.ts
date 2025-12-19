@@ -1,4 +1,4 @@
-export * from "./proto/sign";
-export * from "./proto/verify";
+export * from "./proto/ops/sign";
+export * from "./proto/ops/verify";
 export * from "./proto/defines";
 export * from "./proto/messages";
