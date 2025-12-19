@@ -131,18 +131,25 @@ export class BsvTransactionParser implements BlockchainTransactionParser {
 			}
 
 			// Convert hex to UTF-8 string
-			const bytes = Buffer.from(dataHex, "hex");
-			return bytes.toString("utf8");
-		} catch {
-			return null;
-		}
+		const bytes = this.hexToUint8Array(dataHex);
+		return new TextDecoder().decode(bytes);
+	} catch {
+		return null;
 	}
+}
 
-	private isP2PKHScript(scriptHex: string): boolean {
-		// P2PKH pattern: 76a914<20 bytes>88ac (25 bytes total = 50 hex chars)
-		return scriptHex.length === 50 && scriptHex.startsWith("76a914") && scriptHex.endsWith("88ac");
+private hexToUint8Array(hex: string): Uint8Array {
+	const bytes = new Uint8Array(hex.length / 2);
+	for (let i = 0; i < hex.length; i += 2) {
+		bytes[i / 2] = parseInt(hex.slice(i, i + 2), 16);
 	}
+	return bytes;
+}
 
+private isP2PKHScript(scriptHex: string): boolean {
+	// P2PKH pattern: 76a914<20 bytes>88ac (25 bytes total = 50 hex chars)
+	return scriptHex.length === 50 && scriptHex.startsWith("76a914") && scriptHex.endsWith("88ac");
+}
 	private extractP2PKHAddress(scriptHex: string): string {
 		// Extract the 20-byte public key hash from the script
 		// Pattern: 76a914<20 bytes>88ac

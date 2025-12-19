@@ -103,7 +103,7 @@ export class BsvTransactionFactory implements BlockchainTransactionFactory {
 
 	private createOpReturnScript(data: string): LockingScript {
 		// OP_FALSE OP_RETURN <data>
-		const dataBytes = Buffer.from(data, "utf8");
+		const dataBytes = new TextEncoder().encode(data);
 		const length = dataBytes.length;
 
 		// Build script: OP_FALSE(0x00) OP_RETURN(0x6a) PUSHDATA
@@ -121,7 +121,13 @@ export class BsvTransactionFactory implements BlockchainTransactionFactory {
 			script += "4d" + lengthHex.slice(2, 4) + lengthHex.slice(0, 2); // little-endian
 		}
 
-		script += dataBytes.toString("hex");
+		script += this.uint8ArrayToHex(dataBytes);
 		return LockingScript.fromHex(script);
+	}
+
+	private uint8ArrayToHex(bytes: Uint8Array): string {
+		return Array.from(bytes)
+			.map((byte) => byte.toString(16).padStart(2, "0"))
+			.join("");
 	}
 }
