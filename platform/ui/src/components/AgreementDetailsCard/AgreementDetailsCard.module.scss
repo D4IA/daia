@@ -16,12 +16,19 @@ $font-medium: 500;
 $font-semibold: 600;
 
 .cardWrapper {
-    width: 450px;
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+    
     background-color: $white;
     padding: $spacing-6;
     border-radius: $spacing-2;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     border: 1px solid $gray-100;
+
+    @media (max-width: 480px) {
+        padding: $spacing-4;
+    }
 }
 
 .cardHeader {

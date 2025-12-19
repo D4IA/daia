@@ -50,3 +50,7 @@
     background: white !important;
   }
 }
+
+.bg-gray-50 {
+  overflow-x: hidden;
+}

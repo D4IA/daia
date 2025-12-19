@@ -74,7 +74,9 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
       setValidationError(null);
 
       try {
-        const response = await fetch(`${API_BASE_URL}/agreements/${address}`);
+        const response = await fetch(
+          `${API_BASE_URL}/agreements/address/${address}`
+        );
 
         if (!response.ok) {
           throw new Error(t("search_view.msg_api_error"));
@@ -273,13 +275,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
   };
 
   const handleItemClick = (txId: string) => {
-    const currentWallet = walletAddress.trim();
-
-    if (!currentWallet) {
-      console.error("Cannot navigate: Wallet address is missing.");
-      return;
-    }
-    navigate(`/agreement_details/${txId}/${currentWallet}`);
+    navigate(`/agreement_details/${txId}`);
   };
 
   const renderHeader = () => {

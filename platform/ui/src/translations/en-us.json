@@ -36,6 +36,8 @@
   },
   "why_choose_daia": {
     "title": "Why Choose DAIA?",
+    "toggle_with_daia": "With DAIA",
+    "toggle_without_daia": "Without DAIA",
     "features": [
       {
         "title": "Automatic Agreement Recording",
@@ -99,7 +101,13 @@
   },
   "agreement_list": {
     "title": "Find Your Agreement",
-    "subtitle": "Enter your wallet address to find agreements made by your AI agents."
+    "subtitle": "Enter your wallet address to find agreements made by your AI agents.",
+    "status_published": "Published on blockchain",
+    "status_failed": "Failed to publish on blockchain",
+    "status_verifying": "Verifying on blockchain",
+    "status_unknown": "Unknown status",
+    "filter_txid_placeholder": "Filter by Transaction ID (TxID)",
+    "filter_date_placeholder": "Filter by Date"
   },
   "no_agreements_found": {
     "title": "No agreements found!",
@@ -174,7 +182,8 @@
     "title_tx_id": "Transaction ID:",
     "label_published_at": "Published at: ",
     "label_description": "Agreement Description:",
-    "msg_content_unavailable": "Details not available"
+    "msg_content_unavailable": "Details not available",
+    "btn_generate_report": "Generate PDF Report"
   },
   "ready_to_explore_documentation": {
     "title": "Ready to integrate DAIA?",
@@ -245,5 +254,41 @@
     "pl": "Polish",
     "hi": "Hindi",
     "pz": "Poznań Dialect"
+  },
+  "agreement_requirements": {
+    "card_title": "Agreement Requirements",
+    "label_type": "Requirement Type",
+    "label_pubkey": "Proposer Public Key (Pubkey)",
+    "label_nonce": "Offerer Nonce"
+  },
+  "agreement_proofs": {
+    "card_title": "Agreement Proofs",
+    "msg_not_available": "Proofs not yet available.",
+    "label_proof_type": "Proof Type",
+    "label_signee_nonce": "Signee Nonce",
+    "label_digital_signature": "Digital Signature",
+    "tooltip_proof_type": "The type of cryptographic proof included.",
+    "tooltip_signee_nonce": "Random nonce used to prevent replay attacks.",
+    "tooltip_digital_signature": "Cryptographic signature proving agreement acceptance."
+  },
+  "pdf": {
+    "title": "Agreement Details Report",
+    "subtitle": "Secure agreement recording for AI agents on blockchain.",
+    "generated_at": "Generated at:",
+    "transaction_id": "Transaction ID:",
+    "description": "Agreement Description:",
+    "published_at": "Published at:",
+    "requirements": "Agreement Requirements",
+    "field": "Field",
+    "value": "Value",
+    "req_type": "Requirement Type:",
+    "pub_key": "Proposer Public Key (Pubkey):",
+    "offerer_nonce": "Offerer Nonce:",
+    "proofs": "Agreement Proofs",
+    "proof_type": "Proof Type:",
+    "signee_nonce": "Signee Nonce:",
+    "signature": "Digital Signature:",
+    "no_proofs": "Proofs not yet available.",
+    "footer": "© 2025 DAIA. All rights reserved."
   }
 }

@@ -6,9 +6,9 @@
     "about_us": "O nas"
   },
   "landing_screen": {
-    "title": "Pozwól Agentom AI Uzgadniać – i Rejestrować to dla Ciebie",
+    "title": "Pozwól Agentom AI Uzgadniać - i Rejestrować to dla Ciebie",
     "subtitle_1": "Twoje urządzenia rozmawiają, negocjują i uzgadniają warunki.",
-    "subtitle_2": "DAIA zapewnia, że te umowy są rejestrowane i weryfikowalne — automatycznie.",
+    "subtitle_2": "DAIA zapewnia, że te umowy są rejestrowane i weryfikowalne - automatycznie.",
     "button": "Znajdź Moją Umowę"
   },
   "how_daia_works": {
@@ -36,6 +36,8 @@
   },
   "why_choose_daia": {
     "title": "Dlaczego DAIA?",
+    "toggle_with_daia": "Z DAIA",
+    "toggle_without_daia": "Bez DAIA",
     "features": [
       {
         "title": "Automatyczne Rejestrowanie Umów",
@@ -50,7 +52,20 @@
         "description": "Zaawansowane szyfrowanie chroni poufne szczegóły umowy, zachowując jednocześnie możliwość weryfikacji."
       }
     ],
-    "source": "źródło: https://share.google/images/EFEfDvK70ZGFHyGcn"
+    "features_without": [
+      {
+        "title": "Wymagana ręczna weryfikacja",
+        "description": "Umowy opierają się na scentralizowanych logach lub wymagają ręcznych kontroli, co prowadzi do sporów i opóźnień."
+      },
+      {
+        "title": "Ryzyko manipulacji",
+        "description": "Tradycyjne bazy danych są podatne na modyfikacje, co sprawia, że historia porozumień jest niewiarygodna."
+      },
+      {
+        "title": "Narażenie danych",
+        "description": "Wrażliwe dane agentów i warunki negocjacji są często przechowywane otwartym tekstem lub w podatnych systemach."
+      }
+    ]
   },
   "explore_section": {
     "title": "Gotowy, aby Odkryć DAIA?",
@@ -86,7 +101,13 @@
   },
   "agreement_list": {
     "title": "Znajdź Swoją Umowę",
-    "subtitle": "Wprowadź adres swojego portfela, aby znaleźć umowy zawarte przez Twoich agentów AI."
+    "subtitle": "Wprowadź adres swojego portfela, aby znaleźć umowy zawarte przez Twoich agentów AI.",
+    "status_published": "Opublikowano w blockchainie",
+    "status_failed": "Błąd publikacji w blockchainie",
+    "status_verifying": "Weryfikacja w blockchainie",
+    "status_unknown": "Status nieznany",
+    "filter_txid_placeholder": "Filtruj po ID transakcji (TxID)",
+    "filter_date_placeholder": "Filtruj po dacie"
   },
   "no_agreements_found": {
     "title": "Nie znaleziono umów!",
@@ -161,7 +182,8 @@
     "title_tx_id": "ID Transakcji:",
     "label_published_at": "Opublikowano: ",
     "label_description": "Opis Umowy:",
-    "msg_content_unavailable": "Szczegóły niedostępne"
+    "msg_content_unavailable": "Szczegóły niedostępne",
+    "btn_generate_report": "Generuj raport PDF"
   },
   "ready_to_explore_documentation": {
     "title": "Gotowy do integracji DAIA?",
@@ -235,5 +257,21 @@
     "pl": "Polski",
     "hi": "Hindi",
     "pz": "Gwara Poznańska"
+  },
+  "agreement_requirements": {
+    "card_title": "Wymagania Porozumienia",
+    "label_type": "Typ wymagania",
+    "label_pubkey": "Klucz publiczny (Pubkey)",
+    "label_nonce": "Offerer Nonce"
+  },
+  "agreement_proofs": {
+    "card_title": "Dowody Porozumienia",
+    "msg_not_available": "Dowody nie są jeszcze dostępne.",
+    "label_proof_type": "Typ dowodu",
+    "label_signee_nonce": "Signee Nonce",
+    "label_digital_signature": "Podpis cyfrowy",
+    "tooltip_proof_type": "Typ dołączonego dowodu kryptograficznego.",
+    "tooltip_signee_nonce": "Losowy numer używany do zapobiegania atakom typu replay.",
+    "tooltip_digital_signature": "Podpis kryptograficzny potwierdzający akceptację porozumienia."
   }
 }

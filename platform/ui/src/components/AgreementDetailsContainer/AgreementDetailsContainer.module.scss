@@ -11,9 +11,16 @@
         flex-direction: column;
         gap: 20px;
     }
+    
+    @media (max-width: 640px) {
+        gap: tv.$spacing-4;
+    }
 }
 
 .requirementsColumn,
 .proofsColumn {
     flex: 1 1 50%;
+    @media (max-width: 992px) {
+        flex: 1 1 100%;
+    }
 }

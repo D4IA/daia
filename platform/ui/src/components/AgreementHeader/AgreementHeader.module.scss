@@ -1,3 +1,5 @@
+@use '../../styles/tailwind-vars' as tv; 
+
 $color-text-dark: #1a202c;
 $color-text-medium: #4a5568;
 $color-text-light: #718096;
@@ -10,6 +12,7 @@ $color-button-border: #cbd5e0;
   margin: 0 auto;
   margin-bottom: 24px;
   box-sizing: border-box;
+  padding: tv.$spacing-4;
 }
 
 .breadcrumbs {
@@ -56,6 +59,12 @@ padding-bottom: 30px;
   font-weight: 700;
   color: $color-text-dark;
   margin: 0;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  
+  @media (max-width: 640px) {
+      font-size: tv.$text-xl;
+  }
 }
 
 .subTitle {

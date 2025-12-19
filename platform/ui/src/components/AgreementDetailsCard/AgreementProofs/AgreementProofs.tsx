@@ -1,5 +1,7 @@
 import React from "react";
 import CardContainer from "../AgreementDetailsCard";
+import { useTranslation } from "react-i18next";
+import styles from "./AgreementProofs.module.scss";
 
 interface AgreementProofsProps {
   proofs: any;
@@ -12,32 +14,15 @@ const ProofRow: React.FC<{
   isHash?: boolean;
   fullValue?: string;
 }> = ({ label, value, tooltip, isHash = false, fullValue }) => (
-  <div style={{ marginBottom: "18px" }}>
-    <div style={{ display: "flex", alignItems: "center", marginBottom: "4px" }}>
-      <h4 style={{ fontSize: "0.9rem", fontWeight: 700, color: "black" }}>
-        {label}
-      </h4>
-      <span
-        title={tooltip}
-        style={{
-          marginLeft: "5px",
-          cursor: "help",
-          color: "#666",
-          fontWeight: 600,
-        }}
-      >
+  <div className={styles.proofRowContainer}>
+    <div className={styles.labelWrapper}>
+      <h4 className={styles.proofLabel}>{label}</h4>
+      <span title={tooltip} className={styles.tooltipIcon}>
         ?
       </span>
     </div>
     <div
-      style={{
-        fontSize: "0.85rem",
-        color: "black",
-        fontFamily: isHash ? "monospace" : "inherit",
-        overflowWrap: "break-word",
-        textAlign: "left",
-        paddingTop: "2px",
-      }}
+      className={`${styles.proofValue} ${isHash ? styles.hashValue : ""}`}
       title={fullValue || value}
     >
       {value}
@@ -46,11 +31,13 @@ const ProofRow: React.FC<{
 );
 
 const AgreementProofs: React.FC<AgreementProofsProps> = ({ proofs }) => {
+  const { t } = useTranslation();
+
   if (!proofs || Object.keys(proofs).length === 0) {
     return (
-      <CardContainer icon="lock" title="Agreement Proofs">
-        <div style={{ fontStyle: "italic", color: "#888", padding: "10px 0" }}>
-          Proofs not yet available.
+      <CardContainer icon="lock" title={t("agreement_proofs.card_title")}>
+        <div className={styles.noProofsMessage}>
+          {t("agreement_proofs.msg_not_available")}
         </div>
       </CardContainer>
     );
@@ -69,27 +56,29 @@ const AgreementProofs: React.FC<AgreementProofsProps> = ({ proofs }) => {
   };
 
   return (
-    <CardContainer icon="lock" title="Agreement Proofs">
-      <ProofRow
-        label="Proof Type"
-        value={type}
-        tooltip="The type of cryptographic proof included."
-      />
+    <CardContainer icon="lock" title={t("agreement_proofs.card_title")}>
+      <div className={styles.cardContent}>
+        <ProofRow
+          label={t("agreement_proofs.label_proof_type")}
+          value={type}
+          tooltip={t("agreement_proofs.tooltip_proof_type")}
+        />
 
-      <ProofRow
-        label="Signee Nonce"
-        value={signeeNonce}
-        isHash={true}
-        tooltip="Random nonce used to prevent replay attacks."
-      />
+        <ProofRow
+          label={t("agreement_proofs.label_signee_nonce")}
+          value={signeeNonce}
+          isHash={true}
+          tooltip={t("agreement_proofs.tooltip_signee_nonce")}
+        />
 
-      <ProofRow
-        label="Digital Signature"
-        value={formatShortHash(signature, 60)}
-        fullValue={signature}
-        isHash={true}
-        tooltip="Cryptographic signature proving agreement acceptance."
-      />
+        <ProofRow
+          label={t("agreement_proofs.label_digital_signature")}
+          value={formatShortHash(signature, 60)}
+          fullValue={signature}
+          isHash={true}
+          tooltip={t("agreement_proofs.tooltip_digital_signature")}
+        />
+      </div>
     </CardContainer>
   );
 };

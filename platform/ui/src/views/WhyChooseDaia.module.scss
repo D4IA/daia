@@ -38,6 +38,7 @@
     color: tv.$purple-600; 
     box-shadow: tv.$shadow-md;
 }
+
 .contentGrid {
     display: grid;
     grid-template-columns: 1fr; 
@@ -80,6 +81,11 @@
 
 .imageContainer {
     position: relative;
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
     
     @media (min-width: tv.$md) {
         margin-right: tv.$spacing-16;
@@ -88,26 +94,21 @@
 }
 
 .imageStyle {
-    width: 100%;
+    width: auto;
     height: auto;
     max-height: 24rem; 
+    max-width: 100%;
     object-fit: contain;
     border-radius: 0.75rem; 
     box-shadow: tv.$shadow-xl; 
-    background-color: tv.$white; 
-}
-
-.sourceText {
-    color: tv.$gray-500;
-    font-size: 0.75rem; 
-    margin-top: 0.75rem; 
-    text-align: left;
+    background-color: transparent; 
 }
 
 .checkIconStyle {
     width: 1.25rem; 
     height: 1.25rem; 
     filter: invert(100%); 
+    transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .crossIconStyle {

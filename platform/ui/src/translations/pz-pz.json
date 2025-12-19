@@ -35,7 +35,9 @@
     ]
   },
   "why_choose_daia": {
-    "title": "Czemu my, a nie łone?",
+    "title": "Czemu warto brać DAIA?",
+    "toggle_with_daia": "Z DAIA",
+    "toggle_without_daia": "Bez DAIA",
     "features": [
       {
         "title": "Samoczynne szrajbowanie sztamy",
@@ -50,7 +52,20 @@
         "description": "Fajne szyfrowanie trzyma detale sztamy cicho, ale gruntować się da."
       }
     ],
-    "source": "źródło: https://share.google/images/EFEfDvK70ZGFHyGcn"
+    "features_without": [
+      {
+        "title": "Ręczne dłubanie i sprawdzanie",
+        "description": "Sztamy wiszą na centralnych logach albo trza je ręcznie sprawdzać, co rodzi kłótnie i spóźnienia."
+      },
+      {
+        "title": "Ryzyko, że kto zamiesza",
+        "description": "Zwykłe bazy danych idzie przerychtować, przez co historia sztamy nie jest warta złamanego dychta"
+      },
+      {
+        "title": "Wszystko na wierzchu",
+        "description": "Prywatne dane ajentów i warunki klangrowania są często szrajbowane otwartym tekstem, tam gdzie każdy może zajrzeć."
+      }
+    ]
   },
   "explore_section": {
     "title": "Szwajdrować DAIA?",
@@ -86,7 +101,13 @@
   },
   "agreement_list": {
     "title": "Znajdź swoją sztamę",
-    "subtitle": "Wklep adres portmonetki, coby znaleźć sztamy, co je Wasa ajenci zrobili."
+    "subtitle": "Wklep adres portmonetki, coby znaleźć sztamy, co je Wasa ajenci zrobili.",
+    "status_published": "Zaszrajbowane na blokklajnie",
+    "status_failed": "Skopsane, nie weszło na blokklajn",
+    "status_verifying": "Gruntowanie na blokklajnie",
+    "status_unknown": "Nie wiadomo co się dzieje",
+    "filter_txid_placeholder": "Szukaj po numerze sztrycha (TxID)",
+    "filter_date_placeholder": "Szukaj po dacie"
   },
   "no_agreements_found": {
     "title": "Nie ma żadnych sztam!",
@@ -161,7 +182,8 @@
     "title_tx_id": "Numer sztrycha:",
     "label_published_at": "Poszło w świat o: ",
     "label_description": "Jak wygląda sztama:",
-    "msg_content_unavailable": "Nie ma detali"
+    "msg_content_unavailable": "Nie ma detali",
+    "btn_generate_report": "Szrajbnij raport w PDFie"
   },
   "ready_to_explore_documentation": {
     "title": "Gotowi do wklepywania DAIA?",
@@ -235,5 +257,21 @@
     "pl": "Polski",
     "hi": "Hinduski",
     "pz": "Poznańska Gwôra"
+  },
+  "agreement_requirements": {
+    "card_title": "Wymogi do sztamy",
+    "label_type": "Typ wihajstra",
+    "label_pubkey": "Klucz publiczny (Pubkey)",
+    "label_nonce": "Numer (Offerer Nonce)"
+  },
+  "agreement_proofs": {
+    "card_title": "Dowody na sztamę",
+    "msg_not_available": "Jeszcze nie zaszrajbowano dowodów.",
+    "label_proof_type": "Typ dowodu",
+    "label_signee_nonce": "Numer (Signee Nonce)",
+    "label_digital_signature": "Cyfrowy popis",
+    "tooltip_proof_type": "Jaki to wihajster do pilnowania cichości.",
+    "tooltip_signee_nonce": "Numer, coby nikt nie wycyckał transakcji dwa razy.",
+    "tooltip_digital_signature": "Kryptograficzny popis, co gruntuje zgodę na sztamę."
   }
 }

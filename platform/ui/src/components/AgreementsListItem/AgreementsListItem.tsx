@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./AgreementsListItem.module.scss";
+import { useTranslation } from "react-i18next";
 
 import CheckIcon from "../../assets/check.svg";
 import CloseIcon from "../../assets/close.svg";
@@ -21,54 +22,49 @@ const AgreementListItem: React.FC<AgreementListItemProps> = ({
   txId,
   onClick,
 }) => {
+  const { t } = useTranslation();
+
   const getStatusInfo = (currentStatus: AgreementStatus) => {
     switch (currentStatus) {
       case "Published":
         return {
           icon: CheckIcon,
-          text: "Published on blockchain",
-          colorClass: styles.textSuccess,
+          text: t("agreement_list.status_published"),
           badgeClass: styles.badgeSuccess,
+          colorClass: styles.textSuccess,
         };
       case "Failed":
         return {
           icon: CloseIcon,
-          text: "Failed to publish on blockchain",
-          colorClass: styles.textFailed,
+          text: t("agreement_list.status_failed"),
           badgeClass: styles.badgeFailed,
+          colorClass: styles.textFailed,
         };
       case "Verifying":
         return {
           icon: WaitingIcon,
-          text: "Verifying on blockchain",
-          colorClass: styles.textVerifying,
+          text: t("agreement_list.status_verifying"),
           badgeClass: styles.badgeVerifying,
+          colorClass: styles.textVerifying,
         };
       default:
         return {
           icon: WaitingIcon,
-          text: "Unknown status",
-          colorClass: styles.textDefault,
+          text: t("agreement_list.status_unknown"),
           badgeClass: styles.badgeDefault,
+          colorClass: styles.textDefault,
         };
     }
   };
 
   const statusInfo = getStatusInfo(status);
 
-  const formatTxId = (hash: string) => {
-    if (!hash) return "";
-    return hash;
-  };
-
-  const mainTxIdDisplay = formatTxId(txId);
-
   return (
     <div className={styles.itemContainer} onClick={onClick}>
       <div className={styles.itemContent}>
         <div className={styles.mainInfo}>
           <span className={styles.titleText} title={txId}>
-            {mainTxIdDisplay}
+            {txId}
           </span>
 
           <span className={`${styles.statusBadge} ${statusInfo.badgeClass}`}>

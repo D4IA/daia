@@ -36,6 +36,8 @@
   },
   "why_choose_daia": {
     "title": "DAIA क्यों चुनें?",
+    "toggle_with_daia": "DAIA के साथ",
+    "toggle_without_daia": "DAIA के बिना",
     "features": [
       {
         "title": "स्वचालित समझौता रिकॉर्डिंग",
@@ -50,7 +52,20 @@
         "description": "उन्नत एन्क्रिप्शन संवेदनशील समझौते के विवरण को गोपनीय रखता है, जबकि सत्यापन की क्षमता बनी रहती है"
       }
     ],
-    "source": "स्रोत: https://share.google/images/EFEfDvK70ZGFHyGcn"
+    "features_without": [
+      {
+        "title": "मैन्युअल सत्यापन की आवश्यकता",
+        "description": "समझौते केंद्रीकृत लॉग पर निर्भर करते हैं या मैन्युअल जांच की आवश्यकता होती है, जिससे विवाद और देरी होती है।"
+      },
+      {
+        "title": "छेड़छाड़ का जोखिम",
+        "description": "पारंपरिक डेटाबेस बदलाव के प्रति संवेदनशील होते हैं, जिससे समझौते का इतिहास अविश्वसनीय हो जाता है।"
+      },
+      {
+        "title": "डेटा का खुलापन",
+        "description": "संवेदनशील एजेंट डेटा और बातचीत की शर्तें अक्सर प्लेन टेक्स्ट या असुरक्षित सिस्टम में संग्रहीत की जाती हैं।"
+      }
+    ]
   },
   "explore_section": {
     "title": "DAIA का पता लगाने के लिए तैयार हैं?",
@@ -86,7 +101,13 @@
   },
   "agreement_list": {
     "title": "अपना समझौता खोजें",
-    "subtitle": "अपने एआई एजेंटों द्वारा किए गए समझौतों को खोजने के लिए अपना वॉलेट पता दर्ज करें"
+    "subtitle": "अपने एआई एजेंटों द्वारा किए गए समझौतों को खोजने के लिए अपना वॉलेट पता दर्ज करें",
+    "status_published": "ब्लॉकचेन पर प्रकाशित",
+    "status_failed": "ब्लॉकचेन पर प्रकाशित करने में विफल",
+    "status_verifying": "ब्लॉकचेन पर सत्यापन हो रहा है",
+    "status_unknown": "अज्ञात स्थिति",
+    "filter_txid_placeholder": "लेनदेन आईडी (TxID) द्वारा फ़िल्टर करें",
+    "filter_date_placeholder": "तारीख द्वारा फ़िल्टर करें"
   },
   "no_agreements_found": {
     "title": "कोई समझौता नहीं मिला!",
@@ -161,7 +182,8 @@
     "title_tx_id": "लेनदेन आईडी:",
     "label_published_at": "प्रकाशित हुआ:",
     "label_description": "समझौते का विवरण:",
-    "msg_content_unavailable": "विवरण उपलब्ध नहीं है"
+    "msg_content_unavailable": "विवरण उपलब्ध नहीं है",
+    "btn_generate_report": "PDF रिपोर्ट तैयार करें"
   },
   "ready_to_explore_documentation": {
     "title": "DAIA को एकीकृत करने के लिए तैयार हैं?",
@@ -235,5 +257,21 @@
     "pl": "पोलिश",
     "hi": "हिंदी",
     "pz": "पॉज़्नान बोली"
+  },
+  "agreement_requirements": {
+    "card_title": "समझौता आवश्यकताएं",
+    "label_type": "आवश्यकता का प्रकार",
+    "label_pubkey": "प्रस्तावक सार्वजनिक कुंजी (Proposer Pubkey)",
+    "label_nonce": "ऑफ़रर नॉन्स (Offerer Nonce)"
+  },
+  "agreement_proofs": {
+    "card_title": "समझौता प्रमाण",
+    "msg_not_available": "प्रमाण अभी उपलब्ध नहीं हैं।",
+    "label_proof_type": "प्रमाण का प्रकार",
+    "label_signee_nonce": "सिग्नी नॉन्स (Signee Nonce)",
+    "label_digital_signature": "डिजिटल हस्ताक्षर",
+    "tooltip_proof_type": "शामिल किए गए क्रिप्टोग्राफिक प्रमाण का प्रकार।",
+    "tooltip_signee_nonce": "रीप्ले हमलों को रोकने के लिए उपयोग किया जाने वाला रैंडम नंबर।",
+    "tooltip_digital_signature": "क्रिप्टोग्राफिक हस्ताक्षर जो समझौते की स्वीकृति को प्रमाणित करता है।"
   }
 }

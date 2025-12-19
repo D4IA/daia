@@ -153,13 +153,11 @@ $font-semibold: 600;
 .langIcon {
     width: 1.75rem;
     object-fit: contain;
-    margin-right: tv.$spacing-2;
 }
 
 .langEmoji {
     font-size: 1.75rem;
     line-height: 1;
-    margin-right: tv.$spacing-2;
     display: inline-block;
 }
 
@@ -217,11 +215,16 @@ $font-semibold: 600;
         background-color: tv.$gray-50;
         color: tv.$black;
     }
+    .langIcon,
+    .langEmoji {
+        margin-right: tv.$spacing-2;
+    }
 }
 
 .langActive {
     font-weight: 600;
     color: tv.$purple-600 !important;
+    background-color: transparent !important;
 }
 
 .mobileSearchContainer {
@@ -300,4 +303,14 @@ $font-semibold: 600;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .langIcon,
+    .langEmoji {
+        margin-right: tv.$spacing-2;
+    }
+
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }

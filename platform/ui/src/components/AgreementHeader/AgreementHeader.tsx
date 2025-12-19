@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./AgreementHeader.module.scss";
 import { FaFilePdf } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 interface BreadcrumbItem {
   label: string;
@@ -22,6 +23,7 @@ const AgreementHeader: React.FC<AgreementHeaderProps> = ({
   createdDate,
   onGenerateReport,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className={styles.headerWrapper}>
       <div className={styles.breadcrumbs}>
@@ -40,7 +42,7 @@ const AgreementHeader: React.FC<AgreementHeaderProps> = ({
       <div className={styles.buttonRow}>
         <button className={styles.pdfButton} onClick={onGenerateReport}>
           <FaFilePdf className={styles.pdfIcon} />
-          Generate PDF Report
+          {t("details_view.btn_generate_report")}
         </button>
       </div>
 

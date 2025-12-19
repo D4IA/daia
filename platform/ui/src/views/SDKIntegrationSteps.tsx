@@ -1,5 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useInView } from "react-intersection-observer";
+import animationStyles from "../styles/_animations.module.scss";
 import CodeStep from "../components/CodeStep/CodeStep";
 import styles from "./SDKIntegrationSteps.module.scss";
 
@@ -8,6 +10,29 @@ interface Step {
   title: string;
   codeSnippet: string;
 }
+
+const AnimatedStep: React.FC<{ step: Step; index: number }> = ({
+  step,
+  index,
+}) => {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+  const animClass = `${animationStyles.reveal} ${animationStyles.slideRight} ${
+    inView ? animationStyles.isVisible : ""
+  }`;
+
+  return (
+    <div ref={ref} className={animClass}>
+      <CodeStep
+        stepNumber={step.number}
+        title={step.title}
+        codeSnippet={step.codeSnippet}
+      />
+    </div>
+  );
+};
 
 const SDKIntegrationSteps: React.FC = () => {
   const { t } = useTranslation();
@@ -27,14 +52,11 @@ const SDKIntegrationSteps: React.FC = () => {
         </h2>
         <p className="subtitle">{t("sdk_integration_steps.subtitle")}</p>
 
-        {steps.map((step) => (
-          <CodeStep
-            key={step.number}
-            stepNumber={step.number}
-            title={step.title}
-            codeSnippet={step.codeSnippet}
-          />
-        ))}
+        <div className={styles.stepsList}>
+          {steps.map((step, index) => (
+            <AnimatedStep key={step.number} step={step} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );

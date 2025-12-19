@@ -41,22 +41,25 @@ const AgreementRequirements: React.FC<AgreementRequirementsProps> = ({
   const offererNonce = reqSignature?.offererNonce || "N/A";
 
   return (
-    <CardContainer icon="document" title="Agreement Requirements">
+    <CardContainer
+      icon="document"
+      title={t("agreement_requirements.card_title")}
+    >
       <RequirementRow
-        label="Requirement Type"
+        label={t("agreement_requirements.label_type")}
         value={type}
         tooltip={t("agreement_details_tooltips.req_type")}
       />
 
       <RequirementRow
-        label="Proposer Public Key (Pubkey)"
+        label={t("agreement_requirements.label_pubkey")}
         value={pubKey}
         isHash={true}
         tooltip={t("agreement_details_tooltips.proposer_pubkey")}
       />
 
       <RequirementRow
-        label="Offerer Nonce"
+        label={t("agreement_requirements.label_nonce")}
         value={offererNonce}
         isHash={true}
         tooltip={t("agreement_details_tooltips.offerer_nonce")}

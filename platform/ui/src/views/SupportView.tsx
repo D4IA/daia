@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useInView } from "react-intersection-observer";
+import animationStyles from "../styles/_animations.module.scss";
 import Button from "../components/Button/Button";
 import styles from "./SupportView.module.scss";
 import { useLocation } from "react-router-dom";
@@ -47,6 +49,12 @@ const UtterancesComments: React.FC = () => {
 
 const SupportView: React.FC = () => {
   const { t } = useTranslation();
+
+  const viewOptions = {
+    triggerOnce: true,
+    threshold: 0.1,
+  };
+  const [headerRef, headerInView] = useInView(viewOptions);
 
   const issueTypes: IssueType[] = [
     { value: "Bug Report", label: t("support_view.type_bug") },
@@ -98,8 +106,13 @@ ${issueContent.trim()}
     <>
       <section className={styles.section}>
         <div className={styles.contentWrapper}>
-          <h1 className="title">{t("support_view.title")}</h1>
-          <p className="subtitle">{t("support_view.subtitle")}</p>
+          <div
+            ref={headerRef}
+            className={`${animationStyles.reveal} ${animationStyles.fadeUp} ${headerInView ? animationStyles.isVisible : ""}`}
+          >
+            <h1 className="title">{t("support_view.title")}</h1>
+            <p className="subtitle">{t("support_view.subtitle")}</p>
+          </div>
 
           <form onSubmit={handleSubmit} className={styles.formContainer}>
             <div>
