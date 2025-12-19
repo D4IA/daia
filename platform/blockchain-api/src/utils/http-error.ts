@@ -17,6 +17,18 @@ export class HttpError {
   }
 
     /**
+     * Sends a 404 Not Found response.
+     * Return if the requested resource is not found.
+     */
+  static NotFound(res: Response, message: string = 'Not Found') {
+    return res.status(404).json({
+      statusCode: 404,
+      message,
+      error: 'Not Found',
+    });
+  }
+
+    /**
      * Sends a 500 Internal Server Error response.
      * Return if server is not able to process the request.
      */

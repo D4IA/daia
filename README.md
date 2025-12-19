@@ -3,6 +3,7 @@ TODO
 
 # Library structure
 
+```
 daia
 ├── platform
 │   ├── ui
@@ -14,6 +15,7 @@ daia
 └── libs
     ├── ai
     └── blockchain-bridge
+```
 
 # Getting started as DAIA developer
 

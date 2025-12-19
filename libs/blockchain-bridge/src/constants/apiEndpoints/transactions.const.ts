@@ -11,3 +11,7 @@ export const GET_BULK_TRANSACTION_DETAILS_BY_TX_IDS = (): string => {
 export const BROADCAST_TRANSACTION = (): string => {
   return `${GET_BASE_URL()}/tx/raw`;
 };
+
+export const GET_BULK_RAW_TRANSACTION_DATA = (): string => {
+  return `${GET_BASE_URL()}/txs/hex`;
+};

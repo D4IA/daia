@@ -11,6 +11,7 @@
     "baseUrl": ".",
     "paths": {
       "@daia/ai": ["libs/ai/src"],
+      "@d4ia/proto": ["libs/proto/src/index.ts"],
       "@daia/blockchain": ["libs/blockchain/src"]
     }
   }

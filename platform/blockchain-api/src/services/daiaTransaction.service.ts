@@ -4,6 +4,7 @@ import {
   DaiaOfferContentSchema,
 } from "@d4ia/proto";
 import db from './db.service';
+import { fetchTransactionByIdOrNull } from "@d4ia/blockchain-bridge";
 
 
 export interface DaiaTransaction {
@@ -128,6 +129,25 @@ export class DaiaTransactionService {
     // But the assumption is: if we hit cache, the REST of the chain is there.
     
     return this.queryCache(address, offset, limit);
+  }
+
+  /**
+   * Fetches a single transaction by its ID and extracts DAIA data.
+   * @param txId - The transaction ID to fetch
+   * @returns DaiaTransaction object or null if not found or not a DAIA transaction
+   */
+  async getTransactionById(txId: string): Promise<DaiaTransaction | null> {
+    // Fetch the transaction from the blockchain
+    const tx = await fetchTransactionByIdOrNull(txId);
+    
+    if (!tx) {
+      return null;
+    }
+
+    // Extract and validate DAIA data
+    const daiaData = this.extractDaiaData(tx);
+    
+    return daiaData;
   }
 
   private getFromCache(txId: string): DaiaTransaction | null {

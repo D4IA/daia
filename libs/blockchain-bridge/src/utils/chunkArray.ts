@@ -5,3 +5,8 @@ export const chunkArray = <T>(array: T[], size: number): T[][] => {
   }
   return result;
 };
+
+export const chunkArrayAndPerformActionOnChunk = <T>(array: T[], size: number, action: (chunk: T[]) => Promise<void>) => {
+    const chunks = chunkArray(array, size);
+    return Promise.all(chunks.map(chunk => action(chunk)));
+}

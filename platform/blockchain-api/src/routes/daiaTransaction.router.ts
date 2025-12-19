@@ -6,7 +6,7 @@ import { HttpError } from "../utils/http-error";
 
 const router = Router();
 
-router.get("/agreements/:address", async (req: Request, res: Response) => {
+router.get("/agreements/address/:address", async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
     const offset = clamp(
@@ -30,6 +30,23 @@ router.get("/agreements/:address", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error fetching DAIA history:", error);
     HttpError.InternalServerError(res, "Failed to fetch DAIA history");
+  }
+});
+
+router.get("/agreements/tx/:txId", async (req: Request, res: Response) => {
+  try {
+    const { txId } = req.params;
+
+    const result = await daiaTransactionService.getTransactionById(txId);
+
+    if (!result) {
+      return HttpError.NotFound(res, "DAIA agreements not found in transaction");
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching DAIA agreements:", error);
+    HttpError.InternalServerError(res, "Failed to fetch DAIA agreements");
   }
 });
 
