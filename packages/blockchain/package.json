@@ -1,5 +1,5 @@
 {
-  "name": "@daia/core",
+  "name": "@daia/blockchain",
   "version": "0.0.1",
   "description": "DAIA protocol utilities",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
     "lint:cached": "eslint ./src --max-warnings 0 --cache",
     "lint:fix": "eslint ./src --fix",
     "test:mutate": "stryker run",
-    "test": "vitest",
+    "test": "vitest --run",
     "test:ss": "vitest -u",
     "build": "rimraf dist && tsc --project tsconfig.prod.json",
     "build:check": "tsc --noEmit",
@@ -42,5 +42,8 @@
   },
   "peerDependencies": {
     "zod": "~4.1.13"
+  },
+  "dependencies": {
+    "@bsv/sdk": "^1.9.22"
   }
 }
