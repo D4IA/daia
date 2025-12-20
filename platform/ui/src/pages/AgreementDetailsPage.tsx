@@ -89,7 +89,7 @@ const AgreementDetailsPage: React.FC = () => {
         : null,
     };
 
-    generateAgreementPDF(pdfData, t, i18n.language);
+    generateAgreementPDF(pdfData);
   };
 
   if (loading) {

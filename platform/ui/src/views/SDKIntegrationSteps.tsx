@@ -11,10 +11,7 @@ interface Step {
   codeSnippet: string;
 }
 
-const AnimatedStep: React.FC<{ step: Step; index: number }> = ({
-  step,
-  index,
-}) => {
+const AnimatedStep: React.FC<{ step: Step }> = ({ step }) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
