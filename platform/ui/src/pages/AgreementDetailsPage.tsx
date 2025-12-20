@@ -89,7 +89,7 @@ const AgreementDetailsPage: React.FC = () => {
         : null,
     };
 
-    generateAgreementPDF(pdfData, i18n.language);
+    generateAgreementPDF(pdfData, t, i18n.language);
   };
 
   if (loading) {
@@ -197,7 +197,6 @@ const AgreementDetailsPage: React.FC = () => {
       <AgreementDetailsContainer
         requirements={requirementsData}
         proofs={proofsData}
-        naturalLanguageOfferContent={offerContent}
       />
     </div>
   );

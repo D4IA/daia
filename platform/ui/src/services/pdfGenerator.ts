@@ -1,6 +1,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import i18n from "../i18n"; // Dostosuj ścieżkę do swojego pliku i18n
+import i18n from "../i18n";
 
 interface PDFData {
   txId: string;
@@ -25,10 +25,8 @@ export const generateAgreementPDF = (data: PDFData) => {
   const pageHeight = doc.internal.pageSize.getHeight();
   let yPosition = 20;
 
-  // Użyj i18n zamiast hardcodowanych tłumaczeń
   const t = (key: string) => i18n.t(key);
 
-  // === HEADER ===
   doc.setFontSize(24);
   doc.setTextColor(147, 51, 234);
   doc.text("DAIA", 20, yPosition);

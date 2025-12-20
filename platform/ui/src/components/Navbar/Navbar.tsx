@@ -9,6 +9,10 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import logoPoznanUrl from "../../assets/PoznanLogo.png";
 
+const MenuIcon = ({ src, alt }: { src: string; alt: string }) => (
+  <img src={src} alt={alt} />
+);
+
 const AVAILABLE_LANGUAGES = [
   { code: "en", labelKey: "language_names.en" },
   { code: "pl", labelKey: "language_names.pl" },
@@ -83,8 +87,6 @@ const Navbar: React.FC = () => {
     i18n.changeLanguage(code);
     setIsLangDropdownOpen(false);
   };
-
-  const MenuIcon = ({ src, alt }) => <img src={src} alt={alt} />;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

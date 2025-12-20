@@ -9,7 +9,10 @@ const NotFoundPage: React.FC = () => {
 
   return (
     <>
-      <AgreementsListSearchBar onSearch={handleAgreementSearch} />
+      <AgreementsListSearchBar
+        onSearch={handleAgreementSearch}
+        onErrorChange={() => {}}
+      />
       <NoAgreementsFound />
     </>
   );

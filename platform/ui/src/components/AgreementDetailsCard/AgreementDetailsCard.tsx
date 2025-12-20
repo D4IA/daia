@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import styles from "./AgreementDetailsCard.module.scss";
 import { FaUserFriends, FaLink, FaLock, FaBook } from "react-icons/fa";
 
