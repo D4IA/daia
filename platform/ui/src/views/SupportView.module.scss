@@ -1,0 +1,75 @@
+@use '../styles/tailwind-vars' as tv; 
+
+.section {
+    padding-top: tv.$spacing-20; 
+    padding-bottom: tv.$spacing-20;
+    background-color: tv.$gray-50; 
+}
+
+.contentWrapper {
+    max-width: tv.$max-w-xl; 
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: tv.$spacing-4;
+    padding-right: tv.$spacing-4;
+    text-align: center;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: tv.$spacing-4;
+    margin-top: tv.$spacing-10;
+    text-align: left;
+}
+
+.label {
+    font-size: tv.$text-lg;
+    font-weight: 600;
+    color: tv.$gray-800;
+    margin-bottom: tv.$spacing-2;
+    display: block;
+}
+
+.inputField,
+.textareaField,
+.selectField {
+    width: 100%; 
+    padding: tv.$spacing-4;
+    border: 1px solid tv.$gray-300;
+    border-radius: 0.5rem; 
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
+    background-color: tv.$white;
+    color: tv.$black;
+    font-size: tv.$text-lg;
+    
+    &:focus {
+        border-color: tv.$purple-500;
+        outline: none;
+        box-shadow: 0 0 0 1px tv.$purple-500; 
+    }
+}
+
+.textareaField {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.submitButton {
+    width: 100%;
+    height: 50px;
+    margin-top: tv.$spacing-6;
+    background-color: tv.$black;
+    color: tv.$white;
+    border-color: tv.$black;
+    
+    &:hover {
+        background-color: tv.$gray-800;
+    }
+}
+
+.utterancesContainer {
+    max-width: tv.$max-w-4xl;
+    margin: tv.$spacing-32 auto tv.$spacing-20 auto;
+    padding: 0 tv.$spacing-4;
+}

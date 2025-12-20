@@ -1,0 +1,175 @@
+@use "../styles/tailwind-vars" as tv;
+
+.heroHeader {
+    color: tv.$gray-900;
+    padding: tv.$spacing-32 0 tv.$spacing-16 0; 
+    margin-bottom: tv.$spacing-16;
+    text-align: center;
+    position: relative; 
+    z-index: 10;
+}
+
+.heroTitle {
+    color: tv.$gray-900; 
+    font-size: tv.$text-5xl;
+    font-weight: 700;
+    margin-bottom: tv.$spacing-4;
+}
+
+.heroSubtitle {
+    font-size: tv.$text-xl;
+    color: tv.$gray-700; 
+    max-width: tv.$max-w-xl;
+    margin: 0 auto;
+}
+
+.sectionContainer {
+    max-width: tv.$max-w-6xl;
+    margin: 0 auto;
+    padding: 0 tv.$spacing-4 tv.$spacing-32 tv.$spacing-4;
+}
+
+.contentContainer {
+    max-width: tv.$max-w-4xl;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.sectionHeading {
+    font-size: tv.$text-3xl;
+    color: tv.$gray-900;
+    margin-top: tv.$spacing-12;
+    margin-bottom: tv.$spacing-5;
+    font-weight: 700;
+    position: relative;
+    padding-left: tv.$spacing-4;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 100%;
+        width: 4px;
+        background-color: tv.$purple-600;
+        border-radius: 2px;
+    }
+}
+
+.missionParagraph {
+    font-size: tv.$text-lg;
+    color: tv.$gray-700;
+    line-height: 1.8; 
+    margin-bottom: tv.$spacing-5;
+}
+
+.missionList {
+    composes: missionParagraph;
+    list-style-type: none; 
+    padding-left: 0; 
+    
+    li {
+        position: relative;
+        margin-bottom: tv.$spacing-4;
+        padding-left: tv.$spacing-8;
+        
+        &::before {
+            content: "✓";
+            position: absolute;
+            left: tv.$spacing-2;
+            top: 0;
+            color: tv.$purple-600;
+            font-size: tv.$text-xl;
+            font-weight: 700;
+            line-height: 1.8;
+        }
+    }
+}
+
+.teamSection {
+    margin-top: tv.$spacing-32;
+    text-align: left; 
+}
+
+.teamHeading {
+    composes: sectionHeading;
+    border: none;
+    padding-left: tv.$spacing-4;
+    text-align: center;
+    
+    &::before {
+        content: none;
+    }
+}
+
+.teamGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: tv.$spacing-8;
+    margin-top: tv.$spacing-10;
+}
+
+.teamMember {
+    padding: tv.$spacing-8; 
+    border-radius: 12px;
+    background-color: tv.$gray-100;
+    border: 1px solid tv.$gray-200;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    text-align: center; 
+
+    &:hover {
+        box-shadow: tv.$shadow-xl;
+        transform: translateY(-5px); 
+    }
+}
+
+.memberImage {
+    width: 100%;
+    height: 150px; 
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: tv.$spacing-4;
+    display: block;
+}
+
+.memberName {
+    font-size: tv.$text-xl;
+    font-weight: 700;
+    color: tv.$gray-900;
+    margin-top: tv.$spacing-4;
+}
+
+.memberRole {
+    font-size: tv.$text-lg;
+    color: tv.$purple-600;
+}
+
+.reveal {
+    opacity: 0;
+    transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slideRight {
+    transform: translateX(100px);
+}
+.slideRight.isVisible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slideLeft {
+    transform: translateX(-100px);
+}
+.slideLeft.isVisible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.fadeUp {
+    transform: translateY(50px);
+}
+.fadeUp.isVisible {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -1,0 +1,65 @@
+@use '../../../styles/tailwind-vars' as tv; 
+
+.requirementRowContainer {
+    background-color: tv.$gray-50;
+    border-radius: tv.$spacing-2;
+    padding: tv.$spacing-2;
+    margin-bottom: tv.$spacing-4;
+    
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 992px) {
+        padding: tv.$spacing-2;
+    }
+}
+
+.labelWrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: tv.$spacing-2;
+}
+
+.requirementLabel {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: black;
+    @media (max-width: 640px) {
+        font-size: 0.85rem;
+    }
+}
+
+.tooltipIcon {
+    margin-left: 5px;
+    cursor: help;
+    color: tv.$gray-600;
+    font-weight: 600;
+}
+
+.requirementValue {
+    font-size: 0.85rem;
+    color: black;
+    overflow-wrap: break-word;
+    text-align: left;
+    padding-top: 2px;
+    word-break: break-all;
+
+    @media (max-width: 640px) {
+        font-size: 0.8rem;
+    }
+}
+
+.hashValue {
+    font-family: monospace;
+    font-size: 0.75rem;
+
+    @media (max-width: 640px) {
+        font-size: 0.7rem;
+    }
+}
+
+.requirementsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

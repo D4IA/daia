@@ -1,0 +1,37 @@
+@use '../../styles/tailwind-vars' as tv;
+
+.itemContainer {
+    display: flex;
+    align-items: flex-start;
+    gap: tv.$spacing-4;
+    margin-bottom: tv.$spacing-20;
+}
+
+.textContainer {
+    text-align: left; 
+}
+
+.titleText {
+    font-size: tv.$text-20px; 
+    font-weight: tv.$font-regular; 
+    color: tv.$gray-900; 
+    margin-bottom: 0.5rem;
+}
+
+.descriptionText {
+    font-size: tv.$text-lg; 
+    font-weight: tv.$font-regular; 
+    color: tv.$gray-700; 
+}
+
+.iconWrapper {
+    flex-shrink: 0;
+    padding: 0.5rem;
+    border-radius: 50%;
+    
+    background-color: tv.$black;
+    color: tv.$white;
+    
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-top: 0.25rem;
+}

@@ -1,0 +1,277 @@
+{
+  "navbar": {
+    "title": "Daia",
+    "button": "Wklep adres portmonetki",
+    "developers": "Dla Sztajgierów",
+    "about_us": "Łone i my"
+  },
+  "landing_screen": {
+    "title": "Niech ajenty AI się zgruntują - a my to dla Wasa szrajbniemy",
+    "subtitle_1": "Twoje pynkle trajkotają, klangrują i sztamę robią.",
+    "subtitle_2": "DAIA dba, żeby te sztamy były zaszrajbowane i klarowne – samoczynnie.",
+    "button": "Szukaj Mojej Sztamy"
+  },
+  "how_daia_works": {
+    "title": "Jak DAIA działa na sztycha",
+    "cards": [
+      {
+        "id": "1",
+        "iconKey": "Negotiate",
+        "title": "Ajenty AI klangrują",
+        "description": "Ajenty AI gwarzają i klangrują ze sobą, coby samoczynnie dojść do sztamy, z której wszyscy mają ajnfach zysk."
+      },
+      {
+        "id": "2",
+        "iconKey": "Secure",
+        "title": "Bezpieczne szrajbowanie na blokklajnie",
+        "description": "DAIA szrajbuje ich sztamę fest bezpiecznie na blokklajnie, robiąc zapis, którego sie nie ruszy i co go każdy widzi."
+      },
+      {
+        "id": "3",
+        "iconKey": "Encrypted",
+        "title": "Szyfrowane i do gruntowania",
+        "description": "Sztamy są zaszyfrowane, coby mieć cicho, ale jak trzeba, to ajenci mogą je zgruntować."
+      }
+    ]
+  },
+  "why_choose_daia": {
+    "title": "Czemu warto brać DAIA?",
+    "toggle_with_daia": "Z DAIA",
+    "toggle_without_daia": "Bez DAIA",
+    "features": [
+      {
+        "title": "Samoczynne szrajbowanie sztamy",
+        "description": "Nie trzeba dłubać ręcznie – sztamy są szrajbowane same, jak ino ajenty się zgruntują."
+      },
+      {
+        "title": "Niezmienne i klarowne",
+        "description": "Blokklajn pilnuje, coby sztam nie dało się zmienić i coby były klarowne dla wszystkich."
+      },
+      {
+        "title": "Cicho jak mysz",
+        "description": "Fajne szyfrowanie trzyma detale sztamy cicho, ale gruntować się da."
+      }
+    ],
+    "features_without": [
+      {
+        "title": "Ręczne dłubanie i sprawdzanie",
+        "description": "Sztamy wiszą na centralnych logach albo trza je ręcznie sprawdzać, co rodzi kłótnie i spóźnienia."
+      },
+      {
+        "title": "Ryzyko, że kto zamiesza",
+        "description": "Zwykłe bazy danych idzie przerychtować, przez co historia sztamy nie jest warta złamanego dychta"
+      },
+      {
+        "title": "Wszystko na wierzchu",
+        "description": "Prywatne dane ajentów i warunki klangrowania są często szrajbowane otwartym tekstem, tam gdzie każdy może zajrzeć."
+      }
+    ]
+  },
+  "explore_section": {
+    "title": "Szwajdrować DAIA?",
+    "subtitle": "Zacznij od szukania sztam albo dowiedz się, jak DAIA może pomóc Twoim ajentom się dogadać.",
+    "button": "Szukaj Mojej Sztamy"
+  },
+  "search_view": {
+    "title": "Szukaj dla swojej sztamy",
+    "subtitle": "Wklep adres portmonetki albo sztrych transakcji, coby znaleźć i zgruntować sztamy ajentów.",
+    "placeholder": "Adrés portmonetki",
+    "button": "Szukaj Sztamy",
+    "msg_loading": "Szajs! Ładują się sztamy...",
+    "msg_api_error": "Nie da się ściągnąć sztam. Sprawdź adres albo neta.",
+    "msg_default_prompt": "Wklep adres portmonetki na górze, coby sztamy zobaczyć.",
+    "msg_no_filter_match": "Nie ma sztam, co by się zgadzały z tym, co Wasa szukali."
+  },
+  "footer": {
+    "slogan": "Bezpieczne szrajbowanie sztam dla ajentów AI na blokklajnie.",
+    "product_col": {
+      "title": "Towar",
+      "links": ["Jak to Działa", "Łone i my", "Dopomożenie"]
+    },
+    "developers_col": {
+      "title": "Sztajgierzy",
+      "links": ["Dla Sztajgierów", "Cechy", "Wihajster"]
+    },
+    "copyright": "© 2025 DAIA. Wszystko zaszrajbowane."
+  },
+  "search_agreement": {
+    "placeholder": "Adrés portmonetki",
+    "button": "Szukaj",
+    "error_empty": "Adrés portmonetki nie może być pusty, dejta spokój"
+  },
+  "agreement_list": {
+    "title": "Znajdź swoją sztamę",
+    "subtitle": "Wklep adres portmonetki, coby znaleźć sztamy, co je Wasa ajenci zrobili.",
+    "status_published": "Zaszrajbowane na blokklajnie",
+    "status_failed": "Skopsane, nie weszło na blokklajn",
+    "status_verifying": "Gruntowanie na blokklajnie",
+    "status_unknown": "Nie wiadomo co się dzieje",
+    "filter_txid_placeholder": "Szukaj po numerze sztrycha (TxID)",
+    "filter_date_placeholder": "Szukaj po dacie"
+  },
+  "no_agreements_found": {
+    "title": "Nie ma żadnych sztam!",
+    "description": "Wygląda na to, że do tego adresu nie ma sztam. Czy to sztamowy adres?"
+  },
+  "sdk_screen": {
+    "title": "Wklej SDK DAIA do Waszych ajentów AI",
+    "subtitle_1": "Od propo do blokklajnu w mig",
+    "subtitle_2": "SDK DAIA obsłuży cały ajnfach szrajbowania sztam dla Waszych ajentów.",
+    "button": "Ruszaj z kopyta"
+  },
+  "sdk_features": {
+    "title": "Co umie SDK",
+    "subtitle": "Robione dla nowoczesnych ajentów AI i klangrowania z blokklajnem",
+    "cards": [
+      {
+        "id": "1",
+        "iconKey": "EncryptedBlockchainStorage",
+        "title": "Szyfrowane w blokklajnie",
+        "description": "Brońcie detali w bloku. DAIA szyfruje, coby sztamy były cicho, ale klarowne."
+      },
+      {
+        "id": "2",
+        "iconKey": "Lightweight",
+        "title": "Lekkie jak wihajster",
+        "description": "Sprytne dla serwerów i pynkli. Bez zbędnego ględzenia — ino szprytny, czysty kod. Wklep i git."
+      },
+      {
+        "id": "3",
+        "iconKey": "SimpleIntegration",
+        "title": "Łatwo wklepać",
+        "description": "Wrzucaj DAIA do każdego ajenta. Działa z Waszymi gratami od kopa."
+      }
+    ]
+  },
+  "sdk_integration_steps": {
+    "title": "Migiem wklepuj",
+    "subtitle": "Zacznij z JavaScriptem w kilka minut",
+    "step1": {
+      "number": 1,
+      "title": "Wgraj SDK",
+      "codeSnippet": "npm install @daia/sdk"
+    },
+    "step2": {
+      "number": 2,
+      "title": "Odpal Ajenta",
+      "codeSnippet": "import { DaiaAgent } from '@daia/sdk'\nconst agent = new DaiaAgent({ id: 'AJENT-01', wallet: '0xabc...' })"
+    },
+    "step3": {
+      "number": 3,
+      "title": "Zaszrajbuj Propo na blokklajnie",
+      "codeSnippet": "const proposeOfferId = await agent.recordProposeOffer({\n  content: \"\nProponuję: \n  • Czas: 3 godz\n  • Bazowa stawka: 6 zł/h\n  • Zniżka na ajnfach pynkel: -1 zł/h\n  • Końcowa stawka: 5 zł/h\n  • Aż za wszystko: 15 zł\n\",\n  encryptKey: 'xyz' // albo undefined, coby było klarowne\n});"
+    },
+    "step4": {
+      "number": 4,
+      "title": "Zaszrajbuj 'Git' na blokklajnie drugim ajentem",
+      "codeSnippet": "await otherAgent.recordAcceptOffer({\n  proposeOfferId: proposeOfferId\n});"
+    }
+  },
+  "agreement_details_tooltips": {
+    "req_type": "Typ wihajstra do zgruntowania sztamy (np. 'sign' to cyfrowy popis).",
+    "proposer_pubkey": "Klucz publiczny, co to dał propo sztamy.",
+    "offerer_nonce": "Numer do pilnowania, coby transakcji nie można było oszukać."
+  },
+  "details_view": {
+    "msg_loading": "Ładują się detale...",
+    "msg_error": "Jo! Była heca: ",
+    "btn_try_again": "Dajesz jeszcze raz",
+    "err_missing_params": "Brakuje adresu portmonetki albo numeru sztrycha w URL.",
+    "err_tx_not_found": "Numer sztrycha się nie zgadza w portmonetce.",
+    "err_failed_load": "Nie udało się ściągnąć detali sztrycha.",
+    "title_tx_id": "Numer sztrycha:",
+    "label_published_at": "Poszło w świat o: ",
+    "label_description": "Jak wygląda sztama:",
+    "msg_content_unavailable": "Nie ma detali",
+    "btn_generate_report": "Szrajbnij raport w PDFie"
+  },
+  "ready_to_explore_documentation": {
+    "title": "Gotowi do wklepywania DAIA?",
+    "subtitle": "Jak Was interesuje szrajbowanie sztam ajentów AI na blokklajnie, to patrzcie na nasz wihajster.",
+    "button": "Sprawdź Wihajster"
+  },
+  "about_us_view": {
+    "main_title": "O DAIA: Klarowny wihajster dla ajentów AI",
+    "subtitle_1": "Łączymy AI, Blokklajn i klarowne zasady, coby budować przyszłość pynkli.",
+    "subtitle_2": "Bezpieczne szrajbowanie sztam dla nowych ajentów cyfrowej sztamy.",
+    "mission_section": {
+      "heading": "Co my tu robimy",
+      "paragraph_1": "DAIA powstała, coby rozwiązać hecę w ajnfach AI: ajenci nie mają, jak fest dogadać się, dziać się, brać siano i robić robotę, coby nikogo nie wycyckać.",
+      "paragraph_2": "Te nowe systemy ajentów to ględzenie, są nieklarowne i nie idzie ich zgruntować. Nie mogą działać między firmami i nie ma w nich zasady, kto za co odpowiada. Ajnfach AI nie może robić nudnej roboty za ludzi, mimo że jest już git.",
+      "paragraph_3": "DAIA daje klarowny wihajster, co pozwala ajentom klangrować, sztamować, gruntować i pilnować roboty na całego."
+    },
+    "goal_section": {
+      "heading": "Co chcemy ugruntować",
+      "intro": "Chcemy dać klarowną zasadę, coby:",
+      "goals_list": [
+        "Ajenci AI działy jak ajnfach ludzie – robią sztamy, klangrują, szrajbują historię, biorą siano i odpowiadają za to, co robią.",
+        "Ludzie i firmy mogli dać nudną robotę ajentom, bez strachu o cichość i kontrolę.",
+        "Sztajgierzy mogli robić pynkle, co klangrują z ajentami z innych systemów bez hecy.",
+        "AI było ajnfach pożyteczne, klarowne, do gruntowania i oparte na wspólnej zasadzie, a nie na ględzeniu."
+      ],
+      "technology_paragraph": "Do tego używamy blokklajnu BSV – taniego forka BTC – coby szrajbować ajnfach zdarzenia i mikropłatności. Klarowne dla wszystkich, bez pośredników."
+    },
+    "transparency_section": {
+      "heading": "Sztama i Klarowność",
+      "open_source": "DAIA jest w całości klarowna, bo sztamy nie robi się za zamkniętymi drzwiami. Nie chcemy robić kolejnego 'ogrodu za murem', ino dać klarowny grunt dla ajentów – łącząc AI z tanim blokklajnem do gruntowania.",
+      "belief": "Myślimy, że AI ma robić robotę dla ludzi, a nie odwrotnie.",
+      "protocol": "A coby AI fest dopomogło ludzkości, musi być wihajster, któremu każdy ufa. DAIA jest do tego stworzona."
+    },
+    "team_section": {
+      "heading": "No, dejta znać, kto to robi",
+      "members": [
+        {
+          "name": "Przemysław Głowacki",
+          "role": "Współzałożyciel, Sztajgier Fullstack"
+        },
+        {
+          "name": "Stanisław Jarocki",
+          "role": "Współzałożyciel, Sztajgier Fullstack"
+        },
+        {
+          "name": "Szymon Jóźwiak",
+          "role": "Współzałożyciel, Sztajgier Fullstack"
+        },
+        {
+          "name": "Władysław Kuczerenko",
+          "role": "Współzałożyciel, Sztajgier Fullstack"
+        }
+      ]
+    }
+  },
+  "support_view": {
+    "title": "Heca? Pisz do nas.",
+    "subtitle": "Wyślij błąd, poproś o nową cechę, albo pytaj ajnfach na naszym GitHubie.",
+    "form_type_label": "Typ hecy",
+    "form_title_label": "Główna heca",
+    "form_content_label": "Detale i jak to wywołać",
+    "placeholder_title": "np. Heca na stronie detali sztamy",
+    "placeholder_content": "Opisz hecę albo prośbę o cechę.",
+    "button": "Wyślij hecę na GitHub",
+    "type_bug": "Błąd",
+    "type_feature": "Prośba o cechę",
+    "type_question": "Pytanie"
+  },
+  "language_names": {
+    "en": "Angolski",
+    "pl": "Polski",
+    "hi": "Hinduski",
+    "pz": "Poznańska Gwôra"
+  },
+  "agreement_requirements": {
+    "card_title": "Wymogi do sztamy",
+    "label_type": "Typ wihajstra",
+    "label_pubkey": "Klucz publiczny (Pubkey)",
+    "label_nonce": "Numer (Offerer Nonce)"
+  },
+  "agreement_proofs": {
+    "card_title": "Dowody na sztamę",
+    "msg_not_available": "Jeszcze nie zaszrajbowano dowodów.",
+    "label_proof_type": "Typ dowodu",
+    "label_signee_nonce": "Numer (Signee Nonce)",
+    "label_digital_signature": "Cyfrowy popis",
+    "tooltip_proof_type": "Jaki to wihajster do pilnowania cichości.",
+    "tooltip_signee_nonce": "Numer, coby nikt nie wycyckał transakcji dwa razy.",
+    "tooltip_digital_signature": "Kryptograficzny popis, co gruntuje zgodę na sztamę."
+  }
+}

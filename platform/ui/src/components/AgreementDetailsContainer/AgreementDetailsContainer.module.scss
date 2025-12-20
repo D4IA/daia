@@ -1,0 +1,26 @@
+@use '../../styles/tailwind-vars' as tv;
+
+.detailsContent {
+    display: flex;
+    gap: 30px;
+    max-width: tv.$max-w-1000px;
+    margin: 0 auto;
+    padding: 0 tv.$spacing-4;
+    margin-bottom: tv.$spacing-10;
+    @media (max-width: 992px) {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    @media (max-width: 640px) {
+        gap: tv.$spacing-4;
+    }
+}
+
+.requirementsColumn,
+.proofsColumn {
+    flex: 1 1 50%;
+    @media (max-width: 992px) {
+        flex: 1 1 100%;
+    }
+}
