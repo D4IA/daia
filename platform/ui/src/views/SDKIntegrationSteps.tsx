@@ -50,8 +50,8 @@ const SDKIntegrationSteps: React.FC = () => {
         <p className="subtitle">{t("sdk_integration_steps.subtitle")}</p>
 
         <div className={styles.stepsList}>
-          {steps.map((step, index) => (
-            <AnimatedStep key={step.number} step={step} index={index} />
+          {steps.map((step) => (
+            <AnimatedStep key={step.number} step={step} />
           ))}
         </div>
       </div>
