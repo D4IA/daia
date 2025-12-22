@@ -1,5 +1,6 @@
 {
   "name": "daia",
+  "version": "0.0.1-pre-release",
   "private": true,
   "workspaces": [
     "libs/*",
@@ -17,7 +18,11 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean",
+    "publish:proto": "cd libs/proto && pnpm publish",
+    "publish:blockchain-bridge": "cd libs/blockchain-bridge && pnpm publish",
+    "publish:langchain": "cd libs/langchain && pnpm publish",
+    "publish:all": "pnpm run publish:proto && pnpm run publish:blockchain-bridge && pnpm run publish:langchain || exit 1"
   },
   "packageManager": "pnpm@10.0.0",
   "pnpm": {

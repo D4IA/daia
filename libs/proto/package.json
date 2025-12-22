@@ -1,7 +1,7 @@
 {
   "name": "@d4ia/proto",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1-pre-release",
+  "description": "DAIA protocol implementation - blockchain transaction builders and verifiers",
   "main": "./dist/proto.cjs.js",
   "module": "./dist/proto.es.js",
   "types": "./dist/index.d.ts",
@@ -12,18 +12,33 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test-watch": "vitest",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\"",
+    "prepublishOnly": "pnpm run build"
   },
   "type": "module",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "daia",
+    "protocol",
+    "blockchain",
+    "bsv",
+    "verification",
+    "agreement"
+  ],
+  "author": "DAIA Team",
+  "license": "AGPL-3.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/node": "^24.8.1",
     "prettier": "^3.6.2",

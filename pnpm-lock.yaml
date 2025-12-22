@@ -328,10 +328,10 @@ importers:
   platform/blockchain-api:
     dependencies:
       '@d4ia/blockchain-bridge':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../libs/blockchain-bridge
       '@d4ia/proto':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../libs/proto
       better-sqlite3:
         specifier: ^12.4.6

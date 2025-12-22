@@ -1,6 +1,6 @@
 {
   "name": "@d4ia/langchain-demo",
-  "version": "1.0.0",
+  "version": "0.0.1-pre-release",
   "description": "",
   "main": "./dist/proto.cjs.js",
   "scripts": {
