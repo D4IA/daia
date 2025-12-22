@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@bsv/sdk": "^1.9.0",
-    "@d4ia/proto": "^1.0.0",
+    "@d4ia/proto": "workspace:^",
     "@langchain/core": "^1.0.4",
     "zod": "^4.1.12"
   },

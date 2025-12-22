@@ -12,8 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@d4ia/blockchain-bridge": "workspace:*",
-    "@d4ia/proto": "workspace:*",
+    "@d4ia/blockchain-bridge": "workspace:^",
+    "@d4ia/proto": "workspace:^",
     "better-sqlite3": "^12.4.6",
     "dotenv": "^17.2.3",
     "express": "^5.1.0"
