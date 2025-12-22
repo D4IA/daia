@@ -1,6 +1,7 @@
 {
   "name": "@d4ia/blockchain-bridge",
-  "version": "1.0.0",
+  "version": "0.0.1-pre-release",
+  "description": "Blockchain bridge for DAIA protocol - BSV transaction handling and wallet operations",
   "type": "module",
   "exports": {
     ".": {
@@ -11,11 +12,29 @@
   "main": "./dist/blockchain-bridge.cjs.js",
   "module": "./dist/blockchain-bridge.es.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
     "test": "vitest run",
-    "test-watch": "vitest"
+    "test-watch": "vitest",
+    "prepublishOnly": "pnpm run build"
+  },
+  "keywords": [
+    "blockchain",
+    "bsv",
+    "bitcoin",
+    "daia",
+    "wallet",
+    "transactions"
+  ],
+  "author": "DAIA Team",
+  "license": "AGPL-3.0",
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@bsv/sdk": "^1.8.3"
