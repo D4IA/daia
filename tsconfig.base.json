@@ -12,6 +12,7 @@
     "paths": {
       "@daia/ai": ["libs/ai/src"],
       "@d4ia/proto": ["libs/proto/src/index.ts"],
+      "@d4ia/langchain": ["libs/langchain/src/index.ts"],
       "@daia/blockchain": ["libs/blockchain/src"]
     }
   }
