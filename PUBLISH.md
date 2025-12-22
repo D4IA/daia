@@ -1,6 +1,6 @@
 # Publishing @d4ia/* packages to npm
 
-This document describes the process of publishing `@d4ia/*` packages to npm.
+This document describes the process of publishing `@d4ia/*` packages to the npm registry using **pnpm**.
 
 ## Prerequisites
 
@@ -8,7 +8,6 @@ This document describes the process of publishing `@d4ia/*` packages to npm.
 2. **Authorization** – Log in to npm via the terminal:
 ```bash
 npm login
-
 ```
 
 
@@ -30,7 +29,6 @@ Ensure all packages are built:
 
 ```bash
 pnpm run build
-
 ```
 
 ### 2. Publishing Individual Packages
@@ -39,28 +37,24 @@ pnpm run build
 
 ```bash
 pnpm run publish:proto
-
 ```
 
 #### Publish @d4ia/blockchain-bridge:
 
 ```bash
 pnpm run publish:blockchain-bridge
-
 ```
 
 #### Publish @d4ia/langchain:
 
 ```bash
 pnpm run publish:langchain
-
 ```
 
 ### 3. Publishing All Packages at Once
 
 ```bash
 pnpm run publish:all
-
 ```
 
 This will automatically publish the packages in the correct order (proto → blockchain-bridge → langchain).
@@ -75,7 +69,6 @@ After publishing, you can check if the packages are available:
 npm view @d4ia/proto
 npm view @d4ia/blockchain-bridge
 npm view @d4ia/langchain
-
 ```
 
 ## Installing Published Packages
@@ -86,12 +79,10 @@ Once published, other users can install the packages:
 npm install @d4ia/proto
 npm install @d4ia/blockchain-bridge
 npm install @d4ia/langchain
-
 ```
 
 Or all at once:
 
 ```bash
 npm install @d4ia/proto @d4ia/blockchain-bridge @d4ia/langchain
-
 ```
