@@ -1,4 +1,5 @@
 {
+  "name": "daia",
   "private": true,
   "workspaces": [
     "libs/*",

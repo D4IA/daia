@@ -13,7 +13,8 @@
     "paths": {
       "#src/*": ["src/*"],
       "#types/*": ["types/*"],
-      "#tests/*": ["tests/*"]
+      "#tests/*": ["tests/*"],
+      "@d4ia/proto": ["../proto/src/index.ts"]
     }
   },
   "include": ["src", "types"]
