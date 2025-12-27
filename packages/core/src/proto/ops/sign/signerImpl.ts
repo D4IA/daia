@@ -1,5 +1,12 @@
 import { BlockchainTransactionFactory, CreatedBlockchainTransactionHandle } from "@daia/blockchain";
-import { DaiaOfferContent, DaiaOfferProof, DaiaRequirementType } from "../../defines";
+import {
+	DaiaInnerOfferContent,
+	DaiaTransferOfferContent,
+	DaiaOfferProof,
+	DaiaRequirementType,
+	DaiaInnerOfferContentSchema,
+	DaiaAgreement,
+} from "../../defines";
 import { DaiaTransactionDataType } from "../../blockchain";
 import {
 	DaiaOfferSignRequest,
@@ -10,6 +17,7 @@ import {
 } from "./defines";
 import { DaiaPaymentRequirementResolver, DaiaReferenceRequirementResolver } from "./resolvers";
 import { DaiaSignRequirementResolver } from "./resolvers/signResolver";
+import { JsonUtils } from "../../../utils/json";
 
 export type DefaultDaiaOfferSignerConfig = {
 	signResolver?: DaiaSignRequirementResolver;
@@ -21,11 +29,9 @@ export type DefaultDaiaOfferSignerConfig = {
 
 export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 	constructor(private readonly config: DefaultDaiaOfferSignerConfig) {}
-
-	async summarizeOffer(offer: DaiaOfferContent): Promise<DaiaOfferSummary> {
+	async summarizeOfferContents(offer: DaiaInnerOfferContent): Promise<DaiaOfferSummary> {
 		const payments: { [to: string]: number } = {};
 
-		// Iterate through all requirements and aggregate payment requirements
 		for (const requirementId of Object.keys(offer.requirements)) {
 			const requirement = offer.requirements[requirementId];
 
@@ -36,7 +42,6 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 			if (requirement.type === DaiaRequirementType.PAYMENT) {
 				const { to, amount } = requirement;
 
-				// Aggregate payments to the same address
 				if (payments[to]) {
 					payments[to] += amount;
 				} else {
@@ -47,17 +52,37 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 
 		return {
 			payments,
+			selfSignedData: {},
+		};
+	}
+
+	async summarizeOffer(offer: DaiaTransferOfferContent): Promise<DaiaOfferSummary> {
+		// Parse internal offer
+
+		const innerOffer = JsonUtils.parseNoThrow(offer.inner, DaiaInnerOfferContentSchema);
+		if (!innerOffer) {
+			throw new Error("Deserialization of inner offer has failed");
+		}
+
+		const res = await this.summarizeOfferContents(innerOffer);
+
+		return {
+			...res,
+			selfSignedData: offer.signatures ?? {},
 		};
 	}
 
 	async signOffer(request: DaiaOfferSignRequest): Promise<DaiaOfferSignResponse> {
 		const { offer } = request;
+
+		const innerOffer = JsonUtils.parseNoThrow(offer.inner, DaiaInnerOfferContentSchema);
+		if (!innerOffer) {
+			throw new Error("Deserialization of inner offer has failed");
+		}
+
 		const signResolver = this.config.signResolver;
 		const paymentResolver = this.config.paymentResolver;
 		const referenceResolver = this.config.referenceResolver;
-
-		// Serialize the offer for deterministic signing
-		const serializedOffer = JSON.stringify(offer);
 
 		// Store proofs and track internal transactions
 		const proofs: { [requirementId: string]: DaiaOfferProof } = {};
@@ -65,31 +90,38 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 		const selfAuthenticatedPayments: { [to: string]: number } = {};
 
 		// Process each requirement
-		for (const requirementId of Object.keys(offer.requirements)) {
-			const requirement = offer.requirements[requirementId];
+		for (const requirementId of Object.keys(innerOffer.requirements)) {
+			const requirement = innerOffer.requirements[requirementId];
 
 			if (!requirement) {
 				continue;
 			}
-
-			// Handle SIGN requirements
 			if (requirement.type === DaiaRequirementType.SIGN) {
+				if (offer.signatures && offer.signatures[requirementId]) {
+					proofs[requirementId] = {
+						type: DaiaRequirementType.SIGN,
+						signeeNonce: "",
+						signature: offer.signatures[requirementId].signature,
+					};
+					continue;
+				}
+
 				if (!signResolver) {
 					return {
-						type: DaiaOfferSignResponseType.FAILURE,
+						type: DaiaOfferSignResponseType.REQUIREMENT_FAILURE,
 						failedRequirementId: requirementId,
 					};
 				}
 
 				const resolution = await signResolver.createSignatureProof(
-					serializedOffer,
+					offer.inner,
 					requirement.offererNonce,
 					requirement.pubKey,
 				);
 
 				if (!resolution) {
 					return {
-						type: DaiaOfferSignResponseType.FAILURE,
+						type: DaiaOfferSignResponseType.REQUIREMENT_FAILURE,
 						failedRequirementId: requirementId,
 					};
 				}
@@ -104,7 +136,7 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 			else if (requirement.type === DaiaRequirementType.PAYMENT) {
 				if (!paymentResolver) {
 					return {
-						type: DaiaOfferSignResponseType.FAILURE,
+						type: DaiaOfferSignResponseType.REQUIREMENT_FAILURE,
 						failedRequirementId: requirementId,
 					};
 				}
@@ -113,7 +145,7 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 
 				if (!resolution) {
 					return {
-						type: DaiaOfferSignResponseType.FAILURE,
+						type: DaiaOfferSignResponseType.REQUIREMENT_FAILURE,
 						failedRequirementId: requirementId,
 					};
 				}
@@ -140,7 +172,7 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 			else if (requirement.type === DaiaRequirementType.AGREEMENT_REFERENCE) {
 				if (!referenceResolver) {
 					return {
-						type: DaiaOfferSignResponseType.FAILURE,
+						type: DaiaOfferSignResponseType.REQUIREMENT_FAILURE,
 						failedRequirementId: requirementId,
 					};
 				}
@@ -149,7 +181,7 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 
 				if (!resolution) {
 					return {
-						type: DaiaOfferSignResponseType.FAILURE,
+						type: DaiaOfferSignResponseType.REQUIREMENT_FAILURE,
 						failedRequirementId: requirementId,
 					};
 				}
@@ -166,13 +198,11 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 			}
 		}
 
-		// Build the agreement
-		const agreement = {
-			offerContentSerialized: serializedOffer,
+		const agreement: DaiaAgreement = {
+			offerContent: offer,
 			proofs,
 		};
 
-		// Create the transaction with self-authenticated payments and agreement data
 		const transaction = await this.config.transactionFactory.makeTransaction({
 			payments: selfAuthenticatedPayments,
 			customData: JSON.stringify({

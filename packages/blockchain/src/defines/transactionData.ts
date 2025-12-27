@@ -1,3 +1,5 @@
+import { BlockchainAddress } from "../bsv";
+
 export type BlockchainTransactionData = {
 	/**
 	 * Custom data that is stored along with transaction.
@@ -8,6 +10,6 @@ export type BlockchainTransactionData = {
 	 * Payments that this transaction does.
 	 */
 	payments: {
-		[to: string]: number;
+		[to: BlockchainAddress]: number;
 	};
 };

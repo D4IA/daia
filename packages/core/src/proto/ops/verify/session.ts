@@ -1,24 +1,24 @@
 import { BlockchainTransactionParser, PublicKey, Signature } from "@daia/blockchain";
-import {
-	DaiaAgreementVerifyResponse,
-	DaiaAgreementVerificationFailure,
-	DaiaAgreementVerificationFailureType,
-	DaiaAgreementVerificationResult,
-	DaiaAgreementVerifyRequest,
-} from "./defines";
+import { JsonUtils } from "../../../utils/json";
+import { DaiaTransactionDataSchema, DaiaTransactionDataType } from "../../blockchain";
 import {
 	DaiaAgreement,
 	DaiaAgreementSchema,
-	DaiaOfferContent,
-	DaiaOfferContentSchema,
+	DaiaInnerOfferContent,
+	DaiaInnerOfferContentSchema,
 	DaiaOfferProof,
 	DaiaOfferRequirement,
 	DaiaPaymentRequirementAuthType,
 	DaiaRemoteAgreementPointer,
 	DaiaRequirementType,
 } from "../../defines";
-import { JsonUtils } from "../../../utils/json";
-import { DaiaTransactionDataSchema, DaiaTransactionDataType } from "../../blockchain";
+import {
+	DaiaAgreementVerificationFailure,
+	DaiaAgreementVerificationFailureType,
+	DaiaAgreementVerificationResult,
+	DaiaAgreementVerifyRequest,
+	DaiaAgreementVerifyResponse,
+} from "./defines";
 
 const setEquals = (s1: Set<string>, s2: Set<string>) => {
 	return s1.size === s2.size && [...s1].every((x) => s2.has(x));
@@ -85,8 +85,8 @@ export class DaiaAgreementVerifySession {
 		request: DaiaAgreementVerifyRequest,
 	): Promise<DaiaAgreementVerifyResponse> => {
 		const { agreement, transactionData } = request;
-		const content: DaiaOfferContent = DaiaOfferContentSchema.parse(
-			JSON.parse(agreement.offerContentSerialized),
+		const content: DaiaInnerOfferContent = DaiaInnerOfferContentSchema.parse(
+			JSON.parse(agreement.offerContent.inner),
 		);
 
 		if (
@@ -111,7 +111,7 @@ export class DaiaAgreementVerifySession {
 			const failure = await this.checkRequirementProofPair(
 				req,
 				proof,
-				request.agreement.offerContentSerialized,
+				request.agreement.offerContent.inner,
 				transactionData?.payments ?? null,
 			);
 

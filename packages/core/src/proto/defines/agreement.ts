@@ -1,13 +1,13 @@
 import z from "zod/v3";
+import { DaiaTransferOfferContentSchema } from "./offer";
 import { DaiaOfferProofSchema } from "./requirement";
 
 export const DaiaAgreementSchema = z.object({
 	/**
-	 * Serialized offer content, so that signing it can be deterministic, as well as signature verification.
-	 *
-	 * @see DaiaOfferContentSchema
+	 * Offer content.
 	 */
-	offerContentSerialized: z.string(),
+	offerContent: DaiaTransferOfferContentSchema,
+
 	/**
 	 * Map of requirement id to proof for that requirement.
 	 */

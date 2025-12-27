@@ -6,9 +6,7 @@ export * from "./offer";
 export * from "./agreementReference";
 export * from "./helper";
 
-import {
-	DaiaHelloSchema,
-} from "./hello";
+import { DaiaHelloSchema } from "./hello";
 import { DaiaOfferMessageSchema } from "./offer";
 import { DaiaAgreementReferenceMessageSchema } from "./agreementReference";
 

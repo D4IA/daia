@@ -3,7 +3,8 @@ import {
 	DaiaMessage,
 	DaiaMessageType,
 	DaiaMessageUtil,
-	DaiaOfferContent,
+	DaiaOfferBuilder,
+	DaiaTransferOfferContent,
 } from "@daia/core";
 import { describe, expect, test } from "vitest";
 import {
@@ -223,11 +224,10 @@ describe("DaiaStateMachineCall", () => {
 	test("can send offer during conversation", async () => {
 		let [s0, s1] = await runStateExchanges();
 
-		const o1: DaiaOfferContent = {
-			naturalLanguageOfferContent: "Some offer content",
-			offerTypeIdentifier: "DAIA-TEST-OFFER",
-			requirements: {},
-		};
+		const o1: DaiaTransferOfferContent = DaiaOfferBuilder.new()
+			.setNaturalLanguageContent("Some offer content")
+			.setOfferTypeIdentifier("DAIA-TEST-OFFER")
+			.build();
 
 		s0 = DaiaLanggraphStateWriter.fromState(s0).proposeOffer(o1).build();
 		const c0 = await new DaiaLanggraphStateMachineCall(s0, CONFIG_ZERO).run();
@@ -287,5 +287,157 @@ describe("DaiaStateMachineCall", () => {
 		expect(c0_3.targetNode).toEqual(DaiaLanggraphMachineNode.CONTINUE_CONVERSING);
 		expect(c0_3Accessor.getOfferResponse()).toBeNull();
 		expect(c0_3Accessor.getOffer()).toBeNull();
+	});
+
+	test("should throw if offer received but no response provided", async () => {
+		let [s0, s1] = await runStateExchanges();
+
+		// s0 sends an offer
+		const o1: DaiaTransferOfferContent = DaiaOfferBuilder.new()
+			.setNaturalLanguageContent("Some offer content")
+			.setOfferTypeIdentifier("DAIA-TEST-OFFER")
+			.build();
+
+		s0 = DaiaLanggraphStateWriter.fromState(s0).proposeOffer(o1).build();
+		const c0 = await new DaiaLanggraphStateMachineCall(s0, CONFIG_ZERO).run();
+		s0 = c0.newState;
+		const s0Accessor = DaiaLanggraphStateAccessor.fromState(s0);
+		expect(c0.targetNode).toEqual(DaiaLanggraphMachineNode.SEND_DAIA_OUTPUT);
+
+		// s1 receives the offer
+		s1 = DaiaLanggraphStateWriter.fromState(s1).setInput(s0Accessor.getOutput()).build();
+		const c1 = await new DaiaLanggraphStateMachineCall(s1, CONFIG_ONE).run();
+		s1 = c1.newState;
+		expect(c1.targetNode).toEqual(DaiaLanggraphMachineNode.OFFER_RECEIVED);
+
+		// s1 tries to continue without providing an offer response - should throw
+		s1 = DaiaLanggraphStateWriter.fromState(s1).setInput("Some natural language content").build();
+		await expect(async () => {
+			await new DaiaLanggraphStateMachineCall(s1, CONFIG_ONE).run();
+		}).rejects.toThrow();
+	});
+
+	test("should throw if offer received and agent tries to send another offer without responding", async () => {
+		let [s0, s1] = await runStateExchanges();
+
+		// s0 sends an offer
+		const o1: DaiaTransferOfferContent = DaiaOfferBuilder.new()
+			.setNaturalLanguageContent("First offer content")
+			.setOfferTypeIdentifier("DAIA-TEST-OFFER-1")
+			.build();
+
+		s0 = DaiaLanggraphStateWriter.fromState(s0).proposeOffer(o1).build();
+		const c0 = await new DaiaLanggraphStateMachineCall(s0, CONFIG_ZERO).run();
+		s0 = c0.newState;
+		const s0Accessor = DaiaLanggraphStateAccessor.fromState(s0);
+		expect(c0.targetNode).toEqual(DaiaLanggraphMachineNode.SEND_DAIA_OUTPUT);
+
+		// s1 receives the offer
+		s1 = DaiaLanggraphStateWriter.fromState(s1).setInput(s0Accessor.getOutput()).build();
+		const c1 = await new DaiaLanggraphStateMachineCall(s1, CONFIG_ONE).run();
+		s1 = c1.newState;
+		expect(c1.targetNode).toEqual(DaiaLanggraphMachineNode.OFFER_RECEIVED);
+
+		// s1 tries to send another offer instead of responding - should throw
+		const o2: DaiaTransferOfferContent = DaiaOfferBuilder.new()
+			.setNaturalLanguageContent("Counter offer content")
+			.setOfferTypeIdentifier("DAIA-TEST-OFFER-2")
+			.build();
+
+		s1 = DaiaLanggraphStateWriter.fromState(s1).proposeOffer(o2).build();
+		await expect(async () => {
+			await new DaiaLanggraphStateMachineCall(s1, CONFIG_ONE).run();
+		}).rejects.toThrow();
+	});
+
+	test("can continue conversation after offer is accepted", async () => {
+		let [s0, s1] = await runStateExchanges();
+
+		// s0 sends an offer
+		const o1: DaiaTransferOfferContent = DaiaOfferBuilder.new()
+			.setNaturalLanguageContent("Some offer content")
+			.setOfferTypeIdentifier("DAIA-TEST-OFFER")
+			.build();
+
+		s0 = DaiaLanggraphStateWriter.fromState(s0).proposeOffer(o1).build();
+		const c0 = await new DaiaLanggraphStateMachineCall(s0, CONFIG_ZERO).run();
+		s0 = c0.newState;
+		const s0Accessor = DaiaLanggraphStateAccessor.fromState(s0);
+		expect(c0.targetNode).toEqual(DaiaLanggraphMachineNode.SEND_DAIA_OUTPUT);
+
+		// s1 receives the offer
+		s1 = DaiaLanggraphStateWriter.fromState(s1).setInput(s0Accessor.getOutput()).build();
+		const c1 = await new DaiaLanggraphStateMachineCall(s1, CONFIG_ONE).run();
+		s1 = c1.newState;
+		expect(c1.targetNode).toEqual(DaiaLanggraphMachineNode.OFFER_RECEIVED);
+
+		// s1 accepts the offer
+		const acceptanceResponse: DaiaLanggraphOfferResponse = {
+			result: DaiaAgreementReferenceResult.ACCEPT,
+			agreementReference: "agreement-ref-123",
+			agreement: {
+				offerContent: o1,
+				proofs: {},
+			},
+		};
+
+		s1 = DaiaLanggraphStateWriter.fromState(s1).setOfferResponse(acceptanceResponse).build();
+
+		const c1_2 = await new DaiaLanggraphStateMachineCall(s1, CONFIG_ONE).run();
+		const c1_2Accessor = DaiaLanggraphStateAccessor.fromState(c1_2.newState);
+		s1 = c1_2.newState;
+		expect(c1_2.targetNode).toEqual(DaiaLanggraphMachineNode.SEND_DAIA_OUTPUT);
+		expect(DaiaMessageUtil.deserialize(c1_2Accessor.getOutput())).toEqual({
+			type: DaiaMessageType.OFFER_RESPONSE,
+			result: DaiaAgreementReferenceResult.ACCEPT,
+			agreementReference: acceptanceResponse.agreementReference,
+			agreement: acceptanceResponse.agreement,
+		} satisfies DaiaMessage);
+
+		// s0 receives the acceptance
+		s0 = DaiaLanggraphStateWriter.fromState(s0).setInput(c1_2Accessor.getOutput()).build();
+		const c0_2 = await new DaiaLanggraphStateMachineCall(s0, CONFIG_ZERO).run();
+		const c0_2Accessor = DaiaLanggraphStateAccessor.fromState(c0_2.newState);
+		s0 = c0_2.newState;
+		expect(c0_2.targetNode).toEqual(DaiaLanggraphMachineNode.REMOTE_PROCESSED_OFFER);
+		expect(c0_2Accessor.getOfferResponse()).toEqual(acceptanceResponse);
+		expect(c0_2Accessor.getOffer()).toBeNull();
+		expect(c0_2.newState.input.methodCall).toBeNull();
+
+		// First round of conversation after acceptance - s1 sends message
+		s1 = DaiaLanggraphStateWriter.fromState(s1).setInput("First message after acceptance").build();
+		const c1_3 = await new DaiaLanggraphStateMachineCall(s1, CONFIG_ONE).run();
+		const c1_3Accessor = DaiaLanggraphStateAccessor.fromState(c1_3.newState);
+		s1 = c1_3.newState;
+		expect(c1_3.targetNode).toEqual(DaiaLanggraphMachineNode.CONTINUE_CONVERSING);
+		expect(c1_3Accessor.getOffer()).toBeNull();
+		expect(c1_3Accessor.getOfferResponse()).toBeNull();
+
+		// First round - s0 responds
+		s0 = DaiaLanggraphStateWriter.fromState(s0).setInput("Response to first message").build();
+		const c0_3 = await new DaiaLanggraphStateMachineCall(s0, CONFIG_ZERO).run();
+		const c0_3Accessor = DaiaLanggraphStateAccessor.fromState(c0_3.newState);
+		s0 = c0_3.newState;
+		expect(c0_3.targetNode).toEqual(DaiaLanggraphMachineNode.CONTINUE_CONVERSING);
+		expect(c0_3Accessor.getOfferResponse()).toBeNull();
+		expect(c0_3Accessor.getOffer()).toBeNull();
+
+		// Second round of conversation - s1 sends another message
+		s1 = DaiaLanggraphStateWriter.fromState(s1).setInput("Second message after acceptance").build();
+		const c1_4 = await new DaiaLanggraphStateMachineCall(s1, CONFIG_ONE).run();
+		const c1_4Accessor = DaiaLanggraphStateAccessor.fromState(c1_4.newState);
+		s1 = c1_4.newState;
+		expect(c1_4.targetNode).toEqual(DaiaLanggraphMachineNode.CONTINUE_CONVERSING);
+		expect(c1_4Accessor.getOffer()).toBeNull();
+		expect(c1_4Accessor.getOfferResponse()).toBeNull();
+
+		// Second round - s0 responds
+		s0 = DaiaLanggraphStateWriter.fromState(s0).setInput("Response to second message").build();
+		const c0_4 = await new DaiaLanggraphStateMachineCall(s0, CONFIG_ZERO).run();
+		const c0_4Accessor = DaiaLanggraphStateAccessor.fromState(c0_4.newState);
+		s0 = c0_4.newState;
+		expect(c0_4.targetNode).toEqual(DaiaLanggraphMachineNode.CONTINUE_CONVERSING);
+		expect(c0_4Accessor.getOfferResponse()).toBeNull();
+		expect(c0_4Accessor.getOffer()).toBeNull();
 	});
 });

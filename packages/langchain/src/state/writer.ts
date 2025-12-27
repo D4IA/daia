@@ -5,7 +5,7 @@ import {
 	DaiaLanggraphOfferResponse,
 } from "./input";
 import { DaiaLanggraphState, makeInitialDaiaLanggraphState } from "./state";
-import { DaiaOfferContent } from "@daia/core";
+import { DaiaTransferOfferContent } from "@daia/core";
 
 export class DaiaLanggraphStateWriter {
 	public static readonly fromState = (state: DaiaLanggraphState) =>
@@ -52,7 +52,7 @@ export class DaiaLanggraphStateWriter {
 		return this;
 	};
 
-	public readonly proposeOffer = (input: DaiaOfferContent): this => {
+	public readonly proposeOffer = (input: DaiaTransferOfferContent): this => {
 		return this.setMethodCall({
 			methodId: DaiaLanggraphMethodId.SEND_OFFER,
 			offer: input,

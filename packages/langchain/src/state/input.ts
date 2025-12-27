@@ -1,7 +1,7 @@
 import {
 	DaiaAgreementReferenceResult,
 	DaiaAgreementSchema,
-	DaiaOfferContentSchema,
+	DaiaTransferOfferContentSchema,
 } from "@daia/core";
 import z from "zod/v3";
 
@@ -12,7 +12,7 @@ export enum DaiaLanggraphMethodId {
 export const DaiaLanggraphMethodCallSchema = z.discriminatedUnion("methodId", [
 	z.object({
 		methodId: z.literal(DaiaLanggraphMethodId.SEND_OFFER),
-		offer: DaiaOfferContentSchema,
+		offer: DaiaTransferOfferContentSchema,
 	}),
 ]);
 

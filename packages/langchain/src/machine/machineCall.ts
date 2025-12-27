@@ -3,13 +3,13 @@ import {
 	DaiaMessage,
 	DaiaMessageType,
 	DaiaMessageUtil,
-	DaiaOfferContent,
+	DaiaTransferOfferContent
 } from "@daia/core";
 import { Draft, produce } from "immer";
 import { DaiaLanggraphMethodCall, DaiaLanggraphMethodId, DaiaLanggraphState } from "../state";
 import { DaiaLanggraphMachineStatus } from "../state/innerState";
 import { DaiaStateMachineConfig } from "./machine";
-import { DaiaLanggraphStateMachineOutput, DaiaLanggraphMachineNode } from "./machineDefines";
+import { DaiaLanggraphMachineNode, DaiaLanggraphStateMachineOutput } from "./machineDefines";
 
 export class DaiaLanggraphStateMachineCall {
 	private cachedMessage: DaiaMessage | null | undefined = undefined;
@@ -202,7 +202,7 @@ export class DaiaLanggraphStateMachineCall {
 	};
 
 	private readonly handleConversingProposeOfferMethodCall = async (
-		offer: DaiaOfferContent,
+		offer: DaiaTransferOfferContent,
 	): Promise<DaiaLanggraphStateMachineOutput> => {
 		return this.makeSendDaiaOutput(
 			{

@@ -1,20 +1,25 @@
 import { CreatedBlockchainTransactionHandle } from "@daia/blockchain";
-import { DaiaAgreement, DaiaOfferContent } from "../../defines";
+import {
+	DaiaAgreement,
+	DaiaInnerOfferContent,
+	DaiaOfferSelfSignedData,
+	DaiaTransferOfferContent,
+} from "../../defines";
 
 export type DaiaOfferSignRequest = {
-	offer: DaiaOfferContent;
+	offer: DaiaTransferOfferContent;
 };
 
 export enum DaiaOfferSignResponseType {
 	SUCCESS = "success",
-	FAILURE = "failure",
+	REQUIREMENT_FAILURE = "req-failure",
 }
 
 export type DaiaOfferSignResponse =
 	| {
 			type: DaiaOfferSignResponseType.SUCCESS;
 			transaction: CreatedBlockchainTransactionHandle;
-			offer: DaiaOfferContent;
+			offer: DaiaTransferOfferContent;
 			agreement: DaiaAgreement;
 
 			/**
@@ -23,7 +28,7 @@ export type DaiaOfferSignResponse =
 			internalTransactions: CreatedBlockchainTransactionHandle[];
 	  }
 	| {
-			type: DaiaOfferSignResponseType.FAILURE;
+			type: DaiaOfferSignResponseType.REQUIREMENT_FAILURE;
 			failedRequirementId: string;
 	  };
 
@@ -31,9 +36,13 @@ export type DaiaOfferSummary = {
 	payments: {
 		[to: string]: number;
 	};
+	selfSignedData: {
+		[key: string]: DaiaOfferSelfSignedData;
+	};
 };
 
 export interface DaiaOfferSigner {
-	summarizeOffer: (offer: DaiaOfferContent) => Promise<DaiaOfferSummary>;
+	summarizeOfferContents: (offer: DaiaInnerOfferContent) => Promise<DaiaOfferSummary>;
+	summarizeOffer: (offer: DaiaTransferOfferContent) => Promise<DaiaOfferSummary>;
 	signOffer: (request: DaiaOfferSignRequest) => Promise<DaiaOfferSignResponse>;
 }

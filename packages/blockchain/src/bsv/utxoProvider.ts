@@ -23,16 +23,16 @@ export class WhatsOnChainUtxoProvider implements UtxoProvider {
 	constructor(
 		private readonly privateKey: PrivateKey,
 		private readonly network: "main" | "test" | "stn" = "main",
-	) { }
+	) {}
 
 	private async sleep(ms: number): Promise<void> {
-		return new Promise(resolve => setTimeout(resolve, ms));
+		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
 	async getUtxos(): Promise<UTXO[]> {
-		const address = this.privateKey.toPublicKey().toAddress(
-			this.network === "main" ? 'mainnet' : "testnet"
-		);
+		const address = this.privateKey
+			.toPublicKey()
+			.toAddress(this.network === "main" ? "mainnet" : "testnet");
 		const url = `https://api.whatsonchain.com/v1/bsv/${this.network}/address/${address}/unspent`;
 
 		const response = await fetch(url);

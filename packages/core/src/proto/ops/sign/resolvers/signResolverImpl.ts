@@ -5,7 +5,7 @@ export class DefaultDaiaSignRequirementResolver implements DaiaSignRequirementRe
 	constructor(private readonly privateKey: PrivateKey) {}
 
 	createSignatureProof = async (
-		serializedOffer: string,
+		serializedInnerOffer: string,
 		remoteNonce: string,
 		pubKey: string,
 	): Promise<DaiaSignRequirementResolution | null> => {
@@ -24,7 +24,7 @@ export class DefaultDaiaSignRequirementResolver implements DaiaSignRequirementRe
 
 		// Create the message to sign: offererNonce + signeeNonce + serializedOffer
 		// Note: remoteNonce here is the offererNonce from the verifier's perspective
-		const messageToSign = remoteNonce + signeeNonce + serializedOffer;
+		const messageToSign = remoteNonce + signeeNonce + serializedInnerOffer;
 
 		// Sign the message
 		const signature = this.privateKey.sign(messageToSign);

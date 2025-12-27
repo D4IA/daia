@@ -1,4 +1,4 @@
-import { DaiaOfferContent } from "@daia/core";
+import { DaiaTransferOfferContent } from "@daia/core";
 import { DaiaLanggraphMachineStatus } from "./innerState";
 import { DaiaLanggraphNamespacedState, DaiaLanggraphState } from "./state";
 
@@ -23,7 +23,7 @@ export class DaiaLanggraphStateAccessor {
 	/**
 	 * Contains offer content received from remote party. Null if there isn't any right now.
 	 */
-	public readonly getOffer = (): DaiaOfferContent | null => this.state.output.remoteOffer;
+	public readonly getOffer = (): DaiaTransferOfferContent | null => this.state.output.remoteOffer;
 
 	/**
 	 * Contains response to offer sent by local agent, if there was any.
