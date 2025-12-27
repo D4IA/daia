@@ -318,6 +318,10 @@
     {
       "packageName": "@daia/blockchain",
       "projectFolder": "packages/blockchain"
+    },
+        {
+      "packageName": "@daia/langchain-demo",
+      "projectFolder": "packages/langchain-demo"
     }
     // {
     //   /**

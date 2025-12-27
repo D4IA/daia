@@ -23,16 +23,24 @@ export class WhatsOnChainUtxoProvider implements UtxoProvider {
 	constructor(
 		private readonly privateKey: PrivateKey,
 		private readonly network: "main" | "test" | "stn" = "main",
-	) {}
+	) { }
+
+	private async sleep(ms: number): Promise<void> {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
 
 	async getUtxos(): Promise<UTXO[]> {
-		const address = this.privateKey.toPublicKey().toAddress();
+		const address = this.privateKey.toPublicKey().toAddress(
+			this.network === "main" ? 'mainnet' : "testnet"
+		);
 		const url = `https://api.whatsonchain.com/v1/bsv/${this.network}/address/${address}/unspent`;
 
 		const response = await fetch(url);
 		if (!response.ok) {
 			throw new Error(`Failed to fetch UTXOs: ${response.status} ${response.statusText}`);
 		}
+
+		await this.sleep(500);
 
 		const utxos: Array<{
 			tx_hash: string;
@@ -81,6 +89,8 @@ export class WhatsOnChainUtxoProvider implements UtxoProvider {
 		if (!response.ok) {
 			throw new Error(`Failed to fetch transaction: ${response.status} ${response.statusText}`);
 		}
+
+		await this.sleep(500);
 
 		const txHex = await response.text();
 		return Transaction.fromHex(txHex);

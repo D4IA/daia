@@ -1,15 +1,16 @@
 import { DaiaLanggraphState } from "../state";
 
-export enum DaiaStateMachineTargetNode {
+/**
+ * Enum of all langgraph nodes that DAIA expects to be defined in the langgraph graph that daia graph will be used in.
+ */
+export enum DaiaLanggraphMachineNode {
 	SEND_DAIA_OUTPUT = "send-daia-output",
-	END_CONNECTION = "end-connection",
-	CONTINUE_CONVERSING = "continue-conversing",
 	OFFER_RECEIVED = "offer-received",
-	PUBLIC_IDENTITY_RECEIVED = "public-identity-received",
+	CONTINUE_CONVERSING = "continue-conversing",
 	REMOTE_PROCESSED_OFFER = "remote-processed-offer",
 }
 
-export type DaiaStateMachineOutput = {
+export type DaiaLanggraphStateMachineOutput = {
 	newState: DaiaLanggraphState;
-	targetNode: DaiaStateMachineTargetNode;
+	targetNode: DaiaLanggraphMachineNode;
 };

@@ -1,21 +1,19 @@
 import z from "zod/v3";
 
 export * from "./common";
-export * from "./publicIdentity";
+export * from "./hello";
 export * from "./offer";
 export * from "./agreementReference";
 export * from "./helper";
 
 import {
-	DaiaPublicIdentityRequestSchema,
-	DaiaPublicIdentityResponseSchema,
-} from "./publicIdentity";
+	DaiaHelloSchema,
+} from "./hello";
 import { DaiaOfferMessageSchema } from "./offer";
 import { DaiaAgreementReferenceMessageSchema } from "./agreementReference";
 
 export const DaiaMessageSchema = z.union([
-	DaiaPublicIdentityRequestSchema,
-	DaiaPublicIdentityResponseSchema,
+	DaiaHelloSchema,
 	DaiaOfferMessageSchema,
 	DaiaAgreementReferenceMessageSchema,
 ]);

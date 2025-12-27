@@ -3,18 +3,19 @@ import {
 	DaiaMessage,
 	DaiaMessageType,
 	DaiaMessageUtil,
+	DaiaOfferContent,
 } from "@daia/core";
 import { Draft, produce } from "immer";
-import { DaiaLanggraphMethodId, DaiaLanggraphState } from "../state";
+import { DaiaLanggraphMethodCall, DaiaLanggraphMethodId, DaiaLanggraphState } from "../state";
 import { DaiaLanggraphMachineStatus } from "../state/innerState";
 import { DaiaStateMachineConfig } from "./machine";
-import { DaiaStateMachineOutput, DaiaStateMachineTargetNode } from "./machineDefines";
+import { DaiaLanggraphStateMachineOutput, DaiaLanggraphMachineNode } from "./machineDefines";
 
-export class DaiaStateMachineCall {
+export class DaiaLanggraphStateMachineCall {
 	private cachedMessage: DaiaMessage | null | undefined = undefined;
 	constructor(
 		private readonly state: Readonly<DaiaLanggraphState>,
-		private readonly context: DaiaStateMachineConfig,
+		private readonly config: DaiaStateMachineConfig,
 	) {}
 
 	private get input() {
@@ -23,10 +24,6 @@ export class DaiaStateMachineCall {
 
 	private get status() {
 		return this.state.inner.status;
-	}
-
-	private get remoteIdentity() {
-		return this.state.inner.publicIdentity;
 	}
 
 	private readonly clearOutput = (draft: Draft<DaiaLanggraphState>) => {
@@ -38,9 +35,9 @@ export class DaiaStateMachineCall {
 	};
 
 	private readonly makeOutput = (
-		target: DaiaStateMachineTargetNode,
+		target: DaiaLanggraphMachineNode,
 		producer?: (draft: Draft<DaiaLanggraphState>) => DaiaLanggraphState | void,
-	): DaiaStateMachineOutput => {
+	): DaiaLanggraphStateMachineOutput => {
 		return {
 			newState: produce(this.state, (draft) => {
 				this.clearOutput(draft);
@@ -53,10 +50,10 @@ export class DaiaStateMachineCall {
 	};
 
 	private readonly makeOutputWithStatus = (
-		target: DaiaStateMachineTargetNode,
+		target: DaiaLanggraphMachineNode,
 		status: DaiaLanggraphMachineStatus,
 		producer?: (draft: Draft<DaiaLanggraphState>) => DaiaLanggraphState | void,
-	): DaiaStateMachineOutput => {
+	): DaiaLanggraphStateMachineOutput => {
 		return this.makeOutput(target, (draft) => {
 			if (status) {
 				draft.inner.status = status;
@@ -67,11 +64,18 @@ export class DaiaStateMachineCall {
 		});
 	};
 
-	private readonly makeSendDaiaOutput = (msg: DaiaMessage, status: DaiaLanggraphMachineStatus) => {
-		return this.makeOutput(DaiaStateMachineTargetNode.SEND_DAIA_OUTPUT, (draft) => {
+	private readonly makeSendDaiaOutput = (
+		msg: DaiaMessage,
+		status: DaiaLanggraphMachineStatus,
+		producer?: (draft: Draft<DaiaLanggraphState>) => DaiaLanggraphState | void,
+	) => {
+		return this.makeOutput(DaiaLanggraphMachineNode.SEND_DAIA_OUTPUT, (draft) => {
 			draft.output.text = DaiaMessageUtil.serialize(msg);
 			if (status) {
 				draft.inner.status = status;
+			}
+			if (producer) {
+				return producer(draft);
 			}
 		});
 	};
@@ -88,88 +92,39 @@ export class DaiaStateMachineCall {
 		return this.cachedMessage;
 	};
 
-	private readonly runHandlePublicIdentityResponse =
-		async (): Promise<DaiaStateMachineOutput | null> => {
-			const msg = this.readDaiaMessage();
-			if (
-				this.status === DaiaLanggraphMachineStatus.INIT ||
-				this.status === DaiaLanggraphMachineStatus.CONVERSING
-			) {
-				if (msg && msg.type === DaiaMessageType.PUBLIC_IDENTITY_REQUEST) {
-					return this.makeSendDaiaOutput(
-						{
-							type: DaiaMessageType.PUBLIC_IDENTITY_RESPONSE,
-							publicKey: this.context.publicKey,
-						},
-						DaiaLanggraphMachineStatus.CONVERSING,
-					);
-				}
-			} else {
-				if (msg && msg.type === DaiaMessageType.PUBLIC_IDENTITY_REQUEST) {
-					throw new Error(`Can't request public identity in machine state: ${this.status}`);
-				}
-			}
+	private readonly readDaiaMethodCall = (): DaiaLanggraphMethodCall | null => {
+		return this.input.methodCall;
+	};
 
-			return null;
-		};
+	private readonly handleInitStatus = async (): Promise<DaiaLanggraphStateMachineOutput> => {
+		const msg = this.readDaiaMessage();
+		const call = this.readDaiaMethodCall();
 
-	private readonly handleInputRun = async (): Promise<DaiaStateMachineOutput> => {
-		{
-			const res = await this.runHandlePublicIdentityResponse();
-			if (res) return res;
+		if (call) {
+			throw new Error(
+				`Can't call method ${call.methodId} in state ${DaiaLanggraphMachineStatus.INIT}`,
+			);
 		}
 
-		const msg = this.readDaiaMessage();
-
-		if (
-			this.status === DaiaLanggraphMachineStatus.INIT ||
-			this.status === DaiaLanggraphMachineStatus.CONVERSING
-		) {
-			if (this.remoteIdentity) {
-				if (msg && msg.type !== DaiaMessageType.OFFER) {
-					throw new Error(`Invalid message type received in state ${this.status} : ${msg.type}`);
-				} else if (msg && msg.type === DaiaMessageType.OFFER) {
-					return this.makeOutputWithStatus(
-						DaiaStateMachineTargetNode.OFFER_RECEIVED,
-						DaiaLanggraphMachineStatus.RECEIVED_OFFER,
-						(draft) => {
-							draft.output.remoteOffer = msg.content;
-						},
-					);
-				} else {
-					return this.makeOutputWithStatus(
-						DaiaStateMachineTargetNode.CONTINUE_CONVERSING,
-						DaiaLanggraphMachineStatus.CONVERSING,
-					);
-				}
-			} else {
-				// We've received an offer message (no other is valid in this state and request should be intercepted already)
-				// We can't request public identity when there's a message.
-				// However we can't validate it either.
-				//
-				// This is non-standard behavior, so just throw here.
-				if (msg) {
-					throw new Error(`Invalid message type received in state ${this.status} : ${msg.type}`);
-				}
-
-				return this.makeSendDaiaOutput(
-					{
-						type: DaiaMessageType.PUBLIC_IDENTITY_REQUEST,
-					},
-					DaiaLanggraphMachineStatus.AWAITING_PUBLIC_ID_RESPONSE,
-				);
-			}
-		} else if (this.status === DaiaLanggraphMachineStatus.AWAITING_PUBLIC_ID_RESPONSE) {
-			if (!msg || msg.type !== DaiaMessageType.PUBLIC_IDENTITY_RESPONSE) {
-				throw new Error(
-					`Received invalid message type as public identity response: ${msg?.type?.toString()}`,
-				);
-			}
-
-			// TODO(teawithsand): public key validation here or make it a better type than string here or use zod for this purpose
-
+		if (msg === null && this.input.text === "") {
+			return this.makeSendDaiaOutput(
+				{
+					type: DaiaMessageType.DAIA_HELLO,
+					publicKey: this.config.publicKey,
+				},
+				DaiaLanggraphMachineStatus.INIT_AWAITING_REMOTE_HELLO,
+			);
+		} else if (msg === null) {
 			return this.makeOutputWithStatus(
-				DaiaStateMachineTargetNode.PUBLIC_IDENTITY_RECEIVED,
+				DaiaLanggraphMachineNode.CONTINUE_CONVERSING,
+				DaiaLanggraphMachineStatus.INIT,
+			);
+		} else if (msg.type === DaiaMessageType.DAIA_HELLO) {
+			return this.makeSendDaiaOutput(
+				{
+					type: DaiaMessageType.DAIA_HELLO,
+					publicKey: this.config.publicKey,
+				},
 				DaiaLanggraphMachineStatus.CONVERSING,
 				(draft) => {
 					draft.inner.publicIdentity = {
@@ -177,18 +132,110 @@ export class DaiaStateMachineCall {
 					};
 				},
 			);
-		} else if (this.status === DaiaLanggraphMachineStatus.AWAITING_REMOTE_OFFER_RESPONSE) {
+		} else {
+			throw new Error(`Received invalid message type in INIT state: ${msg.type}`);
+		}
+	};
+
+	private readonly handleInitAwaitingHelloStatus =
+		async (): Promise<DaiaLanggraphStateMachineOutput> => {
+			// This state means that we received empty string during hello phase
+
+			const msg = this.readDaiaMessage();
+			const call = this.readDaiaMethodCall();
+
+			if (call)
+				throw new Error(
+					`Can't call method ${call.methodId} in state ${DaiaLanggraphMachineStatus.INIT_AWAITING_REMOTE_HELLO}`,
+				);
+
+			if (msg === null) {
+				return this.makeOutputWithStatus(
+					DaiaLanggraphMachineNode.CONTINUE_CONVERSING,
+					DaiaLanggraphMachineStatus.INIT_AWAITING_REMOTE_HELLO,
+				);
+			} else if (msg.type === DaiaMessageType.DAIA_HELLO) {
+				return this.makeOutputWithStatus(
+					DaiaLanggraphMachineNode.CONTINUE_CONVERSING,
+					DaiaLanggraphMachineStatus.CONVERSING,
+					(draft) => {
+						draft.inner.publicIdentity = {
+							// TODO(teawithsand): public key validation here or make it a better type than string here or use zod for this purpose
+							publicKey: msg.publicKey,
+						};
+					},
+				);
+			} else {
+				throw new Error(`Received invalid message type in INIT state: ${msg.type}`);
+			}
+		};
+
+	private readonly handleConversingStatus = async (): Promise<DaiaLanggraphStateMachineOutput> => {
+		const msg = this.readDaiaMessage();
+		const call = this.readDaiaMethodCall();
+
+		if (msg && msg.type !== DaiaMessageType.OFFER) {
+			throw new Error(`Invalid message type received in state ${this.status} : ${msg.type}`);
+		} else if (msg && msg.type === DaiaMessageType.OFFER) {
+			return this.makeOutputWithStatus(
+				DaiaLanggraphMachineNode.OFFER_RECEIVED,
+				DaiaLanggraphMachineStatus.RECEIVED_OFFER,
+				(draft) => {
+					draft.output.remoteOffer = msg.content;
+				},
+			);
+		} else {
+			// only respect method call if incoming message was not a offer request
+			if (call) {
+				if (call.methodId === DaiaLanggraphMethodId.SEND_OFFER) {
+					return await this.handleConversingProposeOfferMethodCall(call.offer);
+				} else {
+					throw new Error(`Invalid daia method id: ${call.methodId}`);
+				}
+			}
+
+			return this.makeOutputWithStatus(
+				DaiaLanggraphMachineNode.CONTINUE_CONVERSING,
+				DaiaLanggraphMachineStatus.CONVERSING,
+			);
+		}
+	};
+
+	private readonly handleConversingProposeOfferMethodCall = async (
+		offer: DaiaOfferContent,
+	): Promise<DaiaLanggraphStateMachineOutput> => {
+		return this.makeSendDaiaOutput(
+			{
+				type: DaiaMessageType.OFFER,
+				content: offer,
+			},
+			DaiaLanggraphMachineStatus.AWAITING_OFFER_RESPONSE,
+		);
+	};
+
+	private readonly handleAwaitingOfferResponseStatus =
+		async (): Promise<DaiaLanggraphStateMachineOutput> => {
+			const msg = this.readDaiaMessage();
+			const call = this.readDaiaMethodCall();
+
+			if (call)
+				throw new Error(
+					`Can't call method ${call.methodId} in state ${DaiaLanggraphMachineStatus.AWAITING_OFFER_RESPONSE}`,
+				);
+
 			if (!msg || msg.type !== DaiaMessageType.OFFER_RESPONSE) {
 				throw new Error(
-					`Invalid message type was received after our offer was sent: ${msg?.type?.toString()}`,
+					`Invalid message type was received after our offer was sent: ${msg?.type?.toString()} OR invalid DAIA message was received`,
 				);
 			}
 
 			return this.makeOutputWithStatus(
-				DaiaStateMachineTargetNode.REMOTE_PROCESSED_OFFER,
+				DaiaLanggraphMachineNode.REMOTE_PROCESSED_OFFER,
 				DaiaLanggraphMachineStatus.CONVERSING,
 				(draft) => {
 					if (msg.result === DaiaAgreementReferenceResult.ACCEPT) {
+						// TODO(teawithsand): trigger validation here of incoming offer
+
 						draft.output.remoteResponseToLocalOffer = {
 							agreementReference: msg.agreementReference,
 							agreement: msg.agreement,
@@ -202,66 +249,55 @@ export class DaiaStateMachineCall {
 					}
 				},
 			);
+		};
+
+	private readonly handleReceivedOfferStatus =
+		async (): Promise<DaiaLanggraphStateMachineOutput> => {
+			const response = this.state.input.offerResponse;
+			if (!response) throw new Error(`No offer response provided in state ${this.status}`);
+			if (response.result === DaiaAgreementReferenceResult.ACCEPT) {
+				// TODO(teawithsand): trigger validation here of incoming offer
+
+				return this.makeSendDaiaOutput(
+					{
+						type: DaiaMessageType.OFFER_RESPONSE,
+						agreementReference: response.agreementReference,
+						agreement: response.agreement,
+						result: DaiaAgreementReferenceResult.ACCEPT,
+					},
+					DaiaLanggraphMachineStatus.CONVERSING,
+				);
+			} else if (response.result === DaiaAgreementReferenceResult.REJECT) {
+				return this.makeSendDaiaOutput(
+					{
+						type: DaiaMessageType.OFFER_RESPONSE,
+						result: DaiaAgreementReferenceResult.REJECT,
+						rationale: response.rationale,
+					},
+					DaiaLanggraphMachineStatus.CONVERSING,
+				);
+			} else {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				throw new Error(`Invalid offer response result: ${(response as any).result}`);
+			}
+		};
+	private readonly handleInputRun = async (): Promise<DaiaLanggraphStateMachineOutput> => {
+		if (this.status === DaiaLanggraphMachineStatus.INIT) {
+			return await this.handleInitStatus();
+		} else if (this.status === DaiaLanggraphMachineStatus.INIT_AWAITING_REMOTE_HELLO) {
+			return await this.handleInitAwaitingHelloStatus();
+		} else if (this.status === DaiaLanggraphMachineStatus.CONVERSING) {
+			return await this.handleConversingStatus();
+		} else if (this.status === DaiaLanggraphMachineStatus.AWAITING_OFFER_RESPONSE) {
+			return await this.handleAwaitingOfferResponseStatus();
+		} else if (this.status === DaiaLanggraphMachineStatus.RECEIVED_OFFER) {
+			return await this.handleReceivedOfferStatus();
 		} else {
-			throw new Error(`Unreachable code: ${this.status}`);
+			throw new Error(`Unhandled DAIA langgraph machine status: ${this.status}`);
 		}
 	};
 
-	public readonly run = async (): Promise<DaiaStateMachineOutput> => {
-		if (this.input.offerResponse) {
-			if (this.input.methodCall) {
-				throw new Error(`Can't do method call when offer response is being processed`);
-			}
-
-			if (this.status !== DaiaLanggraphMachineStatus.RECEIVED_OFFER) {
-				throw new Error(`Improper state for offer response: ${this.status}`);
-			}
-
-			let response: DaiaMessage;
-			if (this.input.offerResponse.result === DaiaAgreementReferenceResult.ACCEPT) {
-				response = {
-					type: DaiaMessageType.OFFER_RESPONSE,
-					result: DaiaAgreementReferenceResult.ACCEPT,
-					agreementReference: this.input.offerResponse.agreementReference,
-					agreement: this.input.offerResponse.agreement,
-				};
-			} else if (this.input.offerResponse.result === DaiaAgreementReferenceResult.REJECT) {
-				response = {
-					type: DaiaMessageType.OFFER_RESPONSE,
-					result: DaiaAgreementReferenceResult.REJECT,
-					rationale: this.input.offerResponse.rationale,
-				};
-			} else {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				throw new Error(`Invalid offer response result: ${(this.input.offerResponse as any)?.result}`);
-			}
-
-			return this.makeSendDaiaOutput(response, DaiaLanggraphMachineStatus.CONVERSING);
-		} else if (this.input.methodCall) {
-			if (this.input.offerResponse) {
-				throw new Error(`Can't do offer response when method is being called`);
-			}
-
-			if (
-				this.status !== DaiaLanggraphMachineStatus.INIT &&
-				this.status !== DaiaLanggraphMachineStatus.CONVERSING
-			) {
-				throw new Error(`Improper status for method call`);
-			}
-
-			if (this.input.methodCall.methodId === DaiaLanggraphMethodId.SEND_OFFER) {
-				return this.makeSendDaiaOutput(
-					{
-						type: DaiaMessageType.OFFER,
-						content: this.input.methodCall?.offer,
-					},
-					DaiaLanggraphMachineStatus.AWAITING_REMOTE_OFFER_RESPONSE,
-				);
-			} else {
-				throw new Error(`Unknown daia method call id :${this.input.methodCall.methodId}`);
-			}
-		} else {
-			return await this.handleInputRun();
-		}
+	public readonly run = async (): Promise<DaiaLanggraphStateMachineOutput> => {
+		return await this.handleInputRun();
 	};
 }

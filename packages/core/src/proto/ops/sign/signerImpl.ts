@@ -52,7 +52,7 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 
 	async signOffer(request: DaiaOfferSignRequest): Promise<DaiaOfferSignResponse> {
 		const { offer } = request;
-		const signResolver = request.signFactory || this.config.signResolver;
+		const signResolver = this.config.signResolver;
 		const paymentResolver = this.config.paymentResolver;
 		const referenceResolver = this.config.referenceResolver;
 

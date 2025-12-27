@@ -1,9 +1,7 @@
 import { CreatedBlockchainTransactionHandle } from "@daia/blockchain";
 import { DaiaAgreement, DaiaOfferContent } from "../../defines";
-import { DaiaSignRequirementResolver } from "./resolvers/signResolver";
 
 export type DaiaOfferSignRequest = {
-	signFactory?: DaiaSignRequirementResolver;
 	offer: DaiaOfferContent;
 };
 

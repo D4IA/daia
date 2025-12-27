@@ -20,11 +20,6 @@ export const DaiaRequirementSignSchema = z.object({
 	pubKey: z.string(),
 
 	/**
-	 * Used to make requirement self-signing. When offer creator also wants to sign the offer.
-	 */
-	sign: z.string().nullable(),
-
-	/**
 	 * Random string used to prevent signer from signing potentially malicious data.
 	 *
 	 * Created by the one who creates offer and requirements.

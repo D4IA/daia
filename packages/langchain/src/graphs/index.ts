@@ -1,1 +1,1 @@
-export * from "./daiaGraph"
+export * from "./daiaGraph";

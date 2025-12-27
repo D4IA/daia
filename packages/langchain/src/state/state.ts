@@ -1,7 +1,7 @@
 import z from "zod/v3";
 import { DaiaLanggraphStateInput } from "./input";
 import { DaiaLanggraphStateOutput } from "./output";
-import { DaiaLanggraphInnerStateSchema } from "./innerState";
+import { DaiaLanggraphInnerStateSchema, DaiaLanggraphMachineStatus } from "./innerState";
 
 export const DaiaLanggraphStateSchema = z.object({
 	input: DaiaLanggraphStateInput,
@@ -16,3 +16,20 @@ export const DaiaLanggraphNamespacedStateSchema = z.object({
 });
 
 export type DaiaLanggraphNamespacedState = z.infer<typeof DaiaLanggraphNamespacedStateSchema>;
+
+export const makeInitialDaiaLanggraphState = (): DaiaLanggraphState => ({
+	input: {
+		text: "",
+		methodCall: null,
+		offerResponse: null,
+	},
+	inner: {
+		status: DaiaLanggraphMachineStatus.INIT,
+		publicIdentity: null,
+	},
+	output: {
+		text: "",
+		remoteOffer: null,
+		remoteResponseToLocalOffer: null,
+	},
+});

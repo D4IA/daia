@@ -2,9 +2,9 @@ import z from "zod/v3";
 
 export enum DaiaLanggraphMachineStatus {
 	INIT = "init",
+	INIT_AWAITING_REMOTE_HELLO = "awaiting-remote-hello",
 	CONVERSING = "conversing",
-	AWAITING_PUBLIC_ID_RESPONSE = "awaiting-public-id-response",
-	AWAITING_REMOTE_OFFER_RESPONSE = "awaiting-remote-offer-response",
+	AWAITING_OFFER_RESPONSE = "awaiting-remote-offer-response",
 	RECEIVED_OFFER = "received-offer",
 }
 

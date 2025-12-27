@@ -159,7 +159,6 @@ describe("DefaultDaiaOfferSigner", () => {
 					sign1: {
 						type: DaiaRequirementType.SIGN,
 						pubKey: "pubkey123",
-						sign: null,
 						offererNonce: "nonce123",
 					},
 					payment1: {
@@ -201,7 +200,6 @@ describe("DefaultDaiaOfferSigner", () => {
 					sign1: {
 						type: DaiaRequirementType.SIGN,
 						pubKey: "pubkey123",
-						sign: null,
 						offererNonce: "offerer-nonce-123",
 					},
 				},
@@ -237,7 +235,6 @@ describe("DefaultDaiaOfferSigner", () => {
 					sign1: {
 						type: DaiaRequirementType.SIGN,
 						pubKey: "pubkey123",
-						sign: null,
 						offererNonce: "offerer-nonce-123",
 					},
 				},
@@ -267,7 +264,6 @@ describe("DefaultDaiaOfferSigner", () => {
 					sign1: {
 						type: DaiaRequirementType.SIGN,
 						pubKey: "pubkey123",
-						sign: null,
 						offererNonce: "offerer-nonce-123",
 					},
 				},
@@ -496,7 +492,6 @@ describe("DefaultDaiaOfferSigner", () => {
 					sign1: {
 						type: DaiaRequirementType.SIGN,
 						pubKey: "pubkey123",
-						sign: null,
 						offererNonce: "offerer-nonce-123",
 					},
 					payment1: {
@@ -544,43 +539,6 @@ describe("DefaultDaiaOfferSigner", () => {
 				expect(response.agreement.proofs).toEqual({});
 				expect(response.internalTransactions).toHaveLength(0);
 			}
-		});
-
-		it("should use request signFactory over config signResolver", async () => {
-			const configSignResolver = createMockSignResolver();
-			const requestSignResolver = createMockSignResolver();
-
-			vi.mocked(requestSignResolver.createSignatureProof).mockResolvedValue({
-				nonce: "request-nonce",
-				sign: "request-signature",
-			});
-
-			const signer = new DefaultDaiaOfferSigner({
-				transactionFactory: createMockTransactionFactory(),
-				signResolver: configSignResolver,
-			});
-
-			const offer: DaiaOfferContent = {
-				offerTypeIdentifier: "test",
-				naturalLanguageOfferContent: "Test offer",
-				requirements: {
-					sign1: {
-						type: DaiaRequirementType.SIGN,
-						pubKey: "pubkey123",
-						sign: null,
-						offererNonce: "offerer-nonce-123",
-					},
-				},
-			};
-
-			const response = await signer.signOffer({
-				offer,
-				signFactory: requestSignResolver,
-			});
-
-			expect(response.type).toBe(DaiaOfferSignResponseType.SUCCESS);
-			expect(requestSignResolver.createSignatureProof).toHaveBeenCalled();
-			expect(configSignResolver.createSignatureProof).not.toHaveBeenCalled();
 		});
 	});
 });

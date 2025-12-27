@@ -1,0 +1,131 @@
+
+> @daia/langchain-demo@0.0.1 start
+> tsx src/index.ts
+
+[Demo] Gate Agent Public Key: 029f0778605a7f5476f0043622e34746659746bbed92068af5f3d62e4bae79f782
+[Demo] Car Agent Public Key: 02edb7acc58706a6e6637ef9ff4464120ff26433348a018dedb170f7fb28b22586
+[Demo] Using testnet
+
+[Demo] Starting conversation...
+
+
+=== Iteration 1 ===
+[CarAgent -> GateAgent]: 
+[GateAgent] Processing input: 
+[GateAgent] State BEFORE invoke: status=init
+[GateAgent -> CarAgent]: @@##__DAIA-MSG__##@@{"type":"public-identity-request"}
+[GateAgent State]: status=awaiting-public-id-response, hasPublicId=false, hasRemoteOffer=false, hasRemoteResponse=false, openGate=false
+[CarAgent] Processing input...
+[CarAgent -> GateAgent]: @@##__DAIA-MSG__##@@{"type":"public-identity-response","publicKey":"02edb7acc58706a6e6637ef9ff4464120ff26433348a018dedb170f7fb28b22586"}
+[CarAgent State]: status=conversing, hasPublicId=false, hasRemoteOffer=false, hasRemoteResponse=false
+
+=== Iteration 2 ===
+[CarAgent -> GateAgent]: @@##__DAIA-MSG__##@@{"type":"public-identity-request"}
+[GateAgent] Processing input: @@##__DAIA-MSG__##@@{"type":"public-identity-response","publicKey":"02edb7acc58706a6e6637ef9ff446412
+[GateAgent] State BEFORE invoke: status=awaiting-public-id-response
+[GateAgent LLM - After Public ID] Input: [
+  {
+    "role": "system",
+    "content": "You are a parking gate agent. Be friendly and guide the user to accept a parking offer. When ready, make an offer. IMPORTANT: Never use more than 10 satoshis in any transaction. Do not generate offers, there's separate agent that will take over that can do that. You know nothing about the parking, so make no promises and just cut straight to offer generation. Do not hallucinate. Only refer to data given in system prompt."
+  }
+]
+[GateAgent LLM - After Public ID] Output: "Hi — I’m the parking gate agent. I don’t have any parking details and can’t make promises, but I can help you accept an offer.\n\nDo you want to accept a parking offer now? If so, reply with \"Generate offer\" (or press the Generate Offer button). That will hand off to the separate offer agent to create the offer. Important: any transaction must use no more than 10 satoshis.  \n\nReady to proceed?"
+[GateAgent -> CarAgent]: Hi — I’m the parking gate agent. I don’t have any parking details and can’t make promises, but I can help you accept an offer.
+
+Do you want to accept a parking offer now? If so, reply with "Generate offer" (or press the Generate Offer button). That will hand off to the separate offer agent to create the offer. Important: any transaction must use no more than 10 satoshis.  
+
+Ready to proceed?
+[GateAgent State]: status=conversing, hasPublicId=true, hasRemoteOffer=false, hasRemoteResponse=false, openGate=false
+[CarAgent] Processing input...
+[CarAgent -> GateAgent]: @@##__DAIA-MSG__##@@{"type":"public-identity-request"}
+[CarAgent State]: status=awaiting-public-id-response, hasPublicId=false, hasRemoteOffer=false, hasRemoteResponse=false
+
+=== Iteration 3 ===
+[CarAgent -> GateAgent]: Hi — I’m the parking gate agent. I don’t have any parking details and can’t make promises, but I can help you accept an offer.
+
+Do you want to accept a parking offer now? If so, reply with "Generate offer" (or press the Generate Offer button). That will hand off to the separate offer agent to create the offer. Important: any transaction must use no more than 10 satoshis.  
+
+Ready to proceed?
+[GateAgent] Processing input: @@##__DAIA-MSG__##@@{"type":"public-identity-request"}
+[GateAgent] State BEFORE invoke: status=conversing
+[GateAgent -> CarAgent]: @@##__DAIA-MSG__##@@{"type":"public-identity-response","publicKey":"029f0778605a7f5476f0043622e34746659746bbed92068af5f3d62e4bae79f782"}
+[GateAgent State]: status=conversing, hasPublicId=true, hasRemoteOffer=false, hasRemoteResponse=false, openGate=false
+[CarAgent] Processing input...
+[CarAgent LLM - After Public ID] Input: [
+  {
+    "role": "system",
+    "content": "You are a car agent trying to enter a parking lot. Be polite and accept reasonable offers. IMPORTANT: Never agree to pay more than 10 satoshis. Be short and concise. Do not hallucinate. Only refer to data given in system prompt."
+  },
+  {
+    "role": "user",
+    "content": ""
+  }
+]
+[CarAgent LLM - After Public ID] Output: "Hello — requesting entry. What’s the parking fee? I can pay up to 10 satoshis."
+[CarAgent -> GateAgent]: Hello — requesting entry. What’s the parking fee? I can pay up to 10 satoshis.
+[CarAgent State]: status=conversing, hasPublicId=true, hasRemoteOffer=false, hasRemoteResponse=false
+
+=== Iteration 4 ===
+[CarAgent -> GateAgent]: @@##__DAIA-MSG__##@@{"type":"public-identity-response","publicKey":"029f0778605a7f5476f0043622e34746659746bbed92068af5f3d62e4bae79f782"}
+[GateAgent] Processing input: Hello — requesting entry. What’s the parking fee? I can pay up to 10 satoshis.
+[GateAgent] State BEFORE invoke: status=conversing
+[GateAgent LLM] Input: [
+  {
+    "role": "system",
+    "content": "You are a parking gate agent. Be friendly and guide the user to accept a parking offer. When ready, make an offer. IMPORTANT: Never use more than 10 satoshis in any transaction. In order to generate offer, use special generate offer output type. Then put offer parameters inside. You know nothing about the parking, so make no promises and just cut straight to offer generation. Put price of parking in satoshish/hr in natural language in offer content. Be short and concise. Do not hallucinate. Only refer to data given in system prompt."
+  },
+  {
+    "role": "assistant",
+    "content": "Hi — I’m the parking gate agent. I don’t have any parking details and can’t make promises, but I can help you accept an offer.\n\nDo you want to accept a parking offer now? If so, reply with \"Generate offer\" (or press the Generate Offer button). That will hand off to the separate offer agent to create the offer. Important: any transaction must use no more than 10 satoshis.  \n\nReady to proceed?"
+  },
+  {
+    "role": "user",
+    "content": "Hello — requesting entry. What’s the parking fee? I can pay up to 10 satoshis."
+  }
+]
+[GateAgent LLM] Output: {
+  "type": "offer",
+  "content": "Offer: 10 satoshis/hr. Reply \"Accept\" to proceed. I make no promises; transaction will be ≤10 satoshis."
+}
+[GateAgent -> CarAgent]: @@##__DAIA-MSG__##@@{"type":"offer","content":{"offerTypeIdentifier":"DAIA-PARKING-ENTER","naturalLanguageOfferContent":"Offer: 10 satoshis/hr. Reply \"Accept\" to proceed. I make no promises; transaction will be ≤10 satoshis.","requirements":{"sign":{"type":"sign","pubKey":"02edb7acc58706a6e6637ef9ff4464120ff26433348a018dedb170f7fb28b22586","offererNonce":"adsadasda0.909993044769362"}}}}
+[GateAgent State]: status=awaiting-remote-offer-response, hasPublicId=true, hasRemoteOffer=false, hasRemoteResponse=false, openGate=false
+[CarAgent] Processing input...
+[CarAgent LLM - Offer Analysis] Input: [
+  {
+    "role": "system",
+    "content": "You analyze parking offers from the gate. Accept offers that seem reasonable (no payments required in this protocol). Reject any offer that requires more than 10 satoshis. Be short and concise. Do not hallucinate. Only refer to data given in system prompt."
+  },
+  {
+    "role": "user",
+    "content": "Offer: Offer: 10 satoshis/hr. Reply \"Accept\" to proceed. I make no promises; transaction will be ≤10 satoshis."
+  }
+]
+[CarAgent LLM - Offer Analysis] Output: {
+  "acceptOffer": true,
+  "reason": "Offer is 10 satoshis/hr, which meets the ≤10 satoshis threshold."
+}
+[CarAgent] Transaction published: 47c9d7d0af19b0bc59b04b0ca130c6f1ffe80314c33c775c558ea6b25019ebcf
+[CarAgent] View on WhatsOnChain: https://test.whatsonchain.com/tx/47c9d7d0af19b0bc59b04b0ca130c6f1ffe80314c33c775c558ea6b25019ebcf
+[CarAgent] Waiting 10 seconds for transaction to propagate...
+[CarAgent] Wait complete, proceeding...
+[CarAgent -> GateAgent]: @@##__DAIA-MSG__##@@{"type":"offer-response","result":"accept","agreementReference":"47c9d7d0af19b0bc59b04b0ca130c6f1ffe80314c33c775c558ea6b25019ebcf","agreement":{"offerContentSerialized":"{\"offerTypeIdentifier\":\"DAIA-PARKING-ENTER\",\"naturalLanguageOfferContent\":\"Offer: 10 satoshis/hr. Reply \\\"Accept\\\" to proceed. I make no promises; transaction will be ≤10 satoshis.\",\"requirements\":{\"sign\":{\"type\":\"sign\",\"pubKey\":\"02edb7acc58706a6e6637ef9ff4464120ff26433348a018dedb170f7fb28b22586\",\"offererNonce\":\"adsadasda0.909993044769362\"}}}","proofs":{"sign":{"type":"sign","signeeNonce":"e4730acdf082871ae35fcef0db84dfa707fdea656e88f25102da7f10e62a2685","signature":"MEUCIQDUt/oPK8hIfS0PJDDaJJXJimvki1IxXaDfc/WxxQRcZAIgAkv1NijJmwIW/sKpJGqvaTrOeNOnW/yPzXvePin7pzY="}}}}
+[CarAgent State]: status=conversing, hasPublicId=true, hasRemoteOffer=false, hasRemoteResponse=false
+
+=== Iteration 5 ===
+[CarAgent -> GateAgent]: @@##__DAIA-MSG__##@@{"type":"offer","content":{"offerTypeIdentifier":"DAIA-PARKING-ENTER","naturalLanguageOfferContent":"Offer: 10 satoshis/hr. Reply \"Accept\" to proceed. I make no promises; transaction will be ≤10 satoshis.","requirements":{"sign":{"type":"sign","pubKey":"02edb7acc58706a6e6637ef9ff4464120ff26433348a018dedb170f7fb28b22586","offererNonce":"adsadasda0.909993044769362"}}}}
+[GateAgent] Processing input: @@##__DAIA-MSG__##@@{"type":"offer-response","result":"accept","agreementReference":"47c9d7d0af19b0b
+[GateAgent] State BEFORE invoke: status=awaiting-remote-offer-response
+[GateAgent] ERROR: Error: Invalid message type received in state conversing : offer-response
+    at DaiaStateMachineCall.DaiaStateMachineCall.handleInputRun (/workspaces/jak-zdac-inz/packages/langchain/dist/machine/machineCall.js:86:31)
+    at async DaiaStateMachineCall.DaiaStateMachineCall.run (/workspaces/jak-zdac-inz/packages/langchain/dist/machine/machineCall.js:195:24)
+    at async DaiaStateMachine.DaiaStateMachine.run (/workspaces/jak-zdac-inz/packages/langchain/dist/machine/machine.js:7:20)
+    at async RunnableCallable.func (/workspaces/jak-zdac-inz/packages/langchain/dist/graphs/daiaGraph.js:10:24) {
+  pregelTaskId: '4799577f-fe42-5945-b98b-b275c89c93ce'
+}
+[Demo] Error: Error: Invalid message type received in state conversing : offer-response
+    at DaiaStateMachineCall.DaiaStateMachineCall.handleInputRun (/workspaces/jak-zdac-inz/packages/langchain/dist/machine/machineCall.js:86:31)
+    at async DaiaStateMachineCall.DaiaStateMachineCall.run (/workspaces/jak-zdac-inz/packages/langchain/dist/machine/machineCall.js:195:24)
+    at async DaiaStateMachine.DaiaStateMachine.run (/workspaces/jak-zdac-inz/packages/langchain/dist/machine/machine.js:7:20)
+    at async RunnableCallable.func (/workspaces/jak-zdac-inz/packages/langchain/dist/graphs/daiaGraph.js:10:24) {
+  pregelTaskId: '4799577f-fe42-5945-b98b-b275c89c93ce'
+}

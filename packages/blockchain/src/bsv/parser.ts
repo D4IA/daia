@@ -12,6 +12,10 @@ import type { BlockchainTransactionData } from "../defines/transactionData";
 export class BsvTransactionParser implements BlockchainTransactionParser {
 	constructor(private readonly network: "main" | "test" | "stn" = "main") {}
 
+	private async sleep(ms: number): Promise<void> {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
 	async findTransactionById(id: string): Promise<ParsedBlockchainTransactionHandle | null> {
 		try {
 			// Fetch transaction from WhatsOnChain
@@ -25,6 +29,8 @@ export class BsvTransactionParser implements BlockchainTransactionParser {
 				throw new Error(`Failed to fetch transaction: ${response.status} ${response.statusText}`);
 			}
 
+			await this.sleep(500);
+
 			const txHex = await response.text();
 
 			// Check if transaction is confirmed
@@ -33,6 +39,7 @@ export class BsvTransactionParser implements BlockchainTransactionParser {
 			let isFinalized = false;
 
 			if (confirmResponse.ok) {
+				await this.sleep(500);
 				const txInfo = await confirmResponse.json();
 				isFinalized = txInfo.confirmations > 0;
 			}

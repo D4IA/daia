@@ -144,14 +144,7 @@ export class DaiaAgreementVerifySession {
 		if (req.type === DaiaRequirementType.SIGN && proof.type === DaiaRequirementType.SIGN) {
 			// HACK: use adapter here instead of assuming that SDK is the only way to handle that
 			const publicKey = PublicKey.fromString(req.pubKey);
-
-			if (req.sign && proof.signeeNonce !== "") {
-				return {
-					type: DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH,
-				};
-			}
-
-			const signature = proof.signature || req.sign;
+			const signature = proof.signature;
 			if (!signature) {
 				return {
 					type: DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH,

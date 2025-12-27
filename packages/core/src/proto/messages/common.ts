@@ -1,8 +1,7 @@
 export enum DaiaMessageType {
-	PUBLIC_IDENTITY_REQUEST = "public-identity-request",
-	PUBLIC_IDENTITY_RESPONSE = "public-identity-response",
+	DAIA_HELLO = "daia-hello",
 	OFFER = "offer",
-	OFFER_RESPONSE = "agreement-reference",
+	OFFER_RESPONSE = "offer-response",
 }
 
 export const DAIA_MESSAGE_PREFIX = "@@##__DAIA-MSG__##@@";
