@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { PrivateKey, BsvTransactionFactory, BsvTransactionParser } from "@daia/blockchain";
+import { PrivateKey, BsvTransactionFactory, BsvTransactionParser, BsvNetwork } from "@daia/blockchain";
 import type {
 	BlockchainTransactionParser,
 	ParsedBlockchainTransactionHandle,
@@ -66,7 +66,7 @@ class MockBlockchainTransactionParser implements BlockchainTransactionParser {
 	private transactions = new Map<string, ParsedBlockchainTransactionHandle>();
 	private readonly realParser: BsvTransactionParser;
 
-	constructor(network: "main" | "test" | "stn") {
+	constructor(network: BsvNetwork) {
 		this.realParser = new BsvTransactionParser(network);
 	}
 
@@ -224,7 +224,7 @@ describe("Signer-Verifier Integration Test", () => {
 
 		// Step 3: Create signer for the signee
 		const mockUtxoProvider = new MockUtxoProvider();
-		const testSigneeFactory = new BsvTransactionFactory(testSigneePrivateKey, "test", 1, mockUtxoProvider);
+		const testSigneeFactory = new BsvTransactionFactory(testSigneePrivateKey, BsvNetwork.TEST, 1, mockUtxoProvider);
 		const testSignResolver = new DefaultDaiaSignRequirementResolver(testSigneePrivateKey);
 		const testPaymentResolver = new DefaultDaiaPaymentRequirementResolver(testSigneeFactory);
 
@@ -664,7 +664,7 @@ describe("Signer-Verifier Integration Test", () => {
 
 		// Step 2: Create a mock signer to process the self-signed offer
 		const mockUtxoProvider = new MockUtxoProvider();
-		const testFactory = new BsvTransactionFactory(testPrivateKey, "test", 1, mockUtxoProvider);
+		const testFactory = new BsvTransactionFactory(testPrivateKey, BsvNetwork.TEST, 1, mockUtxoProvider);
 
 		const testSigner = new DefaultDaiaOfferSigner({
 			transactionFactory: testFactory,

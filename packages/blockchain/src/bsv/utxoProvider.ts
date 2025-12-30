@@ -1,4 +1,5 @@
 import { PrivateKey, Transaction } from "@bsv/sdk";
+import { BsvNetwork } from "./network";
 
 export interface UTXO {
 	txid: string;
@@ -22,7 +23,7 @@ export interface UtxoProvider {
 export class WhatsOnChainUtxoProvider implements UtxoProvider {
 	constructor(
 		private readonly privateKey: PrivateKey,
-		private readonly network: "main" | "test" | "stn" = "main",
+		private readonly network: BsvNetwork = BsvNetwork.MAIN,
 	) {}
 
 	private async sleep(ms: number): Promise<void> {

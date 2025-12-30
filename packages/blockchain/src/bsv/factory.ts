@@ -12,6 +12,7 @@ import type {
 } from "../defines/factory";
 import type { BlockchainTransactionData } from "../defines/transactionData";
 import { WhatsOnChainUtxoProvider, type UtxoProvider } from "./utxoProvider";
+import { BsvNetwork } from "./network";
 
 /**
  * Minimal BSV blockchain factory for storing data in OP_RETURN outputs.
@@ -23,7 +24,7 @@ export class BsvTransactionFactory implements BlockchainTransactionFactory {
 
 	constructor(
 		private readonly privateKey: PrivateKey,
-		private readonly network: "main" | "test" | "stn" = "main",
+		private readonly network: BsvNetwork = BsvNetwork.MAIN,
 		satoshisPerKilobyte: number = 1,
 		utxoProvider?: UtxoProvider,
 	) {

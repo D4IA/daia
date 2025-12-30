@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { PrivateKey, Transaction, P2PKH } from "@bsv/sdk";
 import { BsvTransactionFactory } from "../factory";
 import { BsvTransactionParser } from "../parser";
+import { BsvNetwork } from "../network";
 import type { BlockchainTransactionData } from "../../defines/transactionData";
 import type { UtxoProvider, UTXO } from "../utxoProvider";
 
@@ -44,8 +45,8 @@ describe("BSV Factory and Parser Integration", () => {
 	beforeEach(() => {
 		privateKey = PrivateKey.fromRandom();
 		mockUtxoProvider = new MockUtxoProvider();
-		factory = new BsvTransactionFactory(privateKey, "main", 1, mockUtxoProvider);
-		parser = new BsvTransactionParser("main");
+		factory = new BsvTransactionFactory(privateKey, BsvNetwork.MAIN, 1, mockUtxoProvider);
+		parser = new BsvTransactionParser(BsvNetwork.MAIN);
 	});
 
 	it("should preserve custom data through factory->parser cycle", async () => {

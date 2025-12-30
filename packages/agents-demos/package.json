@@ -1,5 +1,5 @@
 {
-  "name": "@daia/langchain-demo",
+  "name": "@daia/agents-demos",
   "version": "0.0.1",
   "description": "DAIA protocol utilities",
   "main": "dist/index.js",
@@ -53,6 +53,7 @@
     "@daia/langchain": "workspace:*",
     "@langchain/core": "~1.1.7",
     "@langchain/langgraph": "~1.0.7",
-    "@langchain/openai": "~1.2.0"
+    "@langchain/openai": "~1.2.0",
+    "express": "~5.2.1"
   }
 }

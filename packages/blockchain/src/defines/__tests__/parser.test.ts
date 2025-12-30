@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { PrivateKey, Transaction, P2PKH, LockingScript } from "@bsv/sdk";
 import { BsvTransactionParser } from "../../bsv/parser";
+import { BsvNetwork } from "../../bsv/network";
 import type { BlockchainTransactionData } from "../transactionData";
 
 /**
@@ -71,7 +72,7 @@ describe("BlockchainTransactionParser - Security", () => {
 
 		// Serialize and parse the transaction
 		const txHex = tx.toHex();
-		const parser = new BsvTransactionParser("main");
+		const parser = new BsvTransactionParser(BsvNetwork.MAIN);
 		const parsed = await parser.parseTransaction(txHex);
 
 		// Verify that BlockchainTransactionData only contains expected fields
@@ -117,12 +118,12 @@ describe("BlockchainTransactionParser - Security", () => {
 		await tx.sign();
 
 		// Parse with mainnet parser
-		const mainParser = new BsvTransactionParser("main");
+		const mainParser = new BsvTransactionParser(BsvNetwork.MAIN);
 		const mainParsed = await mainParser.parseTransaction(tx.toHex());
 		expect(Object.keys(mainParsed.data.payments)).toEqual([mainnetAddress]);
 
 		// Parse with testnet parser - should return testnet address for same hash
-		const testParser = new BsvTransactionParser("test");
+		const testParser = new BsvTransactionParser(BsvNetwork.TEST);
 		const testParsed = await testParser.parseTransaction(tx.toHex());
 		const testnetAddress = recipientKey.toPublicKey().toAddress("test");
 		expect(Object.keys(testParsed.data.payments)).toEqual([testnetAddress]);

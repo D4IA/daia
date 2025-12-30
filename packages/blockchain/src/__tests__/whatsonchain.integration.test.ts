@@ -3,6 +3,7 @@ import { PrivateKey } from "@bsv/sdk";
 import { BsvTransactionFactory } from "../bsv/factory";
 import { BsvTransactionParser } from "../bsv/parser";
 import { WhatsOnChainUtxoProvider } from "../bsv/utxoProvider";
+import { BsvNetwork } from "../bsv/network";
 import type { BlockchainTransactionData } from "../defines/transactionData";
 
 const hasTestEnv = () => {
@@ -27,9 +28,9 @@ describe.skipIf(!hasTestEnv())("WhatsOnChain API Integration", () => {
 			? PrivateKey.fromWif(process.env["TEST_PRIVATE_KEY"])
 			: PrivateKey.fromRandom();
 
-		utxoProvider = new WhatsOnChainUtxoProvider(privateKey, "test");
-		factory = new BsvTransactionFactory(privateKey, "test", 1, utxoProvider);
-		parser = new BsvTransactionParser("test");
+		utxoProvider = new WhatsOnChainUtxoProvider(privateKey, BsvNetwork.TEST);
+		factory = new BsvTransactionFactory(privateKey, BsvNetwork.TEST, 1, utxoProvider);
+		parser = new BsvTransactionParser(BsvNetwork.TEST);
 	});
 
 	it("should fetch UTXOs from WhatsOnChain API (or return empty for unfunded address)", async () => {

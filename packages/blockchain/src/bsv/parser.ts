@@ -4,13 +4,14 @@ import type {
 	ParsedBlockchainTransactionHandle,
 } from "../defines/parser";
 import type { BlockchainTransactionData } from "../defines/transactionData";
+import { BsvNetwork } from "./network";
 
 /**
  * Parser for BSV blockchain transactions that extracts custom data and payments.
  * Uses WhatsOnChain API for fetching transactions.
  */
 export class BsvTransactionParser implements BlockchainTransactionParser {
-	constructor(private readonly network: "main" | "test" | "stn" = "main") {}
+	constructor(private readonly network: BsvNetwork = BsvNetwork.MAIN) {}
 
 	private async sleep(ms: number): Promise<void> {
 		return new Promise((resolve) => setTimeout(resolve, ms));
@@ -177,10 +178,10 @@ export class BsvTransactionParser implements BlockchainTransactionParser {
 		// Network version bytes for P2PKH addresses
 		// mainnet: 0x00, testnet: 0x6f
 		switch (this.network) {
-			case "test":
-			case "stn":
+			case BsvNetwork.TEST:
+			case BsvNetwork.STN:
 				return [0x6f];
-			case "main":
+			case BsvNetwork.MAIN:
 			default:
 				return [0x00];
 		}

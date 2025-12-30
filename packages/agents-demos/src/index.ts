@@ -1,12 +1,12 @@
 import "dotenv/config"
 import { PrivateKey } from "@daia/blockchain"
-import { BsvTransactionFactory, BsvTransactionParser, WhatsOnChainUtxoProvider } from "@daia/blockchain"
+import { BsvTransactionFactory, BsvTransactionParser, WhatsOnChainUtxoProvider, BsvNetwork } from "@daia/blockchain"
 import { DefaultDaiaOfferSigner, DefaultDaiaAgreementVerifier, DefaultDaiaSignRequirementResolver } from "@daia/core"
 import { makeCarEnterAgent, makeGateEnterAgent, initialCarAgentState, initialGateAgentState } from "./enter"
 
 const runDemo = async () => {
     // Setup for testnet
-    const net = "test" as const
+    const net = BsvNetwork.TEST
     
     // Generate private keys for both agents
     const gatePrivateKey = PrivateKey.fromRandom()

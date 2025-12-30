@@ -3,7 +3,7 @@ import { DaiaLanggraphMachineNode, DaiaLanggraphStateAccessor, DaiaLanggraphStat
 import z from "zod/v3"
 import { PrivateKey } from "@daia/blockchain"
 import { ChatOpenAI } from "@langchain/openai"
-import { DaiaAgreementReferenceResult, DaiaOfferSigner, DaiaOfferSignResponseType } from "@daia/core"
+import { DaiaAgreementReferenceResult, DaiaOfferSigner, DaiaOfferSignResponseType, DaiaInnerOfferContent } from "@daia/core"
 
 const MessageSchema = z.object({
     role: z.enum(["user", "assistant"]),
@@ -132,7 +132,8 @@ export const makeCarEnterAgent = (config: CarAgentConfig) => {
 
             const offer = accessor.getOffer()
             if (!offer) throw new Error(`Bad state`)
-            const naturalLanguageContent = offer.naturalLanguageOfferContent
+            const innerOffer: DaiaInnerOfferContent = JSON.parse(offer.inner)
+            const naturalLanguageContent = innerOffer.naturalLanguageOfferContent
             const summary = await config.signer.summarizeOffer(offer)
 
             const sumPayments = Object.values(summary.payments).reduce<number>((acc, val) => acc + val, 0)
@@ -168,7 +169,7 @@ export const makeCarEnterAgent = (config: CarAgentConfig) => {
                     throw new Error(`Failed to sign offer. This likely means the wallet has no UTXOs. Please fund the wallet address: ${config.privateKey.toPublicKey().toAddress("testnet")} with test BSV from a faucet like https://faucet.bitcoincloud.net/`)
                 }
 
-                if (offerSignResult.type === DaiaOfferSignResponseType.FAILURE) {
+                if (offerSignResult.type === DaiaOfferSignResponseType.REQUIREMENT_FAILURE) {
                     throw new Error(`Not enough inputs to sign were provided. This is invalid behavior in this proto.`)
                 } else if (offerSignResult.type === DaiaOfferSignResponseType.SUCCESS) {
                     await offerSignResult.transaction.publish()

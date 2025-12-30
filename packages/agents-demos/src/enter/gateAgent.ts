@@ -1,5 +1,5 @@
 import { PrivateKey } from "@daia/blockchain"
-import { DaiaAgreementReferenceResult, DaiaAgreementVerifier, DaiaOfferContent, DaiaRequirementType } from "@daia/core"
+import { DaiaAgreementReferenceResult, DaiaAgreementVerifier, DaiaOfferBuilder } from "@daia/core"
 import { DaiaLanggraphMachineNode, DaiaLanggraphMethodId, DaiaLanggraphStateAccessor, DaiaLanggraphStateSchema, DaiaLanggraphStateWriter, makeDaiaGraph, makeInitialDaiaLanggraphState } from "@daia/langchain"
 import { Command, END, START, StateGraph } from "@langchain/langgraph"
 import { ChatOpenAI } from "@langchain/openai"
@@ -72,8 +72,6 @@ export const makeGateEnterAgent = (config: GateAgentConfig) => {
             }
         })
         .addNode(continueConversation, async state => {
-            const accessor = DaiaLanggraphStateAccessor.fromNamespacedState(state)
-
             const ResponseSchema = z.object({
                 type: z.enum(["natural_language", "offer"]).describe("The type of response: natural_language for continuing conversation, or offer to make a parking offer"),
                 content: z.string().describe("Either a conversational response or a parking offer with fee in satoshis/hr")
@@ -120,19 +118,11 @@ export const makeGateEnterAgent = (config: GateAgentConfig) => {
                     { role: "assistant" as const, content: responseContent }
                 ]
 
-                const offer: DaiaOfferContent = {
-                    naturalLanguageOfferContent: response.content,
-                    offerTypeIdentifier: "DAIA-PARKING-ENTER",
-                    requirements: (() => {
-                        return {
-                            sign: {
-                                type: DaiaRequirementType.SIGN,
-                                offererNonce: "adsadasda" + Math.random(),
-                                pubKey: accessor.remotePublicKey() ?? "",
-                            },
-                        }
-                    })(),
-                }
+                const offer = DaiaOfferBuilder.new()
+                    .setNaturalLanguageContent(response.content)
+                    .setOfferTypeIdentifier("DAIA-PARKING-ENTER")
+                    .addSignRequirement(config.privateKey.toPublicKey().toString())
+                    .build()
 
                 const daia = DaiaLanggraphStateWriter.fromState(state.daia)
                     .setMethodCall({
