@@ -33,6 +33,7 @@ export type DaiaOfferSignResponse =
 	  };
 
 export type DaiaOfferSummary = {
+	content: DaiaInnerOfferContent;
 	payments: {
 		[to: string]: number;
 	};

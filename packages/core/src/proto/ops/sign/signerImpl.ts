@@ -1,4 +1,9 @@
-import { BlockchainTransactionFactory, CreatedBlockchainTransactionHandle } from "@daia/blockchain";
+import {
+	BlockchainTransactionFactory,
+	CreatedBlockchainTransactionHandle,
+	PublicKey,
+	Signature,
+} from "@daia/blockchain";
 import {
 	DaiaInnerOfferContent,
 	DaiaTransferOfferContent,
@@ -51,6 +56,7 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 		}
 
 		return {
+			content: offer,
 			payments,
 			selfSignedData: {},
 		};
@@ -68,6 +74,7 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 
 		return {
 			...res,
+			content: innerOffer,
 			selfSignedData: offer.signatures ?? {},
 		};
 	}
@@ -98,10 +105,35 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 			}
 			if (requirement.type === DaiaRequirementType.SIGN) {
 				if (offer.signatures && offer.signatures[requirementId]) {
+					// Validate the self-signed signature
+					const selfSignature = offer.signatures[requirementId].signature;
+					
+					let isValid = false;
+					try {
+						const publicKey = PublicKey.fromString(requirement.pubKey);
+						// Self-signed signatures have empty signeeNonce
+						const messageToVerify = requirement.offererNonce + "" + offer.inner;
+						isValid = publicKey.verify(
+							messageToVerify,
+							Signature.fromDER(selfSignature, "base64"),
+						);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					} catch (_e) {
+						// Signature verification failed (invalid format or verification failed)
+						isValid = false;
+					}
+
+					if (!isValid) {
+						return {
+							type: DaiaOfferSignResponseType.REQUIREMENT_FAILURE,
+							failedRequirementId: requirementId,
+						};
+					}
+
 					proofs[requirementId] = {
 						type: DaiaRequirementType.SIGN,
 						signeeNonce: "",
-						signature: offer.signatures[requirementId].signature,
+						signature: selfSignature,
 					};
 					continue;
 				}

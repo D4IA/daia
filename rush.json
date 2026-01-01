@@ -326,6 +326,10 @@
         {
       "packageName": "@daia/agents-demos",
       "projectFolder": "packages/agents-demos"
+    },
+    {
+      "packageName": "@daia/agents-demos-backend",
+      "projectFolder": "packages/agents-demos-backend"
     }
     // {
     //   /**
