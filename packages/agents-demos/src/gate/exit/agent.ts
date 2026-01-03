@@ -1,25 +1,25 @@
 import { AgentResponse } from "../../common/agentInterfaces";
-import { GateAgentEnterAdapter } from "./adapter";
-import { createGateAgentGraph } from "./graph";
-import { GateEnterAgentState, initialGateEnterAgentState } from "./state";
+import { GateAgentExitAdapter } from "./adapter";
+import { createGateExitAgentGraph } from "./graph";
+import { GateExitAgentState, initialGateExitAgentState } from "./state";
 
-export class GateAgent {
-	private graph: ReturnType<typeof createGateAgentGraph>["compile"] extends () => infer R
+export class GateExitAgent {
+	private graph: ReturnType<typeof createGateExitAgentGraph>["compile"] extends () => infer R
 		? R
 		: never;
-	private state: GateEnterAgentState;
-	private adapter: GateAgentEnterAdapter;
+	private state: GateExitAgentState;
+	private adapter: GateAgentExitAdapter;
 
-	constructor(adapter: GateAgentEnterAdapter) {
+	constructor(adapter: GateAgentExitAdapter) {
 		this.adapter = adapter;
-		const graphBuilder = createGateAgentGraph(this.adapter);
+		const graphBuilder = createGateExitAgentGraph(this.adapter);
 		this.graph = graphBuilder.compile();
-		this.state = { ...initialGateEnterAgentState };
+		this.state = { ...initialGateExitAgentState };
 	}
 
 	public readonly processInput = async (input: string): Promise<AgentResponse> => {
 		this.state.input = input;
-		this.state = (await this.graph.invoke(this.state)) as GateEnterAgentState;
+		this.state = (await this.graph.invoke(this.state)) as GateExitAgentState;
 
 		const output = this.state.output;
 
@@ -41,7 +41,7 @@ export class GateAgent {
 		}
 	};
 
-	public readonly getState = (): Readonly<GateEnterAgentState> => {
+	public readonly getState = (): Readonly<GateExitAgentState> => {
 		return this.state;
 	};
 }

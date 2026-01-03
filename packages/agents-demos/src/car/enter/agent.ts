@@ -1,18 +1,20 @@
-import { AgentResponse } from "../common/agentInterfaces";
-import { CarAgentAdapter } from "./adapter";
-import { DefaultCarAgentAdapter } from "./adapterImpl";
-import { CarAgentConfig as CarEnterAgentConfig } from "./config";
-import { createCarAgentGraph } from "./graph";
+import { AgentResponse } from "../../common/agentInterfaces";
+import { CarEnterAgentAdapter } from "./adapter";
+import { DefaultCarEnterAgentAdapter } from "./adapterImpl";
+import { CarEnterAgentConfig } from "./config";
+import { createCarEnterAgentGraph } from "./graph";
 import { CarEnterAgentState, initialCarEnterAgentState } from "./state";
 
 export class CarEnterAgent {
-	private graph: ReturnType<typeof createCarAgentGraph>["compile"] extends () => infer R ? R : never;
+	private graph: ReturnType<typeof createCarEnterAgentGraph>["compile"] extends () => infer R
+		? R
+		: never;
 	private state: CarEnterAgentState;
-	private adapter: CarAgentAdapter;
+	private adapter: CarEnterAgentAdapter;
 
 	constructor(config: CarEnterAgentConfig) {
-		this.adapter = new DefaultCarAgentAdapter(config);
-		const graphBuilder = createCarAgentGraph(this.adapter);
+		this.adapter = new DefaultCarEnterAgentAdapter(config);
+		const graphBuilder = createCarEnterAgentGraph(this.adapter);
 		this.graph = graphBuilder.compile();
 		this.state = { ...initialCarEnterAgentState };
 	}

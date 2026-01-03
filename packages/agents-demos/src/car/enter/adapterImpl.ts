@@ -2,14 +2,15 @@ import { ChatOpenAI } from "@langchain/openai";
 import z from "zod/v3";
 import { PublicKey } from "@daia/blockchain";
 import { DaiaOfferSigner } from "@daia/core";
-import type { CarAgentAdapter, CarAgentOfferDecision, Message } from "./adapter";
-import { CarAgentConfig } from "./config";
+import type { CarEnterAgentAdapter, CarEnterAgentOfferDecision, Message } from "./adapter";
+import { CarEnterAgentConfig } from "./config";
+import { CarAgentMemory } from "../db/memory";
 
 /**
- * Default implementation of CarAgentAdapter that uses LangChain and OpenAI
+ * Default implementation of CarEnterAgentAdapter that uses LangChain and OpenAI
  * for conversation and offer analysis.
  */
-export class DefaultCarAgentAdapter implements CarAgentAdapter {
+export class DefaultCarEnterAgentAdapter implements CarEnterAgentAdapter {
 	private readonly publicKey: PublicKey;
 	private readonly signer: DaiaOfferSigner;
 	private readonly conversingPrompt: string;
@@ -17,8 +18,10 @@ export class DefaultCarAgentAdapter implements CarAgentAdapter {
 	private readonly conversingModel: string;
 	private readonly offerAnalysisModel: string;
 	private readonly openAIApiKey: string;
+	private readonly config: CarEnterAgentConfig;
+	private readonly memory: CarAgentMemory;
 
-	constructor(config: CarAgentConfig) {
+	constructor(config: CarEnterAgentConfig) {
 		this.publicKey = config.privateKey.toPublicKey();
 		this.signer = config.signer;
 		this.conversingPrompt = config.conversingPrompt;
@@ -26,6 +29,8 @@ export class DefaultCarAgentAdapter implements CarAgentAdapter {
 		this.conversingModel = config.conversingModel;
 		this.offerAnalysisModel = config.offerAnalysisModel;
 		this.openAIApiKey = config.openAIApiKey;
+		this.config = { ...config };
+		this.memory = config.memory;
 	}
 
 	getPublicKey(): PublicKey {
@@ -34,6 +39,14 @@ export class DefaultCarAgentAdapter implements CarAgentAdapter {
 
 	getSigner(): DaiaOfferSigner {
 		return this.signer;
+	}
+
+	getConfig(): CarEnterAgentConfig {
+		return this.config;
+	}
+
+	getMemory(): CarAgentMemory {
+		return this.memory;
 	}
 
 	async runConversation(
@@ -51,23 +64,21 @@ export class DefaultCarAgentAdapter implements CarAgentAdapter {
 			{ role: "user" as const, content: userMessage },
 		];
 
-		const response = await llm.invoke(prompt.map((msg) => ({ role: msg.role, content: msg.content })));
+		const response = await llm.invoke(
+			prompt.map((msg) => ({ role: msg.role, content: msg.content })),
+		);
 
 		return `${response.content}`;
 	}
 
-	async considerOffer(
-		offerText: string,
-	): Promise<CarAgentOfferDecision> {
-		const OfferAnalysisSchema = z.discriminatedUnion("result", [
-			z.object({
-				result: z.literal("ACCEPT"),
-			}),
-			z.object({
-				result: z.literal("REJECT"),
-				rationale: z.string().describe("Why the offer was rejected"),
-			}),
-		]);
+	async considerOffer(offerText: string): Promise<CarEnterAgentOfferDecision> {
+		const OfferAnalysisSchema = z.object({
+			result: z.enum(["ACCEPT", "REJECT"]).describe("The decision: ACCEPT or REJECT"),
+			rationale: z
+				.string()
+				.nullable()
+				.describe("Why the offer was rejected (only required if REJECT, otherwise null)"),
+		});
 
 		const llm = new ChatOpenAI({
 			model: this.offerAnalysisModel,
@@ -90,7 +101,7 @@ export class DefaultCarAgentAdapter implements CarAgentAdapter {
 		} else {
 			return {
 				accepted: false,
-				rationale: analysis.rationale,
+				rationale: analysis.rationale || "No rationale provided",
 			};
 		}
 	}

@@ -6,6 +6,7 @@ export type GateAgentCarData = {
 	publicKey: string;
 	ratePerHour: number;
 	parkedAt: Date;
+	parkingTransactionId: string;
 };
 
 const carDataSerializedSchema = z.object({
@@ -13,6 +14,7 @@ const carDataSerializedSchema = z.object({
 	publicKey: z.string(),
 	ratePerHour: z.number(),
 	parkedAt: z.string(),
+	parkingTransactionId: z.string(),
 });
 
 const carEntrySchema = z.object({
@@ -83,6 +85,7 @@ export class GateAgentCarsDB {
 				publicKey: data.publicKey,
 				ratePerHour: data.ratePerHour,
 				parkedAt: new Date(data.parkedAt),
+				parkingTransactionId: data.parkingTransactionId,
 			};
 			db.carsById.set(id, car);
 			db.licenseIndex.set(car.licensePlate, id);

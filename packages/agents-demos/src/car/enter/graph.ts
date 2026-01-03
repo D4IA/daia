@@ -7,13 +7,14 @@ import {
 import { END, START, StateGraph } from "@langchain/langgraph";
 import { produce } from "immer";
 import z from "zod/v3";
-import { CarAgentAdapter } from "./adapter";
-import { CarAgentStateSchema } from "./state";
-import { ENTER_OFFER_TYPE_IDENTIFIER } from "../common/consts";
+import { CarEnterAgentAdapter } from "./adapter";
+import { CarEnterAgentStateSchema } from "./state";
+import { ENTER_OFFER_TYPE_IDENTIFIER } from "../../common/consts";
 import { DaiaAgreementReferenceResult, DaiaOfferSignResponseType } from "@daia/core";
+import { sleep } from "../../util";
 
-export function createCarAgentGraph(adapter: CarAgentAdapter) {
-	const daiaSubgraph = makeDaiaGraph<z.infer<typeof CarAgentStateSchema>>({
+export function createCarEnterAgentGraph(adapter: CarEnterAgentAdapter) {
+	const daiaSubgraph = makeDaiaGraph<z.infer<typeof CarEnterAgentStateSchema>>({
 		publicKey: adapter.getPublicKey().toString(),
 		mapNode: (node) => "D_" + node,
 	});
@@ -23,7 +24,7 @@ export function createCarAgentGraph(adapter: CarAgentAdapter) {
 	const afterPublicIdentityReceived = "D_" + DaiaLanggraphMachineNode.REMOTE_PROCESSED_OFFER;
 	const afterOfferReceived = "D_" + DaiaLanggraphMachineNode.OFFER_RECEIVED;
 
-	const graph = new StateGraph(CarAgentStateSchema)
+	const graph = new StateGraph(CarEnterAgentStateSchema)
 		.addNode("handleInputs", async (state) => {
 			const writer = DaiaLanggraphStateWriter.fromState(state.daia);
 
@@ -75,9 +76,7 @@ export function createCarAgentGraph(adapter: CarAgentAdapter) {
 
 			// TODO: assert that offer is signed by the gate and has a requirement for our signature with proper public key
 
-			const decision = await adapter.considerOffer(
-				result.content.naturalLanguageOfferContent,
-			);
+			const decision = await adapter.considerOffer(result.content.naturalLanguageOfferContent);
 
 			if (decision.accepted) {
 				const signResponse = await adapter.getSigner().signOffer({
@@ -88,9 +87,22 @@ export function createCarAgentGraph(adapter: CarAgentAdapter) {
 					throw new Error(`Unexpected offer signing failure: ${signResponse.type}`);
 				}
 
+				if (adapter.getConfig().shouldPublishTransactions) {
+					await signResponse.transaction.publish();
+					await sleep(5000); // 5s sleep for publish to propagate
+				}
+
+				// Store parking information in memory
+				adapter
+					.getMemory()
+					.park(result.content.naturalLanguageOfferContent, signResponse.transaction.id, new Date());
+
 				return produce(state, (draft) => {
 					draft.conversationHistory.push(
-						{ role: "user" as const, content: `INCOMING OFFER TO CONSIDER: ${result.content.naturalLanguageOfferContent}` },
+						{
+							role: "user" as const,
+							content: `INCOMING OFFER TO CONSIDER: ${result.content.naturalLanguageOfferContent}`,
+						},
 						{ role: "assistant" as const, content: `ANALYSIS RESULT: ACCEPT` },
 					);
 
@@ -107,7 +119,10 @@ export function createCarAgentGraph(adapter: CarAgentAdapter) {
 			} else {
 				return produce(state, (draft) => {
 					draft.conversationHistory.push(
-						{ role: "user" as const, content: `INCOMING OFFER TO CONSIDER: ${result.content.naturalLanguageOfferContent}` },
+						{
+							role: "user" as const,
+							content: `INCOMING OFFER TO CONSIDER: ${result.content.naturalLanguageOfferContent}`,
+						},
 						{ role: "assistant" as const, content: `ANALYSIS RESULT: REJECT - ${decision.rationale}` },
 					);
 
@@ -161,5 +176,5 @@ export function createCarAgentGraph(adapter: CarAgentAdapter) {
 		.addEdge("handleInputs", "daiaSubgraph")
 		.addEdge(START, "handleInputs");
 
-	return graph as StateGraph<z.infer<typeof CarAgentStateSchema>>;
+	return graph as StateGraph<z.infer<typeof CarEnterAgentStateSchema>>;
 }

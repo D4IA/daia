@@ -1,7 +1,8 @@
 import { PrivateKey } from "@daia/blockchain";
 import { DaiaOfferSigner } from "@daia/core";
+import { CarAgentMemory } from "../db/memory";
 
-export type CarAgentConfig = {
+export type CarEnterAgentConfig = {
 	privateKey: PrivateKey;
 
 	conversingPrompt: string;
@@ -12,4 +13,12 @@ export type CarAgentConfig = {
 	openAIApiKey: string;
 
 	signer: DaiaOfferSigner;
+
+	memory: CarAgentMemory;
+
+	/**
+	 * Whether to publish transactions to the blockchain.
+	 * Set to false for testing to avoid network calls.
+	 */
+	shouldPublishTransactions: boolean;
 };

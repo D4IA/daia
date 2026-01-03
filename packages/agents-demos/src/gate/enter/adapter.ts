@@ -1,156 +1,151 @@
 import { DaiaAgreementVerifier } from "@daia/core";
-import { Message } from "../../car";
-import { PublicKey } from "@daia/blockchain";
+import { Message } from "../../car/enter";
+import { PrivateKey, PublicKey } from "@daia/blockchain";
 import { GateAgentCarsDB } from "../state/db";
 import { ChatOpenAI } from "@langchain/openai";
 import z from "zod/v3";
-
-export type GateAgentConversationResponse = {
-    type: "text",
-    text: string
-} | {
-    type: "offer",
-    offer: string
-}
-
-export type GateAgentOfferData = {
-    ratePerHour: number
-}
-
-export const convertGateOfferToString = (data: GateAgentOfferData): string => {
-    return `Parking services are offered at a rate of ${data.ratePerHour} satoshis per hour.`
-}
+import { GateAgentConversationResponse, GateAgentOfferData } from "../common";
 
 export interface GateAgentEnterAdapter {
-    getPublicKey(): PublicKey;
-    getVerifier(): DaiaAgreementVerifier
-    getCarsDB(): GateAgentCarsDB
-    readLicensePlate(): Promise<string>;
+	getPublicKey(): PublicKey;
+	getPrivateKey(): PrivateKey;
+	getVerifier(): DaiaAgreementVerifier;
+	getCarsDB(): GateAgentCarsDB;
+	readLicensePlate(): Promise<string>;
 
-    finalizeCar(result: "let-in" | "reject"): Promise<void>
+	finalizeCar(result: "let-in" | "reject"): Promise<void>;
 
-    runConversation(
-        conversationHistory: ReadonlyArray<Message>,
-        userMessage: string,
-    ): Promise<GateAgentConversationResponse>;
+	runConversation(
+		conversationHistory: ReadonlyArray<Message>,
+		userMessage: string,
+	): Promise<GateAgentConversationResponse>;
 
-    runConversationTextOnly(
-        conversationHistory: ReadonlyArray<Message>,
-        userMessage: string,
-    ): Promise<string>;
+	runConversationTextOnly(
+		conversationHistory: ReadonlyArray<Message>,
+		userMessage: string,
+	): Promise<string>;
 
-    makeAnOffer(
-        conversationHistory: ReadonlyArray<Message>,
-    ): Promise<GateAgentOfferData>
+	makeAnOffer(conversationHistory: ReadonlyArray<Message>): Promise<GateAgentOfferData>;
 }
 
 export class GateAgentEnterAdapterImpl implements GateAgentEnterAdapter {
-    constructor(
-        private readonly db: GateAgentCarsDB,
-        private readonly publicKey: PublicKey,
-        private readonly verifier: DaiaAgreementVerifier,
-        private readonly licensePlate: string,
-        private readonly openAIApiKey: string,
-        private readonly conversingModel: string,
-        private readonly conversingPrompt: string,
-        private readonly offerGenerationModel: string,
-        private readonly offerGenerationPrompt: string,
-        private readonly finalizeCarCallback: (result: "let-in" | "reject") => Promise<void>
-    ) {}
+	constructor(
+		private readonly db: GateAgentCarsDB,
+		private readonly publicKey: PublicKey,
+		private readonly privateKey: PrivateKey,
+		private readonly verifier: DaiaAgreementVerifier,
+		private readonly licensePlate: string,
+		private readonly openAIApiKey: string,
+		private readonly conversingModel: string,
+		private readonly conversingPrompt: string,
+		private readonly offerGenerationModel: string,
+		private readonly offerGenerationPrompt: string,
+		private readonly finalizeCarCallback: (result: "let-in" | "reject") => Promise<void>,
+	) {}
 
-    getPublicKey(): PublicKey {
-        return this.publicKey;
-    }
+	getPublicKey(): PublicKey {
+		return this.publicKey;
+	}
 
-    getVerifier(): DaiaAgreementVerifier {
-        return this.verifier;
-    }
+	getPrivateKey(): PrivateKey {
+		return this.privateKey;
+	}
 
-    getCarsDB(): GateAgentCarsDB {
-        return this.db;
-    }
+	getVerifier(): DaiaAgreementVerifier {
+		return this.verifier;
+	}
 
-    async readLicensePlate(): Promise<string> {
-        return this.licensePlate;
-    }
+	getCarsDB(): GateAgentCarsDB {
+		return this.db;
+	}
 
-    async finalizeCar(result: "let-in" | "reject"): Promise<void> {
-        await this.finalizeCarCallback(result);
-    }
+	async readLicensePlate(): Promise<string> {
+		return this.licensePlate;
+	}
 
-    async runConversation(
-        conversationHistory: ReadonlyArray<Message>,
-        userMessage: string,
-    ): Promise<GateAgentConversationResponse> {
-        const ConversationResponseSchema = z.discriminatedUnion("type", [
-            z.object({
-                type: z.literal("text"),
-                text: z.string().describe("The conversational response text"),
-            }),
-            z.object({
-                type: z.literal("offer"),
-                shouldMakeOffer: z.literal(true),
-            }),
-        ]);
+	async finalizeCar(result: "let-in" | "reject"): Promise<void> {
+		await this.finalizeCarCallback(result);
+	}
 
-        const llm = new ChatOpenAI({
-            model: this.conversingModel,
-            apiKey: this.openAIApiKey,
-        }).withStructuredOutput(ConversationResponseSchema);
+	async runConversation(
+		conversationHistory: ReadonlyArray<Message>,
+		userMessage: string,
+	): Promise<GateAgentConversationResponse> {
+		const ConversationResponseSchema = z.discriminatedUnion("type", [
+			z.object({
+				type: z.literal("text"),
+				text: z.string().describe("The conversational response text"),
+			}),
+			z.object({
+				type: z.literal("offer"),
+				shouldMakeOffer: z.literal(true),
+			}),
+		]);
 
-        const prompt = [
-            { role: "system", content: this.conversingPrompt },
-            ...conversationHistory,
-            { role: "user" as const, content: userMessage },
-        ];
+		const llm = new ChatOpenAI({
+			model: this.conversingModel,
+			apiKey: this.openAIApiKey,
+		}).withStructuredOutput(ConversationResponseSchema);
 
-        const response: z.infer<typeof ConversationResponseSchema> = await llm.invoke(
-            prompt.map((msg) => ({ role: msg.role, content: msg.content })),
-        );
+		const prompt = [
+			{ role: "system", content: this.conversingPrompt },
+			...conversationHistory,
+			{ role: "user" as const, content: userMessage },
+		];
 
-        if (response.type === "offer") {
-            const offerData = await this.makeAnOffer(conversationHistory);
-            return {
-                type: "offer",
-                offer: JSON.stringify(offerData),
-            };
-        }
+		const response: z.infer<typeof ConversationResponseSchema> = await llm.invoke(
+			prompt.map((msg) => ({ role: msg.role, content: msg.content })),
+		);
 
-        return response;
-    }
+		if (response.type === "offer") {
+			return {
+				type: "offer",
+			};
+		}
 
-    async runConversationTextOnly(
-        conversationHistory: ReadonlyArray<Message>,
-        userMessage: string,
-    ): Promise<string> {
-        const response = await this.runConversation(conversationHistory, userMessage);
-        if (response.type === "text") {
-            return response.text;
-        }
-        return convertGateOfferToString(JSON.parse(response.offer) as GateAgentOfferData);
-    }
+		return response;
+	}
 
-    async makeAnOffer(
-        conversationHistory: ReadonlyArray<Message>,
-    ): Promise<GateAgentOfferData> {
-        const OfferDataSchema = z.object({
-            ratePerHour: z.number().describe("The parking rate in satoshis per hour"),
-        });
+	async runConversationTextOnly(
+		conversationHistory: ReadonlyArray<Message>,
+		userMessage: string,
+	): Promise<string> {
+		const response = await this.runConversation(conversationHistory, userMessage);
+		if (response.type === "text") {
+			return response.text;
+		}
 
-        const llm = new ChatOpenAI({
-            model: this.offerGenerationModel,
-            apiKey: this.openAIApiKey,
-        }).withStructuredOutput(OfferDataSchema);
+		// Generate offer using separate LLM invocation
+		const llm = new ChatOpenAI({
+			model: this.offerGenerationModel,
+			apiKey: this.openAIApiKey,
+		});
 
-        const prompt = [
-            { role: "system", content: this.offerGenerationPrompt },
-            ...conversationHistory,
-        ];
+		const prompt = [{ role: "system", content: this.offerGenerationPrompt }, ...conversationHistory];
 
-        const offerData: z.infer<typeof OfferDataSchema> = await llm.invoke(
-            prompt.map((msg) => ({ role: msg.role, content: msg.content })),
-        );
+		const offerResponse = await llm.invoke(
+			prompt.map((msg) => ({ role: msg.role, content: msg.content })),
+		);
 
-        return offerData;
-    }
+		return offerResponse.content as string;
+	}
+
+	async makeAnOffer(conversationHistory: ReadonlyArray<Message>): Promise<GateAgentOfferData> {
+		const OfferDataSchema = z.object({
+			ratePerHour: z.number().describe("The parking rate in satoshis per hour"),
+		});
+
+		const llm = new ChatOpenAI({
+			model: this.offerGenerationModel,
+			apiKey: this.openAIApiKey,
+		}).withStructuredOutput(OfferDataSchema);
+
+		const prompt = [{ role: "system", content: this.offerGenerationPrompt }, ...conversationHistory];
+
+		const offerData: z.infer<typeof OfferDataSchema> = await llm.invoke(
+			prompt.map((msg) => ({ role: msg.role, content: msg.content })),
+		);
+
+		return offerData;
+	}
 }
