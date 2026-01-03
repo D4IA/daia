@@ -16,6 +16,7 @@ import z from "zod/v3";
 import { GateAgentEnterAdapter } from "./adapter";
 import { convertGateEnterOfferToString, GateEnterAgentStateSchema } from "./state";
 import { ENTER_OFFER_TYPE_IDENTIFIER } from "../../common";
+import { sleep } from "../../util";
 
 export function createGateAgentGraph(adapter: GateAgentEnterAdapter) {
 	const daiaSubgraph = makeDaiaGraph<z.infer<typeof GateEnterAgentStateSchema>>({
@@ -91,7 +92,7 @@ export function createGateAgentGraph(adapter: GateAgentEnterAdapter) {
 
 					// If not found, wait and retry
 					if (!verificationResult.found && attempt < 5) {
-						await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
+						await sleep(5000)
 					}
 				}
 
