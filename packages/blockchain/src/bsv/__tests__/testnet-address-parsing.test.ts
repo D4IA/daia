@@ -47,10 +47,6 @@ describe("BsvTransactionParser - Testnet Address Parsing", () => {
 		const parsed = await parser.parseTransaction(tx.toHex());
 
 		// Step 5: Verify that payments field matches the input
-		console.log("Expected testnet address:", testnetAddress);
-		console.log("Parsed payments:", parsed.data.payments);
-		console.log("Parsed address keys:", Object.keys(parsed.data.payments));
-		
 		expect(parsed.data.payments).toHaveProperty(testnetAddress);
 		expect(parsed.data.payments[testnetAddress]).toBe(paymentAmount);
 		

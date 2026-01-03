@@ -262,9 +262,6 @@ describe("Signer-Verifier Integration Test", () => {
 		const verifyResponse = await verifier.verifyAgreement(verifyRequest);
 
 		// Assert verification passed
-		if (verifyResponse.result !== DaiaAgreementVerificationResult.PASSED) {
-			console.error("Verification failed:", verifyResponse);
-		}
 		expect(verifyResponse.result).toBe(DaiaAgreementVerificationResult.PASSED);
 
 		// Verify both signatures are in the proofs

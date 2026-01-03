@@ -235,8 +235,6 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 			proofs,
 		};
 
-		console.log("[DBG] Finalizing payments", selfAuthenticatedPayments)
-
 		const transaction = await this.config.transactionFactory.makeTransaction({
 			payments: selfAuthenticatedPayments,
 			customData: JSON.stringify({

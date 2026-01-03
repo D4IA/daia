@@ -106,13 +106,6 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 						await sleep(5000);
 					}
 				}
-
-				if (verificationResult && verificationResult.found) {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					const tx = await (adapter.getVerifier() as any).blockchainParser.findTransactionById(agreementReference);
-					console.log("Fetched transaction:", tx);
-				}
-
 				verificationPassed = Boolean(
 					verificationResult &&
 					verificationResult.found &&
@@ -232,7 +225,7 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 			const parkTimeHours = parkTimeMillis / (1000 * 60 * 60);
 			const paymentAmount = Math.ceil(parkTimeHours * carData.ratePerHour);
 
-			console.log("Expected payment amont", paymentAmount)
+			console.log("Expected payment amont", paymentAmount);
 
 			// Create offer data
 			const offerData = { paymentAmount };
@@ -240,7 +233,7 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 
 			// Build the offer
 			// Payment should go TO the gate (this agent), not to the car
-			const gateAddress = adapter.getPublicKey().toAddress('testnet').toString();
+			const gateAddress = adapter.getPublicKey().toAddress("testnet").toString();
 			const offer = DaiaOfferBuilder.new()
 				.setNaturalLanguageContent(offerString)
 				.setOfferTypeIdentifier(EXIT_OFFER_TYPE_IDENTIFIER)
