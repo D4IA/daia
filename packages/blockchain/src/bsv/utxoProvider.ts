@@ -23,7 +23,7 @@ export interface UtxoProvider {
 export class WhatsOnChainUtxoProvider implements UtxoProvider {
 	constructor(
 		private readonly privateKey: PrivateKey,
-		private readonly network: BsvNetwork = BsvNetwork.MAIN,
+		private readonly network: BsvNetwork,
 	) {}
 
 	private async sleep(ms: number): Promise<void> {
@@ -31,10 +31,11 @@ export class WhatsOnChainUtxoProvider implements UtxoProvider {
 	}
 
 	async getUtxos(): Promise<UTXO[]> {
+		const net = this.network === BsvNetwork.MAIN ? "main" : "test";
 		const address = this.privateKey
 			.toPublicKey()
-			.toAddress(this.network === "main" ? "mainnet" : "testnet");
-		const url = `https://api.whatsonchain.com/v1/bsv/${this.network}/address/${address}/unspent`;
+			.toAddress(this.network === BsvNetwork.MAIN ? "mainnet" : "testnet");
+		const url = `https://api.whatsonchain.com/v1/bsv/${net}/address/${address}/unspent`;
 
 		const response = await fetch(url);
 		if (!response.ok) {
@@ -84,7 +85,8 @@ export class WhatsOnChainUtxoProvider implements UtxoProvider {
 	}
 
 	async getSourceTransaction(txid: string): Promise<Transaction> {
-		const url = `https://api.whatsonchain.com/v1/bsv/${this.network}/tx/${txid}/hex`;
+		const net = this.network === BsvNetwork.MAIN ? "main" : "test";
+		const url = `https://api.whatsonchain.com/v1/bsv/${net}/tx/${txid}/hex`;
 
 		const response = await fetch(url);
 		if (!response.ok) {

@@ -12,4 +12,9 @@ export type CarExitAgentConfig = {
 	 * When true, agreement will be published to the blockchain.
 	 */
 	publishAgreement: boolean;
+
+	/**
+	 * Callback function for logging messages.
+	 */
+	logCallback: (message: string) => void;
 };

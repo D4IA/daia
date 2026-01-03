@@ -67,4 +67,8 @@ export class CarExitAgentAdapterImpl implements CarExitAgentAdapter {
 
 		return result.ratePerHour;
 	}
+
+	log(message: string): void {
+		this.config.logCallback(message);
+	}
 }

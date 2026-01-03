@@ -10,4 +10,9 @@ export type GateExitAgentConfig = {
 	 * Callback function to finalize the car exit process.
 	 */
 	finalizeCarCallback: (result: "let-out" | "reject") => Promise<void>;
+
+	/**
+	 * Callback function for logging messages.
+	 */
+	logCallback: (message: string) => void;
 };

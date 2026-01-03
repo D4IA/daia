@@ -62,4 +62,9 @@ export interface CarEnterAgentAdapter {
 	 * @returns Decision (accept or reject with rationale)
 	 */
 	considerOffer(offerText: string): Promise<CarEnterAgentOfferDecision>;
+
+	/**
+	 * Log a message
+	 */
+	log(message: string): void;
 }

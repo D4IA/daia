@@ -12,6 +12,7 @@ import z from "zod/v3";
 import { GateAgentExitAdapter } from "./adapter";
 import { convertGateExitOfferToString, GateExitAgentStateSchema } from "./state";
 import { EXIT_OFFER_TYPE_IDENTIFIER } from "../../common/consts";
+import { sleep } from "../../util";
 
 export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 	const daiaSubgraph = makeDaiaGraph<z.infer<typeof GateExitAgentStateSchema>>({
@@ -70,32 +71,46 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 			const accessor = DaiaLanggraphStateAccessor.fromNamespacedState(state);
 			const response = accessor.getOfferResponse();
 
+			adapter.log("\n🔍 Gate Exit: Processing car's offer response...");
+
 			if (!response) throw new Error("Unreachable; Offer response must be present at this point");
+
+			adapter.log(`  📋 Response type: ${response.result}`);
+			if (response.result === DaiaAgreementReferenceResult.ACCEPT) {
+				adapter.log(`  ✅ Car accepted the payment offer`);
+			} else if (response.result === DaiaAgreementReferenceResult.REJECT) {
+				adapter.log(`  ❌ Car rejected the payment offer`);
+				adapter.log(`  📝 Rejection rationale: ${response.rationale || "none provided"}`);
+			}
 
 			if (response.result === DaiaAgreementReferenceResult.ACCEPT) {
 				let verificationPassed = false;
 
 				// Fetch and verify agreement from blockchain transaction
 				const agreementReference = response.agreementReference;
-				console.log("  🔗 Fetching agreement from blockchain:", agreementReference);
+				adapter.log("  🔗 Fetching agreement from blockchain: " + agreementReference);
 
 				// Retry logic: 5 attempts with 5 second delays
 				let verificationResult = undefined;
 				for (let attempt = 1; attempt <= 5; attempt++) {
-					console.log(`  ⏳ Fetching transaction, attempt ${attempt}/5...`);
+					adapter.log(`  ⏳ Fetching transaction, attempt ${attempt}/5...`);
 					verificationResult = await adapter
 						.getVerifier()
 						.getAgreementFromTransaction(agreementReference);
-
-					// Check if transaction was found and verification passed
-					if (verificationResult.found && verificationResult.verification.result === "passed") {
+					if (verificationResult.found) {
 						break; // Success, exit retry loop
 					}
 
 					// If not found, wait and retry
 					if (!verificationResult.found && attempt < 5) {
-						await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
+						await sleep(5000);
 					}
+				}
+
+				if (verificationResult && verificationResult.found) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					const tx = await (adapter.getVerifier() as any).blockchainParser.findTransactionById(agreementReference);
+					console.log("Fetched transaction:", tx);
 				}
 
 				verificationPassed = Boolean(
@@ -105,17 +120,22 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 				);
 
 				if (verificationResult) {
-					console.log("  🔍 Verification result:");
-					console.log(`    - Transaction found: ${verificationResult.found}`);
+					adapter.log("  🔍 Verification result:");
+					adapter.log(`    - Transaction found: ${verificationResult.found}`);
 					if (verificationResult.found) {
-						console.log(`    - Verification status: ${verificationResult.verification.result}`);
+						adapter.log(`    - Verification status: ${verificationResult.verification.result}`);
 						if (verificationResult.verification.result === "failed") {
-							console.log(`    - Failure:`, verificationResult.verification.failure);
+							adapter.log(`    - Failure: ${JSON.stringify(verificationResult.verification.failure)}`);
 						}
 					}
+				} else {
+					adapter.log("  ⚠️  No verification result - transaction may be empty or invalid");
 				}
 
+				adapter.log(`\n  ⚖️  Final verification status: ${verificationPassed ? "PASSED" : "FAILED"}`);
+
 				if (!verificationPassed) {
+					adapter.log("  ❌ REJECTING exit - verification failed");
 					await adapter.finalizeCar("reject");
 					return produce(state, (draft) => {
 						draft.output = {
@@ -124,13 +144,18 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 					});
 				}
 
+				adapter.log("  ✅ Payment verified successfully!");
+
 				// Remove car from database
 				const licensePlate = adapter.getCarLicensePlate();
+				adapter.log(`  🗑️  Removing car ${licensePlate} from database...`);
 				const carEntry = adapter.getCarsDB().getByPlate(licensePlate);
 				if (carEntry) {
 					adapter.getCarsDB().remove(carEntry.id);
+					adapter.log(`  ✓ Car removed from database`);
 				}
 
+				adapter.log("  🚪 LETTING CAR OUT");
 				await adapter.finalizeCar("let-out");
 				const clearanceMessage =
 					"Payment verified successfully. You are cleared to leave the parking lot. Have a safe journey!";
@@ -146,6 +171,7 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 					};
 				});
 			} else if (response.result === DaiaAgreementReferenceResult.REJECT) {
+				adapter.log("  ❌ REJECTING exit - car rejected the payment offer");
 				await adapter.finalizeCar("reject");
 				return produce(state, (draft) => {
 					draft.output = {
@@ -206,13 +232,15 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 			const parkTimeHours = parkTimeMillis / (1000 * 60 * 60);
 			const paymentAmount = Math.ceil(parkTimeHours * carData.ratePerHour);
 
+			console.log("Expected payment amont", paymentAmount)
+
 			// Create offer data
 			const offerData = { paymentAmount };
 			const offerString = convertGateExitOfferToString(offerData);
 
 			// Build the offer
 			// Payment should go TO the gate (this agent), not to the car
-			const gateAddress = adapter.getPublicKey().toAddress("testnet");
+			const gateAddress = adapter.getPublicKey().toAddress('testnet').toString();
 			const offer = DaiaOfferBuilder.new()
 				.setNaturalLanguageContent(offerString)
 				.setOfferTypeIdentifier(EXIT_OFFER_TYPE_IDENTIFIER)

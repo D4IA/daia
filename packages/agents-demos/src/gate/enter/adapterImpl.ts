@@ -18,6 +18,7 @@ export interface GateAgentEnterAdapterConfig {
 	offerGenerationModel: string;
 	offerGenerationPrompt: string;
 	finalizeCarCallback: (result: "let-in" | "reject") => Promise<void>;
+	logCallback: (message: string) => void;
 }
 
 /**
@@ -35,6 +36,7 @@ export class GateAgentEnterAdapterImpl implements GateAgentEnterAdapter {
 	private readonly offerGenerationModel: string;
 	private readonly offerGenerationPrompt: string;
 	private readonly finalizeCarCallback: (result: "let-in" | "reject") => Promise<void>;
+	private readonly logCallback: (message: string) => void;
 
 	constructor(config: GateAgentEnterAdapterConfig) {
 		this.db = config.db;
@@ -47,6 +49,7 @@ export class GateAgentEnterAdapterImpl implements GateAgentEnterAdapter {
 		this.offerGenerationModel = config.offerGenerationModel;
 		this.offerGenerationPrompt = config.offerGenerationPrompt;
 		this.finalizeCarCallback = config.finalizeCarCallback;
+		this.logCallback = config.logCallback;
 	}
 	getPrivateKey(): PrivateKey {
 		return this.privateKey;
@@ -152,5 +155,9 @@ export class GateAgentEnterAdapterImpl implements GateAgentEnterAdapter {
 		);
 
 		return offerData;
+	}
+
+	log(message: string): void {
+		this.logCallback(message);
 	}
 }

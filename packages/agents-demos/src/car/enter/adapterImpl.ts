@@ -105,4 +105,8 @@ export class DefaultCarEnterAgentAdapter implements CarEnterAgentAdapter {
 			};
 		}
 	}
+
+	log(message: string): void {
+		this.config.logCallback(message);
+	}
 }

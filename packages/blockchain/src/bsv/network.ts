@@ -3,6 +3,5 @@
  */
 export enum BsvNetwork {
 	MAIN = "main",
-	TEST = "test",
-	STN = "stn",
+	TEST = "testnet"
 }

@@ -14,4 +14,9 @@ export interface CarExitAgentAdapter {
 	calculateParkHourlyRate: (agreementText: string) => Promise<number>;
 
 	getMemory(): CarAgentMemory;
+
+	/**
+	 * Log a message
+	 */
+	log(message: string): void;
 }

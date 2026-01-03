@@ -15,6 +15,18 @@ import { WhatsOnChainUtxoProvider, type UtxoProvider } from "./utxoProvider";
 import { BsvNetwork } from "./network";
 
 /**
+ * Maps BsvNetwork enum to WhatsOnChain API network strings.
+ */
+function toWhatsOnChainNetwork(network: BsvNetwork): 'main' | 'test' | 'stn' {
+	switch (network) {
+		case BsvNetwork.MAIN:
+			return 'main';
+		case BsvNetwork.TEST:
+			return 'test';
+	}
+}
+
+/**
  * Minimal BSV blockchain factory for storing data in OP_RETURN outputs.
  * Uses WhatsOnChain API for broadcasting transactions and discovering UTXOs.
  */
@@ -92,7 +104,7 @@ export class BsvTransactionFactory implements BlockchainTransactionFactory {
 			data,
 			serializedTransaction: () => tx.toHex(),
 			publish: async () => {
-				const broadcaster = new WhatsOnChainBroadcaster(this.network);
+				const broadcaster = new WhatsOnChainBroadcaster(toWhatsOnChainNetwork(this.network));
 				const result = await tx.broadcast(broadcaster);
 
 				if (result.status === "error") {

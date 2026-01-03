@@ -18,9 +18,10 @@ export class BsvTransactionParser implements BlockchainTransactionParser {
 	}
 
 	async findTransactionById(id: string): Promise<ParsedBlockchainTransactionHandle | null> {
+		const net = this.network === BsvNetwork.MAIN ? "main" : "test";
 		try {
 			// Fetch transaction from WhatsOnChain
-			const txUrl = `https://api.whatsonchain.com/v1/bsv/${this.network}/tx/${id}/hex`;
+			const txUrl = `https://api.whatsonchain.com/v1/bsv/${net}/tx/${id}/hex`;
 			const response = await fetch(txUrl);
 
 			if (!response.ok) {
@@ -35,7 +36,7 @@ export class BsvTransactionParser implements BlockchainTransactionParser {
 			const txHex = await response.text();
 
 			// Check if transaction is confirmed
-			const confirmUrl = `https://api.whatsonchain.com/v1/bsv/${this.network}/tx/${id}`;
+			const confirmUrl = `https://api.whatsonchain.com/v1/bsv/${net}/tx/${id}`;
 			const confirmResponse = await fetch(confirmUrl);
 			let isFinalized = false;
 
@@ -179,7 +180,6 @@ export class BsvTransactionParser implements BlockchainTransactionParser {
 		// mainnet: 0x00, testnet: 0x6f
 		switch (this.network) {
 			case BsvNetwork.TEST:
-			case BsvNetwork.STN:
 				return [0x6f];
 			case BsvNetwork.MAIN:
 			default:

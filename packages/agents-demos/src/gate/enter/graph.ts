@@ -78,12 +78,10 @@ export function createGateAgentGraph(adapter: GateAgentEnterAdapter) {
 				// Retry logic: 5 attempts with 5 second delays
 				let verificationResult = undefined;
 				for (let attempt = 1; attempt <= 5; attempt++) {
-					console.log("Fetching transaction, attempt ", attempt);
+					adapter.log("Fetching transaction, attempt " + attempt);
 					verificationResult = await adapter
 						.getVerifier()
 						.getAgreementFromTransaction(agreementReference);
-
-					// Check if transaction was found and verification passed
 					if (
 						verificationResult.found &&
 						verificationResult.verification.result === DaiaAgreementVerificationResult.PASSED

@@ -1,31 +1,15 @@
 import { config } from "dotenv";
+import { BsvNetwork, PrivateKey } from "@daia/blockchain";
+import { DaiaAgreementReferenceResult, DaiaMessageType, DaiaMessageUtil } from "@daia/core";
 import {
-	BsvNetwork,
-	BsvTransactionFactory,
-	BsvTransactionParser,
-	PrivateKey,
-	WhatsOnChainUtxoProvider,
-} from "@daia/blockchain";
-import {
-	DefaultDaiaAgreementVerifier,
-	DefaultDaiaOfferSigner,
-	DefaultDaiaPaymentRequirementResolver,
-	DefaultDaiaSignRequirementResolver,
-	DaiaAgreementReferenceResult,
-	DaiaMessageType,
-	DaiaMessageUtil,
-} from "@daia/core";
-import { CarEnterAgent } from "./car/enter/agent";
-import { CarEnterAgentConfig } from "./car/enter/config";
-import { GateAgent } from "./gate/enter/agent";
-import { GateAgentEnterAdapterImpl } from "./gate/enter/adapterImpl";
-import { GateAgentCarsDB } from "./gate/state/db";
-import { CarAgentMemory } from "./car/db/memory";
+	CarGateSimulationEnvironment,
+	type CarConfiguration,
+	type GateConfiguration,
+} from "./cargate/environment";
+import { CarGateSimulationEventType, type CarGateSimulationEvent } from "./cargate/session";
 
 // Load environment variables
 config();
-
-const MAX_TURNS = 50;
 
 // System prompts that minimize hallucinations
 const CAR_CONVERSING_PROMPT = `You are a car agent negotiating parking lot entry.
@@ -118,152 +102,96 @@ export async function runEnterDemo(): Promise<void> {
 	console.log(`  Gate Address: ${gateAddress}`);
 	console.log();
 
-	console.log("Step 2: Setting up BSV blockchain infrastructure...");
+	console.log("Step 2: Creating simulation environment...");
 
 	const network = BsvNetwork.TEST;
 
-	// Create UTXO provider for testnet
-	const carUtxoProvider = new WhatsOnChainUtxoProvider(carPrivateKey, network);
-
-	// Create transaction factory for car (signer)
-	const carFactory = new BsvTransactionFactory(
-		carPrivateKey,
-		network,
-		1, // 1 satoshi per KB (minimal for testnet)
-		carUtxoProvider,
-	);
-
-	// Create signer components for car
-	const signResolver = new DefaultDaiaSignRequirementResolver(carPrivateKey);
-	const paymentResolver = new DefaultDaiaPaymentRequirementResolver(carFactory);
-
-	const carSigner = new DefaultDaiaOfferSigner({
-		transactionFactory: carFactory,
-		signResolver,
-		paymentResolver,
-	});
-
-	// Create verifier for gate
-	const transactionParser = new BsvTransactionParser(network);
-	const gateVerifier = new DefaultDaiaAgreementVerifier(transactionParser);
-
-	console.log("  ✓ Transaction factory created");
-	console.log("  ✓ DAIA signer created for car");
-	console.log("  ✓ DAIA verifier created for gate");
-	console.log();
-
-	console.log("Step 3: Creating agents...");
-
-	// Create car memory
-	const carMemory = new CarAgentMemory();
-
-	// Create car agent
-	const carConfig: CarEnterAgentConfig = {
+	// Create car configuration
+	const carConfig: CarConfiguration = {
+		licensePlate: "TEST-123",
 		privateKey: carPrivateKey,
-		conversingPrompt: CAR_CONVERSING_PROMPT,
-		offerAnalysisPrompt: CAR_OFFER_ANALYSIS_PROMPT,
-		conversingModel: "gpt-4o-mini",
-		offerAnalysisModel: "gpt-4o-mini",
-		openAIApiKey,
-		signer: carSigner,
-		memory: carMemory,
-		shouldPublishTransactions: true,
+		negotiationPrompt: CAR_CONVERSING_PROMPT,
+		negotiationModel: "gpt-4o-mini",
+		offerConsiderationPrompt: CAR_OFFER_ANALYSIS_PROMPT,
+		offerConsiderationModel: "gpt-4o-mini",
 	};
 
-	const carAgent = new CarEnterAgent(carConfig);
-	console.log("  ✓ Car agent initialized");
-
-	// Create gate agent
-	const licensePlate = "TEST-123";
-
-	let finalDecision: "let-in" | "reject" | null = null;
-
-	const gateAdapter = new GateAgentEnterAdapterImpl({
-		db: new GateAgentCarsDB(),
+	// Create gate configuration
+	const gateConfig: GateConfiguration = {
 		privateKey: gatePrivateKey,
-		verifier: gateVerifier,
-		licensePlate,
-		openAIApiKey,
-		conversingModel: "gpt-4o-mini",
-		conversingPrompt: GATE_CONVERSING_PROMPT,
-		offerGenerationModel: "gpt-4o-mini",
-		offerGenerationPrompt: GATE_OFFER_GENERATION_PROMPT,
-		finalizeCarCallback: async (result: "let-in" | "reject") => {
-			finalDecision = result;
-			console.log(`  🚦 Gate final decision: ${result.toUpperCase()}`);
-		},
-	});
+		conversationPrompt: GATE_CONVERSING_PROMPT,
+		conversationModel: "gpt-4o-mini",
+		offerGeneratingPrompt: GATE_OFFER_GENERATION_PROMPT,
+		offerGeneratingModel: "gpt-4o-mini",
+	};
 
-	const gateAgent = new GateAgent(gateAdapter);
-	console.log("  ✓ Gate agent initialized");
+	// Create environment
+	const envConfig = {
+		openAIApiKey,
+		network,
+		gateConfig,
+		maxTurns: 50,
+	};
+
+	const environment = new CarGateSimulationEnvironment(envConfig);
+	environment.addCar(carConfig);
+
+	console.log("  ✓ Environment created");
+	console.log("  ✓ Car registered");
 	console.log();
 
-	console.log("Step 4: Running agent conversation...");
+	console.log("Step 3: Running agent conversation...");
 	console.log("-".repeat(80));
 	console.log();
 
 	try {
-		let carMessage = ""; // Car starts with empty message
-		let gateEnded = false;
 		let currentTurn = 0;
+		let finalDecision: "let-in" | "reject" | null = null;
 
-		while (currentTurn < MAX_TURNS && !gateEnded) {
-			currentTurn++;
-			console.log(`[Turn ${currentTurn}]`);
-			console.log();
+		const session = environment.createSession(carConfig.licensePlate);
 
-			// Car sends message to gate
-			console.log(`🚗 Car → Gate: ${carMessage || "(initial empty message)"}`);
-			const gateResponse = await gateAgent.processInput(carMessage);
-			console.log();
-
-			if (gateResponse.type === "end") {
-				console.log("🚦 Gate ended the conversation");
-				gateEnded = true;
-				break;
-			}
-
-			if (gateResponse.type === "message") {
-				console.log(`🚦 Gate → Car: ${gateResponse.content}`);
+		const onNewMessage = (event: CarGateSimulationEvent) => {
+			if (event.type === CarGateSimulationEventType.CAR_TO_GATE_MESSAGE) {
+				currentTurn++;
+				console.log(`[Turn ${currentTurn}]`);
+				console.log();
+				console.log(`🚗 Car → Gate: ${event.message || "(initial empty message)"}`);
+			} else if (event.type === CarGateSimulationEventType.GATE_TO_CAR_MESSAGE) {
+				console.log(`🚦 Gate → Car: ${event.message}`);
 				console.log();
 
-				// Gate sends message back to car
-				const carResponse = await carAgent.processInput(gateResponse.content);
-
-				if (carResponse.type === "message") {
-					carMessage = carResponse.content;
-
-					// Check if car just published a transaction (DAIA offer-response message)
-					if (DaiaMessageUtil.isDaiaMessage(carMessage)) {
-						try {
-							const daiaMessage = DaiaMessageUtil.deserialize(carMessage);
-							if (
-								daiaMessage.type === DaiaMessageType.OFFER_RESPONSE &&
-								daiaMessage.result === DaiaAgreementReferenceResult.ACCEPT
-							) {
-								const txId = daiaMessage.agreementReference;
-								console.log(`\n📝 Transaction published by car agent`);
-								console.log(`✅ Transaction ID: ${txId}`);
-								console.log(`🔗 View on WhatsOnChain: https://test.whatsonchain.com/tx/${txId}`);
-								console.log(`⏳ Transaction is being indexed on blockchain...\n`);
-							}
-						} catch {
-							// Ignore parse errors
+				// Check if car just published a transaction (DAIA offer-response message)
+				if (DaiaMessageUtil.isDaiaMessage(event.message)) {
+					try {
+						const daiaMessage = DaiaMessageUtil.deserialize(event.message);
+						if (
+							daiaMessage.type === DaiaMessageType.OFFER_RESPONSE &&
+							daiaMessage.result === DaiaAgreementReferenceResult.ACCEPT
+						) {
+							const txId = daiaMessage.agreementReference;
+							console.log(`\n📝 Transaction published by car agent`);
+							console.log(`✅ Transaction ID: ${txId}`);
+							console.log(`🔗 View on WhatsOnChain: https://test.whatsonchain.com/tx/${txId}`);
+							console.log(`⏳ Transaction is being indexed on blockchain...\n`);
 						}
+					} catch {
+						// Ignore parse errors
 					}
-				} else {
-					console.log("⚠️  Car returned unexpected response type");
-					break;
 				}
+
+				console.log("-".repeat(80));
+				console.log();
+			} else if (event.type === CarGateSimulationEventType.GATE_ACTION) {
+				finalDecision = event.action as "let-in" | "reject";
+				console.log(`🚦 Gate final decision: ${event.action.toUpperCase()}`);
+			} else if (event.type === CarGateSimulationEventType.SESSION_END) {
+				console.log(`🏁 ${event.side === "gate" ? "Gate" : "Car"} ended the conversation`);
+			} else if (event.type === CarGateSimulationEventType.MAX_TURNS_REACHED) {
+				console.log(`⚠️  Maximum turns (${event.turns}) reached without completion`);
 			}
+		};
 
-			console.log("-".repeat(80));
-			console.log();
-		}
-
-		if (currentTurn >= MAX_TURNS) {
-			console.log("⚠️  Maximum turns reached without completion");
-		}
+		const result = await session.run({ onNewMessage });
 
 		console.log();
 		console.log("=".repeat(80));
@@ -274,19 +202,9 @@ export async function runEnterDemo(): Promise<void> {
 		console.log();
 
 		// Log final states
-		const carState = carAgent.getState();
-		const gateState = gateAgent.getState();
-
 		console.log("Final Car Agent State:");
-		console.log(`  Conversation history length: ${carState.conversationHistory.length}`);
-
-		// Check if car has received and stored an agreement in DAIA state
-		const daiaState = carState.daia;
-		console.log(`  DAIA machine status: ${daiaState.inner.status}`);
-
-		// Log car memory state
-		console.log(`  Memory - Is parked: ${carMemory.isParked}`);
-		const parkAgreement = carMemory.getParkAgreement();
+		console.log(`  Memory - Is parked: ${result.carMemory.isParked}`);
+		const parkAgreement = result.carMemory.getParkAgreement();
 		if (parkAgreement) {
 			console.log(`  Memory - Park time: ${parkAgreement.parkTime.toISOString()}`);
 			console.log(`  Memory - Agreement reference (TX): ${parkAgreement.reference}`);
@@ -295,13 +213,7 @@ export async function runEnterDemo(): Promise<void> {
 		console.log();
 
 		console.log("Final Gate Agent State:");
-		console.log(`  Conversation history length: ${gateState.conversationHistory.length}`);
-		console.log(
-			`  Last offer: ${gateState.lastOffer ? `${gateState.lastOffer.ratePerHour} satoshis/hour` : "none"}`,
-		);
-
-		// Log gate database contents
-		const allCars = gateAdapter.getCarsDB().all();
+		const allCars = result.gateDb.all();
 		console.log(`  Cars in database: ${allCars.length}`);
 		if (allCars.length > 0) {
 			console.log("  Parked cars:");

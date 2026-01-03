@@ -12,4 +12,9 @@ export interface GateAgentExitAdapter {
 	getConfig(): GateExitAgentConfig;
 
 	finalizeCar(result: "let-out" | "reject"): Promise<void>;
+
+	/**
+	 * Log a message
+	 */
+	log(message: string): void;
 }

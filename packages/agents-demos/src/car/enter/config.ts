@@ -21,4 +21,9 @@ export type CarEnterAgentConfig = {
 	 * Set to false for testing to avoid network calls.
 	 */
 	shouldPublishTransactions: boolean;
+
+	/**
+	 * Callback function for logging messages.
+	 */
+	logCallback: (message: string) => void;
 };

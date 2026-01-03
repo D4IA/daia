@@ -12,4 +12,9 @@ export type GateAgentConfig = {
 	openAIApiKey: string;
 
 	verifier: DaiaAgreementVerifier;
+
+	/**
+	 * Callback function for logging messages.
+	 */
+	logCallback: (message: string) => void;
 };

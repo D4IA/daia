@@ -101,7 +101,7 @@ describe("Signer-Verifier Integration Test", () => {
 		signeePrivateKey = PrivateKey.fromRandom();
 
 		// Create mock storage (parser) and mock UTXO provider
-		const network = "test";
+		const network = BsvNetwork.TEST;
 		mockParser = new MockBlockchainTransactionParser(network);
 		const mockUtxoProvider = new MockUtxoProvider();
 

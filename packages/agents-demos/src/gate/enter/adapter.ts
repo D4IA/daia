@@ -26,6 +26,11 @@ export interface GateAgentEnterAdapter {
 	): Promise<string>;
 
 	makeAnOffer(conversationHistory: ReadonlyArray<Message>): Promise<GateAgentOfferData>;
+
+	/**
+	 * Log a message
+	 */
+	log(message: string): void;
 }
 
 export class GateAgentEnterAdapterImpl implements GateAgentEnterAdapter {
@@ -42,6 +47,11 @@ export class GateAgentEnterAdapterImpl implements GateAgentEnterAdapter {
 		private readonly offerGenerationPrompt: string,
 		private readonly finalizeCarCallback: (result: "let-in" | "reject") => Promise<void>,
 	) {}
+
+	log(message: string): void {
+		// FIXME: put this in config like other adapters do
+		console.log(`[GateAgentEnterAdapter] ${message}`);
+	}
 
 	getPublicKey(): PublicKey {
 		return this.publicKey;

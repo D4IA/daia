@@ -10,6 +10,7 @@ export interface GateAgentExitAdapterImplConfig {
 	verifier: DaiaAgreementVerifier;
 	licensePlate: string;
 	finalizeCarCallback: (result: "let-out" | "reject") => Promise<void>;
+	logCallback: (message: string) => void;
 }
 
 /**
@@ -19,14 +20,17 @@ export class GateAgentExitAdapterImpl implements GateAgentExitAdapter {
 	private readonly db: GateAgentCarsDB;
 	private readonly config: GateExitAgentConfig;
 	private readonly licensePlate: string;
+	private readonly logCallback: (message: string) => void;
 
 	constructor(config: GateAgentExitAdapterImplConfig) {
 		this.db = config.db;
 		this.licensePlate = config.licensePlate;
+		this.logCallback = config.logCallback;
 		this.config = {
 			privateKey: config.privateKey,
 			verifier: config.verifier,
 			finalizeCarCallback: config.finalizeCarCallback,
+			logCallback: config.logCallback,
 		};
 	}
 
@@ -56,5 +60,9 @@ export class GateAgentExitAdapterImpl implements GateAgentExitAdapter {
 
 	async finalizeCar(result: "let-out" | "reject"): Promise<void> {
 		await this.config.finalizeCarCallback(result);
+	}
+
+	log(message: string): void {
+		this.logCallback(message);
 	}
 }
