@@ -1,4 +1,4 @@
-import { PrivateKey } from "@d4ia/blockchain";
+import { PrivateKey } from "@d4ia/blockchain-bridge";
 import { DaiaInnerOfferContent, DaiaOfferSelfSignedData, DaiaTransferOfferContent } from "./offer";
 import {
     DaiaOfferRequirement,

@@ -5,7 +5,7 @@ import {
 	BsvTransactionParser,
 	BsvNetwork,
 	PrivateKey,
-} from "@d4ia/blockchain";
+} from "@d4ia/blockchain-bridge";
 import { DefaultDaiaAgreementVerifier } from "../impl";
 import { DaiaAgreementVerificationResult } from "../defines";
 import { DaiaAgreement, DaiaOfferBuilder } from "../../../defines";

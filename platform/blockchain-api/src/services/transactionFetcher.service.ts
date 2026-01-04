@@ -1,4 +1,4 @@
-import { WhatsOnChainTransactionFetcher, BsvNetwork, type FetcherConfig } from "@d4ia/blockchain";
+import { WhatsOnChainTransactionFetcher, BsvNetwork, type FetcherConfig } from "@d4ia/blockchain-bridge";
 
 const network = process.env.BSV_NETWORK === "test" ? BsvNetwork.TEST : BsvNetwork.MAIN;
 

@@ -20,7 +20,7 @@ export default defineConfig({
       formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: ["@d4ia/blockchain", "@bsv/sdk", "zod"],
+      external: ["@d4ia/blockchain-bridge", "@bsv/sdk", "zod"],
     },
   },
 });

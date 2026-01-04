@@ -68,7 +68,7 @@
     "zod": "~4.1.13"
   },
   "dependencies": {
-    "@d4ia/blockchain": "workspace:*",
+    "@d4ia/blockchain-bridge": "workspace:*",
     "@d4ia/core": "workspace:*",
     "@d4ia/langchain": "workspace:*",
     "@langchain/core": "~1.1.7",

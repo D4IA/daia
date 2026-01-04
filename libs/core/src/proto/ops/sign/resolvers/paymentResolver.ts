@@ -1,4 +1,4 @@
-import { CreatedBlockchainTransactionHandle } from "@d4ia/blockchain";
+import { CreatedBlockchainTransactionHandle } from "@d4ia/blockchain-bridge";
 import { DaiaRequirementPayment } from "../../../defines";
 
 export enum DaiaPaymentRequirementResolutionType {

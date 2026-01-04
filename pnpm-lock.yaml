@@ -30,9 +30,9 @@ importers:
       '@d4ia/agents-demos':
         specifier: workspace:*
         version: link:../../libs/agents-demos
-      '@d4ia/blockchain':
+      '@d4ia/blockchain-bridge':
         specifier: workspace:*
-        version: link:../../libs/blockchain
+        version: link:../../libs/blockchain-bridge
       postcss:
         specifier: ~8.5.4
         version: 8.5.6
@@ -142,9 +142,9 @@ importers:
 
   demo/agents-demos-backend:
     dependencies:
-      '@d4ia/blockchain':
+      '@d4ia/blockchain-bridge':
         specifier: workspace:*
-        version: link:../../libs/blockchain
+        version: link:../../libs/blockchain-bridge
       '@d4ia/core':
         specifier: workspace:*
         version: link:../../libs/core
@@ -227,9 +227,9 @@ importers:
 
   libs/agents-demos:
     dependencies:
-      '@d4ia/blockchain':
+      '@d4ia/blockchain-bridge':
         specifier: workspace:*
-        version: link:../blockchain
+        version: link:../blockchain-bridge
       '@d4ia/core':
         specifier: workspace:*
         version: link:../core
@@ -319,7 +319,7 @@ importers:
         specifier: ~4.1.13
         version: 4.1.13
 
-  libs/blockchain:
+  libs/blockchain-bridge:
     dependencies:
       '@bsv/sdk':
         specifier: ^1.9.22
@@ -385,9 +385,9 @@ importers:
 
   libs/core:
     dependencies:
-      '@d4ia/blockchain':
+      '@d4ia/blockchain-bridge':
         specifier: workspace:*
-        version: link:../blockchain
+        version: link:../blockchain-bridge
     devDependencies:
       '@bsv/sdk':
         specifier: ~1.9.29
@@ -516,9 +516,9 @@ importers:
 
   platform/blockchain-api:
     dependencies:
-      '@d4ia/blockchain':
+      '@d4ia/blockchain-bridge':
         specifier: workspace:^
-        version: link:../../libs/blockchain
+        version: link:../../libs/blockchain-bridge
       '@d4ia/core':
         specifier: workspace:^
         version: link:../../libs/core

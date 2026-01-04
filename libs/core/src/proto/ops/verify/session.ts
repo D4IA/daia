@@ -1,4 +1,4 @@
-import { BlockchainTransactionParser, PublicKey, Signature } from "@d4ia/blockchain";
+import { BlockchainTransactionParser, PublicKey, Signature } from "@d4ia/blockchain-bridge";
 import { JsonUtils } from "../../../utils/json";
 import { DaiaTransactionDataSchema, DaiaTransactionDataType } from "../../blockchain";
 import {

@@ -1,4 +1,4 @@
-import { PrivateKey, BsvNetwork } from "@d4ia/blockchain";
+import { PrivateKey, BsvNetwork } from "@d4ia/blockchain-bridge";
 import { CarAgentMemory } from "../car/db/memory";
 import { CarStorage } from "./carStorage";
 import { GateAgentCarsDB } from "../gate";

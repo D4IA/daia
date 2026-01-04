@@ -1,4 +1,4 @@
-import { PublicKey } from "@d4ia/blockchain";
+import { PublicKey } from "@d4ia/blockchain-bridge";
 import { DaiaOfferSigner } from "@d4ia/core";
 import { CarExitAgentConfig } from "./config";
 import { CarAgentMemory } from "../db/memory";

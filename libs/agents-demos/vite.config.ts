@@ -21,7 +21,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        "@d4ia/blockchain",
+        "@d4ia/blockchain-bridge",
         "@d4ia/core",
         "@d4ia/langchain",
         "@langchain/core",

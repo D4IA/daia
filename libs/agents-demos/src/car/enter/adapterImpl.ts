@@ -1,6 +1,6 @@
 import { ChatOpenAI } from "@langchain/openai";
 import z from "zod/v3";
-import { PublicKey } from "@d4ia/blockchain";
+import { PublicKey } from "@d4ia/blockchain-bridge";
 import { DaiaOfferSigner } from "@d4ia/core";
 import type { CarEnterAgentAdapter, CarEnterAgentOfferDecision, Message } from "./adapter";
 import { CarEnterAgentConfig } from "./config";

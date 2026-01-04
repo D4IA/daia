@@ -1,4 +1,4 @@
-import { BlockchainTransactionParser } from "@d4ia/blockchain";
+import { BlockchainTransactionParser } from "@d4ia/blockchain-bridge";
 import { JsonUtils } from "../../../utils/json";
 import { DaiaAgreementSchema } from "../../defines";
 import { DaiaTransactionDataSchema, DaiaTransactionDataType } from "../../blockchain/data";

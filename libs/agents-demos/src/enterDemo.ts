@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { BsvNetwork, PrivateKey } from "@d4ia/blockchain";
+import { BsvNetwork, PrivateKey } from "@d4ia/blockchain-bridge";
 import { DaiaAgreementReferenceResult, DaiaMessageType, DaiaMessageUtil } from "@d4ia/core";
 import {
 	CarGateSimulationEnvironment,

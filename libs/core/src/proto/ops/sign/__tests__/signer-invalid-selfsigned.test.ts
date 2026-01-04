@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { PrivateKey, BsvTransactionFactory, BsvNetwork } from "@d4ia/blockchain";
-import type { UtxoProvider, UTXO } from "@d4ia/blockchain";
+import { PrivateKey, BsvTransactionFactory, BsvNetwork } from "@d4ia/blockchain-bridge";
+import type { UtxoProvider, UTXO } from "@d4ia/blockchain-bridge";
 
 // Import from @bsv/sdk through blockchain's peer dependency
 // eslint-disable-next-line @typescript-eslint/no-require-imports

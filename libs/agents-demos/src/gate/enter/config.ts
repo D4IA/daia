@@ -1,4 +1,4 @@
-import { PrivateKey } from "@d4ia/blockchain";
+import { PrivateKey } from "@d4ia/blockchain-bridge";
 import { DaiaAgreementVerifier } from "@d4ia/core";
 
 export type GateAgentConfig = {

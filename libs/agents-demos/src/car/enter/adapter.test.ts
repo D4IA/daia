@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { PrivateKey, PublicKey } from "@d4ia/blockchain";
+import { PrivateKey, PublicKey } from "@d4ia/blockchain-bridge";
 import { DaiaOfferSigner } from "@d4ia/core";
 import { CarEnterAgentAdapter, Message } from "./adapter";
 import { DefaultCarEnterAgentAdapter } from "./adapterImpl";

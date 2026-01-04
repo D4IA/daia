@@ -16,7 +16,7 @@ import {
 	BsvTransactionParser,
 	BsvTransactionFactory,
 	WhatsOnChainUtxoProvider,
-} from "@d4ia/blockchain";
+} from "@d4ia/blockchain-bridge";
 import { CarAgentMemory } from "../car/db/memory";
 import { GateAgentCarsDB } from "../gate";
 
