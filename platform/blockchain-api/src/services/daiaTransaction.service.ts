@@ -1,10 +1,7 @@
-import { transactionService } from "./transaction.service";
-import {
-  DaiaAgreementSchema,
-  DaiaOfferContentSchema,
-} from "@d4ia/proto";
-import db from './db.service';
 import { fetchTransactionByIdOrNull } from "@d4ia/blockchain-bridge";
+import { DaiaInnerOfferContentSchema, DaiaTransactionDataSchema, DaiaTransactionDataType } from "@d4ia/core";
+import db from './db.service';
+import { transactionService } from "./transaction.service";
 
 
 export interface DaiaTransaction {
@@ -42,26 +39,26 @@ export class DaiaTransactionService {
   async getDaiaHistory(address: string, offset: number, limit: number) {
     let currentOffset = 0;
     let hasMore = true;
-    
+
     // Keep track of the last processed DAIA tx to update its 'next' pointer
     let previousDaiaTxId: string | null = null;
-    
+
     // We need to sync enough to cover the requested offset + limit
     // OR until we hit the cache (and then we can query DB).
     // But since we don't have a simple "get all from DB" without traversing the list,
     // we might as well traverse.
-    
+
     // Optimization: If offset is 0, we are at the head.
     // If offset > 0, we might need to traverse from head or use a DB query with offset if we trust the cache is contiguous.
     // For now, let's assume we sync first, then query.
-    
+
     let hitCache = false;
 
     while (hasMore) {
       // 1. Fetch raw history page
       // We use a small internal limit for syncing, or match the requested limit?
       // Matching requested limit is safer for pagination alignment.
-      const fetchLimit = 50; 
+      const fetchLimit = 50;
       const history = await transactionService.getPaginatedHistory(
         address,
         currentOffset,
@@ -82,27 +79,27 @@ export class DaiaTransactionService {
         const cached = this.getFromCache(daiaData.txId);
 
         if (cached) {
-            console.log("HIT CACHE FOR DAIA")
+          console.log("HIT CACHE FOR DAIA")
           // HIT CACHE!
           // Link previous (newer) tx to this one
           if (previousDaiaTxId) {
             this.updateNextPointer(previousDaiaTxId, daiaData.txId);
           }
-          
+
           hitCache = true;
           hasMore = false; // Stop fetching from blockchain
-          break; 
+          break;
         } else {
-            console.log("NOT IN CACHE FOR DAIA")
+          console.log("NOT IN CACHE FOR DAIA")
           // NOT IN CACHE
           // Save to DB
           this.saveToCache(daiaData, address);
-          
+
           // Link previous (newer) tx to this one
           if (previousDaiaTxId) {
             this.updateNextPointer(previousDaiaTxId, daiaData.txId);
           }
-          
+
           previousDaiaTxId = daiaData.txId;
         }
       }
@@ -122,12 +119,12 @@ export class DaiaTransactionService {
     // Ideally we traverse the linked list from the head (which we don't explicitly store, but we can query by address and sort by something?)
     // Or we just query by address and sort by timestamp desc (if we trust timestamps).
     // The linked list is useful for *syncing* integrity, but for *querying* a page, standard SQL is faster if we have the data.
-    
+
     // Let's use standard SQL query on the cache table for serving the response.
     // We assume the sync process above populated the necessary range.
     // Warning: If we hit cache early (e.g. at tx #5), but user asked for offset 100, we might not have synced enough if the cache was sparse/broken.
     // But the assumption is: if we hit cache, the REST of the chain is there.
-    
+
     return this.queryCache(address, offset, limit);
   }
 
@@ -139,14 +136,14 @@ export class DaiaTransactionService {
   async getTransactionById(txId: string): Promise<DaiaTransaction | null> {
     // Fetch the transaction from the blockchain
     const tx = await fetchTransactionByIdOrNull(txId);
-    
+
     if (!tx) {
       return null;
     }
 
     // Extract and validate DAIA data
     const daiaData = this.extractDaiaData(tx);
-    
+
     return daiaData;
   }
 
@@ -162,9 +159,9 @@ export class DaiaTransactionService {
       INSERT OR REPLACE INTO daia_transactions (tx_id, address, data, timestamp, created_at)
       VALUES (?, ?, ?, ?, ?)
     `);
-    stmt.run(tx.txId, address, JSON.stringify(tx), tx.timestamp, Date.now()); 
+    stmt.run(tx.txId, address, JSON.stringify(tx), tx.timestamp, Date.now());
   }
-  
+
   private updateNextPointer(currentTxId: string, nextTxId: string) {
     const stmt = db.prepare("UPDATE daia_transactions SET next_tx_id = ? WHERE tx_id = ?");
     stmt.run(nextTxId, currentTxId);
@@ -177,7 +174,7 @@ export class DaiaTransactionService {
       WHERE address = ? 
       ORDER BY timestamp DESC
     `);
-    
+
     const rows = stmt.all(address) as { data: string }[];
     const transactions: DaiaTransaction[] = rows.map(row => JSON.parse(row.data));
 
@@ -208,10 +205,10 @@ export class DaiaTransactionService {
 
     // Apply offset and limit to the flattened agreements
     const paginatedAgreements = allAgreements.slice(offset, offset + limit);
-    
+
     // Group paginated agreements back by transaction for response structure
     const transactionsMap = new Map<string, DaiaTransaction>();
-    
+
     for (const agreement of paginatedAgreements) {
       if (!transactionsMap.has(agreement.txId)) {
         transactionsMap.set(agreement.txId, {
@@ -220,7 +217,7 @@ export class DaiaTransactionService {
           agreements: []
         });
       }
-      
+
       transactionsMap.get(agreement.txId)!.agreements.push({
         agreement: agreement.agreement,
         offerContent: agreement.offerContent,
@@ -229,7 +226,7 @@ export class DaiaTransactionService {
     }
 
     const paginatedTransactions = Array.from(transactionsMap.values());
-    
+
     // Check if there are more agreements
     const total = allAgreements.length;
     const hasMore = offset + limit < total;
@@ -280,25 +277,30 @@ export class DaiaTransactionService {
           parsed.proofs = new Map(Object.entries(parsed.proofs));
         }
 
-        const agreement = DaiaAgreementSchema.parse(parsed);
-        
-        const contentParsed = JSON.parse(agreement.offerContentSerialized);
-        
+        const txData = DaiaTransactionDataSchema.parse(parsed);
+        if (txData.type !== DaiaTransactionDataType.AGREEMENT) {
+          throw new Error("Not an agreement type");
+        }
+
+        const agreement = txData.agreement
+
+        const contentParsed = JSON.parse(agreement.offerContent.inner);
+
         if (contentParsed.requirements && typeof contentParsed.requirements === 'object') {
           contentParsed.requirements = new Map(Object.entries(contentParsed.requirements));
         }
 
-        const offerContent = DaiaOfferContentSchema.parse(contentParsed);
+        const offerContent = DaiaInnerOfferContentSchema.parse(contentParsed);
 
         // Convert Maps back to plain objects for storage/API
         agreements.push({
           agreement: {
-            ...agreement,
-            proofs: Object.fromEntries(agreement.proofs)
+            offerContentSerialized: agreement.offerContent.inner,
+            proofs: Object.fromEntries(Object.entries(agreement.proofs))
           },
           offerContent: {
             ...offerContent,
-            requirements: Object.fromEntries(offerContent.requirements)
+            requirements: Object.fromEntries(Object.entries(offerContent.requirements))
           },
           vout: index
         });
@@ -324,7 +326,7 @@ export class DaiaTransactionService {
   private decodeOpReturnHex(hex: string): string | null {
     // Basic parsing of OP_RETURN script
     // We assume standard format: OP_RETURN (0x6a) + PUSHDATA + DATA
-    
+
     if (!hex.startsWith("6a")) return null;
 
     let pointer = 2; // Skip 0x6a
@@ -334,7 +336,7 @@ export class DaiaTransactionService {
     pointer += 2;
 
     let dataLength = 0;
-    
+
     if (pushOp > 0 && pushOp <= 75) {
       // Immediate length
       dataLength = pushOp;
@@ -358,7 +360,7 @@ export class DaiaTransactionService {
     }
 
     const dataHex = hex.substring(pointer, pointer + dataLength * 2);
-    
+
     try {
       // Hex to string
       let str = '';

@@ -154,7 +154,7 @@
     "step2": {
       "number": 2,
       "title": "Odpal Ajenta",
-      "codeSnippet": "import { DaiaAgent } from '@daia/sdk'\nconst agent = new DaiaAgent({ id: 'AJENT-01', wallet: '0xabc...' })"
+      "codeSnippet": "import { DaiaAgent } from '@d4ia/sdk'\nconst agent = new DaiaAgent({ id: 'AJENT-01', wallet: '0xabc...' })"
     },
     "step3": {
       "number": 3,

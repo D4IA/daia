@@ -22,7 +22,6 @@ addressHistoryRouter.get(
     
     const limit = clamp(parseInt(req.query.limit as string) || PAGINATION.DEFAULT_LIMIT, PAGINATION.MIN_LIMIT, PAGINATION.MAX_LIMIT);
 
-
     if (!address) {
       return HttpError.BadRequest(res, "Address parameter is required");
     }
