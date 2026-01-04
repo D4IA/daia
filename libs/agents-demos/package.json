@@ -2,10 +2,26 @@
   "name": "@d4ia/agents-demos",
   "version": "0.0.1",
   "description": "DAIA protocol utilities",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/agents-demos.es.js",
+      "require": "./dist/agents-demos.cjs.js"
+    }
+  },
+  "main": "./dist/agents-demos.cjs.js",
+  "module": "./dist/agents-demos.es.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "private": true,
   "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test-watch": "vitest",
     "start": "tsx src/index.ts",
     "demo:enter": "tsx src/enterDemo.ts",
     "demo:exit": "tsx src/exitDemo.ts",
@@ -16,10 +32,6 @@
     "lint": "eslint ./src --max-warnings 0",
     "lint:cached": "eslint ./src --max-warnings 0 --cache",
     "lint:fix": "eslint ./src --fix",
-    "test:mutate": "stryker run",
-    "test": "vitest",
-    "test:ss": "vitest -u",
-    "build": "rimraf dist && tsc --project tsconfig.prod.json",
     "build:check": "tsc --noEmit",
     "fix": "npm run format:fix && npm run lint:fix",
     "pre-commit-check": "npm run build:check && npm run lint:cached && npm run format:check:cached",
@@ -46,7 +58,11 @@
     "zod": "~4.1.13",
     "@bsv/sdk": "~1.9.29",
     "tsx": "~4.21.0",
-    "dotenv": "~17.2.3"
+    "dotenv": "~17.2.3",
+    "@types/node": "^24.8.1",
+    "vite": "^6.4.1",
+    "vite-plugin-dts": "^4.3.0",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "peerDependencies": {
     "zod": "~4.1.13"

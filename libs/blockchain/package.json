@@ -2,19 +2,31 @@
   "name": "@d4ia/blockchain",
   "version": "0.0.1",
   "description": "DAIA protocol utilities",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/blockchain.es.js",
+      "require": "./dist/blockchain.cjs.js"
+    }
+  },
+  "main": "./dist/blockchain.cjs.js",
+  "module": "./dist/blockchain.es.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test-watch": "vitest",
     "format:fix": "prettier ./src --write",
     "format:check": "prettier ./src --check",
     "format:check:cached": "prettier ./src --check --cache",
     "lint": "eslint ./src --max-warnings 0",
     "lint:cached": "eslint ./src --max-warnings 0 --cache",
     "lint:fix": "eslint ./src --fix",
-    "test:mutate": "stryker run",
-    "test": "vitest --run",
-    "test:ss": "vitest -u",
-    "build": "rimraf dist && tsc --project tsconfig.prod.json",
     "build:check": "tsc --noEmit",
     "fix": "npm run format:fix && npm run lint:fix",
     "pre-commit-check": "npm run build:check && npm run lint:cached && npm run format:check:cached",
@@ -38,7 +50,11 @@
     "vitest": "3.2.4",
     "rimraf": "~6.0.1",
     "jsdom": "~27.2.0",
-    "zod": "~4.1.13"
+    "zod": "~4.1.13",
+    "@types/node": "^24.8.1",
+    "vite": "^6.4.1",
+    "vite-plugin-dts": "^4.3.0",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "peerDependencies": {
     "zod": "~4.1.13"
