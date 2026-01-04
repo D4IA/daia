@@ -1,4 +1,4 @@
-import { fetchTransactionByIdOrNull } from "@d4ia/blockchain-bridge";
+import { transactionFetcher } from "./transactionFetcher.service";
 import { DaiaInnerOfferContentSchema, DaiaTransactionDataSchema, DaiaTransactionDataType } from "@d4ia/core";
 import db from './db.service';
 import { transactionService } from "./transaction.service";
@@ -135,7 +135,7 @@ export class DaiaTransactionService {
    */
   async getTransactionById(txId: string): Promise<DaiaTransaction | null> {
     // Fetch the transaction from the blockchain
-    const tx = await fetchTransactionByIdOrNull(txId);
+    const tx = await transactionFetcher.fetchTransactionById(txId);
 
     if (!tx) {
       return null;

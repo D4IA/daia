@@ -1,4 +1,4 @@
-import { fetchTransactionHashes, fetchBulkTransactionDetails } from "@d4ia/blockchain-bridge";
+import { transactionFetcher } from "./transactionFetcher.service";
 import { paginationCacheService, CachedPage } from "./paginationCache.service";
 import { WHATSONCHAIN_API } from "../constants/externalApi.const";
 
@@ -92,7 +92,7 @@ export class TransactionService {
 
   private async fetchFirstPage(address: string): Promise<CachedPage | undefined> {
     console.log(`Fetching first page for ${address} (fresh)`);
-    const response = await fetchTransactionHashes(address, undefined);
+    const response = await transactionFetcher.fetchTransactionHashes(address, undefined);
 
     if (!response) {
       console.log("No response from first page");
@@ -136,7 +136,7 @@ export class TransactionService {
 
     // Fetch from API
     console.log(`Fetching page ${pageNumber} with token`);
-    const response = await fetchTransactionHashes(address, currentToken);
+    const response = await transactionFetcher.fetchTransactionHashes(address, currentToken);
 
     if (!response) {
       console.log(`No response for page ${pageNumber}`);
@@ -207,7 +207,7 @@ export class TransactionService {
 
     for (let i = 0; i < hashes.length; i += BULK_TX_LIMIT) {
       const chunk = hashes.slice(i, i + BULK_TX_LIMIT);
-      const chunkTransactions = await fetchBulkTransactionDetails(chunk);
+      const chunkTransactions = await transactionFetcher.fetchBulkTransactionDetails(chunk);
       if (chunkTransactions) {
         allTransactions.push(...chunkTransactions);
       }
