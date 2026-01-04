@@ -1,15 +1,19 @@
+import {DEFAULT_REQUESTS_PER_SECOND} from "./fetcherConfig";
+
 const SECOND_IN_MS = 1000;
 
 /**
  * Rate limiter for fetch requests.
  * Ensures that the number of requests does not exceed a specified limit per interval.
+ * @param maxRequests - Max requests per interval (default: 3).
+ * @param intervalMs - Interval in milliseconds (default: 1000ms).
  */
 export class FetchThrottler {
 	private queue: Array<() => void> = [];
 	private activeCount = 0;
 
 	constructor(
-		private readonly maxRequests: number,
+		private readonly maxRequests: number = DEFAULT_REQUESTS_PER_SECOND,
 		private readonly intervalMs: number = SECOND_IN_MS,
 	) {
 		setInterval(() => this.release(), this.intervalMs);

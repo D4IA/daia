@@ -5,7 +5,6 @@ import type {
 	TransactionHashPage,
 } from "../defines/fetcher";
 import {
-	DEFAULT_REQUESTS_PER_SECOND,
 	TRANSACTIONS_PER_BATCH,
 	WhatsOnChainEndpoints,
 	type FetcherConfig,
@@ -30,9 +29,7 @@ export class WhatsOnChainTransactionFetcher
 		config: FetcherConfig = {},
 	) {
 		this.endpoints = new WhatsOnChainEndpoints(network);
-		this.throttler = new FetchThrottler(
-			config.rps ?? DEFAULT_REQUESTS_PER_SECOND,
-		);
+		this.throttler = new FetchThrottler(config.rps);
 		this.apiKey = config.apiKey;
 	}
 
