@@ -286,10 +286,6 @@ export class DaiaTransactionService {
 
         const contentParsed = JSON.parse(agreement.offerContent.inner);
 
-        if (contentParsed.requirements && typeof contentParsed.requirements === 'object') {
-          contentParsed.requirements = new Map(Object.entries(contentParsed.requirements));
-        }
-
         const offerContent = DaiaInnerOfferContentSchema.parse(contentParsed);
 
         // Convert Maps back to plain objects for storage/API
@@ -306,7 +302,7 @@ export class DaiaTransactionService {
         });
 
       } catch (e) {
-        // console.error("Invalid DAIA data in this output, skipping it", e);
+        console.error("Invalid DAIA data in this output, skipping it", e);
         // Invalid DAIA data in this output, skip it
       }
     });
