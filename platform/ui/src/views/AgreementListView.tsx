@@ -84,13 +84,10 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
 
         const data: ApiResponse = await response.json();
 
-        // POPRAWIONE MAPOWANIE - obsługa zarówno starej jak i nowej struktury
         const mappedAgreements: Agreement[] = data.transactions.flatMap(
           (tx) => {
-            // Obsługa TxId vs txId
             const currentTxId = (tx as any).TxId || tx.txId;
 
-            // Jeśli tx.agreements istnieje i jest tablicą
             if (tx.agreements && Array.isArray(tx.agreements)) {
               return tx.agreements.map((agr, index) => ({
                 id: `${currentTxId}-${agr.vout || index}`,
@@ -110,7 +107,6 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
               }));
             }
 
-            // Fallback: jeśli tx ma bezpośrednio agreement (alternatywna struktura)
             if ((tx as any).agreement) {
               const agreement = (tx as any).agreement;
               const titleText =
@@ -219,7 +215,6 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
     }
   }, [query, handleSearchAction]);
 
-  // Reset strony do 1 gdy zmienią się filtry
   useEffect(() => {
     setCurrentPage(1);
   }, [txIdFilter, dateFilter]);

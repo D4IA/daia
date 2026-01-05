@@ -110,7 +110,6 @@ const AgreementDetailsPage: React.FC = () => {
       </div>
     );
 
-  // Breadcrumb path - jeśli mamy walletAddress, użyj go w linku
   const breadcrumbPath = walletAddress
     ? `/list_of_agreements/${walletAddress}`
     : "/list_of_agreements";
