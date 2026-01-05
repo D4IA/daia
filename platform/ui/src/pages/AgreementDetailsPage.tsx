@@ -12,7 +12,6 @@ const AgreementDetailsPage: React.FC = () => {
   const { txId } = useParams();
   const location = useLocation();
 
-  // Odczytaj walletAddress z navigation state
   const walletAddress = (location.state as any)?.walletAddress || null;
 
   const [offerContent, setOfferContent] = useState("");
@@ -34,13 +33,11 @@ const AgreementDetailsPage: React.FC = () => {
         if (!response.ok) throw new Error(t("details_view.err_tx_not_found"));
 
         const data = await response.json();
-        console.log("DANE Z API (RAW):", data);
 
         const agreementObj =
           data.agreement ||
           (data.agreements ? data.agreements[0]?.agreement : null) ||
           {};
-        console.log("WYEKSTRAHOWANY OBIEKT AGREEMENT:", agreementObj);
 
         let content = agreementObj.naturalLanguageOfferContent || "";
 
@@ -49,7 +46,7 @@ const AgreementDetailsPage: React.FC = () => {
             const parsed = JSON.parse(agreementObj.offerContentSerialized);
             content = parsed.naturalLanguageOfferContent || "";
           } catch (e) {
-            console.error("Błąd parsowania serialized content", e);
+            console.error("Serialized content parse error", e);
           }
         }
         setOfferContent(content || t("details_view.msg_content_unavailable"));
@@ -57,22 +54,20 @@ const AgreementDetailsPage: React.FC = () => {
         const rawReqs = agreementObj.requirements || {};
         const allRequirements = Object.entries(rawReqs).map(([uuid, req]) => ({
           uuid,
-          ...req,
+          ...(req as object),
         }));
-        console.log("WSZYSTKIE REQUIREMENTS:", allRequirements);
         setRequirementsArray(allRequirements);
 
         const rawProofs = agreementObj.proofs || {};
         const allProofs = Object.entries(rawProofs).map(([uuid, proof]) => ({
           uuid,
-          ...proof,
+          ...(proof as object),
         }));
-        console.log("WSZYSTKIE PROOFS:", allProofs);
         setProofsArray(allProofs);
 
         setTimestamp(data.timestamp || 0);
       } catch (err: any) {
-        console.error("Błąd fetch:", err);
+        console.error("Fetch error:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -122,6 +117,7 @@ const AgreementDetailsPage: React.FC = () => {
           { label: `ID: ${txId?.substring(0, 6)}...`, path: "#" },
         ]}
         mainTitle={`${t("details_view.title_tx_id")} ${txId}`}
+        subTitle=""
         createdDate={`${t("details_view.label_published_at")} ${dateStr}`}
         onGenerateReport={() =>
           generateAgreementPDF({
