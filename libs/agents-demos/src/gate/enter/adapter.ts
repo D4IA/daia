@@ -1,6 +1,6 @@
 import { DaiaAgreementVerifier } from "@d4ia/core";
 import { Message } from "../../car/enter";
-import { PrivateKey, PublicKey } from "@d4ia/blockchain";
+import { PrivateKey, PublicKey } from "@d4ia/blockchain-bridge";
 import { GateAgentCarsDB } from "../state/db";
 import { GateAgentConversationResponse, GateAgentOfferData } from "../common";
 

@@ -1,4 +1,4 @@
-import { PrivateKey } from "@d4ia/blockchain";
+import { PrivateKey } from "@d4ia/blockchain-bridge";
 import { DaiaSignRequirementResolution, DaiaSignRequirementResolver } from "./signResolver";
 
 export class DefaultDaiaSignRequirementResolver implements DaiaSignRequirementResolver {

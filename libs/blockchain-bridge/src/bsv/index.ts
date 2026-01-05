@@ -4,3 +4,5 @@ export * from "./utxoProvider";
 export * from "./reexport";
 export * from "./simpleTypes";
 export * from "./network";
+export * from "./fetcher";
+export * from "./fetcherUtils";

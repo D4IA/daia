@@ -3,7 +3,7 @@ import {
 	CreatedBlockchainTransactionHandle,
 	PublicKey,
 	Signature,
-} from "@d4ia/blockchain";
+} from "@d4ia/blockchain-bridge";
 import {
 	DaiaInnerOfferContent,
 	DaiaTransferOfferContent,

@@ -1,18 +1,7 @@
+import "dotenv/config"; // MUST be first - loads .env before other imports
 import express from "express";
-import { addressHistoryRouter } from "./routes/addressHistory.router";
 import { daiaTransactionRouter } from "./routes/daiaTransaction.router";
-import { configureBridge } from "@d4ia/blockchain-bridge";
-import dotenv from "dotenv";
 import "./services/db.service"; // Initialize database
-import type { NetworkType } from "@d4ia/blockchain-bridge/dist/constants/networkType";
-
-dotenv.config();
-
-configureBridge({
-  apiKey: process.env.BSV_API_KEY,
-  rps: Number(process.env.BSV_RPS) || undefined,
-  network: process.env.BSV_NETWORK as NetworkType
-}); 
 
 const app = express();
 
@@ -29,17 +18,16 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.get("/health", (req, res) => {
+app.get("/health", (_, res) => {
   res.json({ status: "ok" });
 });
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.json({
     message: "Blockchain API Server",
   });
 });
 
-app.use(addressHistoryRouter);
 app.use(daiaTransactionRouter);
 
 const PORT = process.env.PORT ?? 3000;

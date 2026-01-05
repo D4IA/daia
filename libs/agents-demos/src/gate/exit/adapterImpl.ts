@@ -1,4 +1,4 @@
-import { PrivateKey, PublicKey } from "@d4ia/blockchain";
+import { PrivateKey, PublicKey } from "@d4ia/blockchain-bridge";
 import { DaiaAgreementVerifier } from "@d4ia/core";
 import { GateAgentCarsDB } from "../state/db";
 import type { GateAgentExitAdapter } from "./adapter";

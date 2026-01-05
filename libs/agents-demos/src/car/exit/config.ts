@@ -1,4 +1,4 @@
-import { PrivateKey } from "@d4ia/blockchain";
+import { PrivateKey } from "@d4ia/blockchain-bridge";
 
 export type CarExitAgentConfig = {
 	privateKey: PrivateKey;

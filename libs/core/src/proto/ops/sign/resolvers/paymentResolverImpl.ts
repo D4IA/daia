@@ -1,4 +1,4 @@
-import { BlockchainTransactionFactory } from "@d4ia/blockchain";
+import { BlockchainTransactionFactory } from "@d4ia/blockchain-bridge";
 import { DaiaPaymentRequirementAuthType, DaiaRequirementPayment } from "../../../defines";
 import { DaiaTransactionDataType } from "../../../blockchain";
 import {

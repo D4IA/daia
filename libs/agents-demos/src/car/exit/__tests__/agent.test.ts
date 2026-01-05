@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { PrivateKey, BsvTransactionFactory, BsvNetwork } from "@d4ia/blockchain";
-import type { UtxoProvider, UTXO } from "@d4ia/blockchain";
+import { PrivateKey, BsvTransactionFactory, BsvNetwork } from "@d4ia/blockchain-bridge";
+import type { UtxoProvider, UTXO } from "@d4ia/blockchain-bridge";
 import {
 	DefaultDaiaOfferSigner,
 	DefaultDaiaSignRequirementResolver,

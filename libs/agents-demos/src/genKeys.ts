@@ -1,4 +1,4 @@
-import { PrivateKey } from "@d4ia/blockchain";
+import { PrivateKey } from "@d4ia/blockchain-bridge";
 
 /**
  * Generate BSV testnet keys for car and gate agents

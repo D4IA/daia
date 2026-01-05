@@ -5,7 +5,6 @@ import type {
 } from "../defines/parser";
 import type { BlockchainTransactionData } from "../defines/transactionData";
 import { BsvNetwork } from "./network";
-
 /**
  * Parser for BSV blockchain transactions that extracts custom data and payments.
  * Uses WhatsOnChain API for fetching transactions.
@@ -113,7 +112,7 @@ export class BsvTransactionParser implements BlockchainTransactionParser {
 		};
 	}
 
-	private extractOpReturnData(scriptHex: string): string | null {
+	extractOpReturnData(scriptHex: string): string | null {
 		try {
 			// Remove OP_FALSE OP_RETURN prefix (006a or 6a)
 			const hex = scriptHex.startsWith("006a") ? scriptHex.slice(4) : scriptHex.slice(2);

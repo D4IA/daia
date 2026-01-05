@@ -1,7 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import z from "zod/v3";
 import { DaiaAgreementVerifier } from "@d4ia/core";
-import { PrivateKey, PublicKey } from "@d4ia/blockchain";
+import { PrivateKey, PublicKey } from "@d4ia/blockchain-bridge";
 import { GateAgentCarsDB } from "../state/db";
 import { Message } from "../../car/enter";
 import type { GateAgentEnterAdapter } from "./adapter";
