@@ -64,21 +64,17 @@ export const ParkingVisualization = ({
 						<h2 className="card-title">Parking Control</h2>
 						<button className="btn btn-primary" onClick={onConfigureNewCar}>
 							+ Configure New Car
-						</button>					<button className="btn btn-secondary" onClick={onOpenGateSettings}>
+					</button>
+					<button className="btn btn-secondary" onClick={onOpenGateSettings}>
 						⚙️ Gate Settings
-					</button>						<div className="divider"></div>
-						<div className="stats stats-vertical shadow">
-							<div className="stat">
-								<div className="stat-title">Total Cars</div>
-								<div className="stat-value">{parkingState.cars.length}</div>
-							</div>
-							<div className="stat">
-								<div className="stat-title">Gate Status</div>
-								<div className="stat-value text-sm">
-									{parkingState.gateOpen ? "🟢 Open" : "🔴 Closed"}
-								</div>
-							</div>
+					</button>
+					<div className="divider"></div>
+					<div className="stats stats-vertical shadow">
+						<div className="stat">
+							<div className="stat-title">Total Cars</div>
+							<div className="stat-value">{parkingState.cars.length}</div>
 						</div>
+					</div>
 					</div>
 				</div>
 

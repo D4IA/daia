@@ -8,7 +8,7 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 	switch (message.type) {
 		case DaiaMessageType.DAIA_HELLO:
 			return (
-				<div className="bg-base-200 rounded-lg p-4 space-y-2">
+				<div className="bg-base-300 rounded-lg p-4 space-y-2 text-base-content">
 					<div className="flex items-center gap-2">
 						<span className="text-2xl">👋</span>
 						<span className="font-bold text-lg">DAIA Hello</span>
@@ -16,8 +16,8 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 					<div className="divider my-1"></div>
 					<div className="text-sm space-y-1">
 						<div>
-							<span className="font-semibold">Public Key:</span>
-							<div className="font-mono text-xs bg-base-300 p-2 rounded mt-1 break-all">
+							<span className="font-semibold opacity-80">Public Key:</span>
+							<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all">
 								{message.publicKey}
 							</div>
 						</div>
@@ -34,7 +34,7 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 			}
 
 			return (
-				<div className="bg-base-200 rounded-lg p-4 space-y-2">
+				<div className="bg-base-300 rounded-lg p-4 space-y-2 text-base-content">
 					<div className="flex items-center gap-2">
 						<span className="text-2xl">📋</span>
 						<span className="font-bold text-lg">DAIA Offer</span>
@@ -43,16 +43,16 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 					<div className="text-sm space-y-2">
 						{innerContent?.naturalLanguageOfferContent && (
 							<div>
-								<span className="font-semibold">Offer:</span>
-								<div className="bg-base-300 p-2 rounded mt-1 whitespace-pre-wrap">
+								<span className="font-semibold opacity-80">Offer:</span>
+								<div className="bg-base-100 p-2 rounded mt-1 whitespace-pre-wrap">
 									{innerContent.naturalLanguageOfferContent}
 								</div>
 							</div>
 						)}
 						{innerContent?.requirements && Object.keys(innerContent.requirements).length > 0 && (
 							<div>
-								<span className="font-semibold">Requirements:</span>
-								<ul className="list-disc list-inside bg-base-300 p-2 rounded mt-1 space-y-1">
+								<span className="font-semibold opacity-80">Requirements:</span>
+								<ul className="list-disc list-inside bg-base-100 p-2 rounded mt-1 space-y-1">
 									{Object.entries(innerContent.requirements).map(([id, req]: [string, unknown]) => {
 										const requirement = req as { type: string; party?: string; amount?: number };
 										return (
@@ -85,7 +85,7 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 				}
 
 				return (
-					<div className="bg-base-200 rounded-lg p-4 space-y-2">
+					<div className="bg-base-300 rounded-lg p-4 space-y-2 text-base-content">
 						<div className="flex items-center gap-2">
 							<span className="text-2xl">✅</span>
 							<span className="font-bold text-lg text-success">Offer Accepted</span>
@@ -93,23 +93,23 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 						<div className="divider my-1"></div>
 						<div className="text-sm space-y-2">
 							<div>
-								<span className="font-semibold">Agreement Reference:</span>
-								<div className="font-mono text-xs bg-base-300 p-2 rounded mt-1 break-all">
+								<span className="font-semibold opacity-80">Agreement Reference:</span>
+								<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all">
 									{message.agreementReference}
 								</div>
 							</div>
 							{innerContent?.naturalLanguageOfferContent && (
 								<div>
-									<span className="font-semibold">Agreement:</span>
-									<div className="bg-base-300 p-2 rounded mt-1 whitespace-pre-wrap">
+									<span className="font-semibold opacity-80">Agreement:</span>
+									<div className="bg-base-100 p-2 rounded mt-1 whitespace-pre-wrap">
 										{innerContent.naturalLanguageOfferContent}
 									</div>
 								</div>
 							)}
 							{message.agreement.proofs && Object.keys(message.agreement.proofs).length > 0 && (
 								<div>
-									<span className="font-semibold">Proofs:</span>
-									<div className="bg-base-300 p-2 rounded mt-1 text-xs">
+									<span className="font-semibold opacity-80">Proofs:</span>
+									<div className="bg-base-100 p-2 rounded mt-1 text-xs">
 										{Object.keys(message.agreement.proofs).length} proof(s) provided
 									</div>
 								</div>
@@ -119,15 +119,15 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 				);
 			} else {
 				return (
-					<div className="bg-base-200 rounded-lg p-4 space-y-2">
+					<div className="bg-base-300 rounded-lg p-4 space-y-2 text-base-content">
 						<div className="flex items-center gap-2">
 							<span className="text-2xl">❌</span>
 							<span className="font-bold text-lg text-error">Offer Rejected</span>
 						</div>
 						<div className="divider my-1"></div>
 						<div className="text-sm">
-							<span className="font-semibold">Rationale:</span>
-							<div className="bg-base-300 p-2 rounded mt-1">
+							<span className="font-semibold opacity-80">Rationale:</span>
+							<div className="bg-base-100 p-2 rounded mt-1">
 								{message.rationale}
 							</div>
 						</div>
@@ -137,7 +137,7 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 
 		default:
 			return (
-				<div className="bg-base-200 rounded-lg p-4">
+				<div className="bg-base-300 rounded-lg p-4 text-base-content">
 					<span className="text-sm opacity-70">Unknown DAIA message type</span>
 				</div>
 			);

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { PrivateKey } from "@d4ia/blockchain-bridge";
-import { CarConfigFormData } from "../types";
+import { GateConfigFormData } from "./types";
 
-interface CarConfigFormProps {
-	initialData?: CarConfigFormData;
-	onSubmit: (data: CarConfigFormData) => void;
+interface GateConfigFormProps {
+	initialData?: GateConfigFormData;
+	onSubmit: (data: GateConfigFormData) => void;
 	submitButtonText?: string;
 }
 
-export const CarConfigForm = ({ initialData, onSubmit, submitButtonText }: CarConfigFormProps) => {
+export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: GateConfigFormProps) => {
 	const [privateKeyWif, setPrivateKeyWif] = useState(initialData?.privateKeyWif || "");
-	const [negotiatingPrompt, setNegotiatingPrompt] = useState(initialData?.negotiatingPrompt || "");
-	const [consideringPrompt, setConsideringPrompt] = useState(initialData?.consideringPrompt || "");
+	const [coveringPrompt, setCoveringPrompt] = useState(initialData?.coveringPrompt || "");
+	const [offersPrompt, setOffersPrompt] = useState(initialData?.offersPrompt || "");
 	const [privateKeyError, setPrivateKeyError] = useState("");
 	const [testnetAddress, setTestnetAddress] = useState("");
 
@@ -50,18 +50,18 @@ export const CarConfigForm = ({ initialData, onSubmit, submitButtonText }: CarCo
 			return;
 		}
 
-		if (!negotiatingPrompt.trim()) {
+		if (!coveringPrompt.trim()) {
 			return;
 		}
 
-		if (!consideringPrompt.trim()) {
+		if (!offersPrompt.trim()) {
 			return;
 		}
 
 		onSubmit({
 			privateKeyWif,
-			negotiatingPrompt,
-			consideringPrompt,
+			coveringPrompt,
+			offersPrompt,
 		});
 	};
 
@@ -75,7 +75,7 @@ export const CarConfigForm = ({ initialData, onSubmit, submitButtonText }: CarCo
 		<div className="card bg-base-100 shadow-2xl max-w-3xl mx-auto">
 			<div className="card-body p-8">
 				<h2 className="card-title text-3xl mb-6 text-primary">
-					Car Configuration
+					Gate Configuration
 				</h2>
 				<form onSubmit={handleSubmit} className="space-y-6">
 					{/* Private Key Field */}
@@ -116,50 +116,39 @@ export const CarConfigForm = ({ initialData, onSubmit, submitButtonText }: CarCo
 								</code>
 							</div>
 						</div>
-						
-						{/* Faucet info - always shown */}
-						<div className="alert alert-info mt-3">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-							</svg>
-							<div className="text-sm">
-								<p className="font-semibold">Get test BSV coins:</p>
-								<p>Visit the <a href="https://faucet.bsvblockchain.org/" target="_blank" rel="noopener noreferrer" className="link link-primary underline">BSV Testnet Faucet</a> and send test coins to the address above.</p>
-							</div>
-						</div>
 					</div>
 
-					{/* Negotiating Prompt Field */}
+					{/* Covering Prompt Field */}
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text font-semibold">Negotiating Prompt</span>
+							<span className="label-text font-semibold">Covering Prompt</span>
 						</label>
 						<textarea
-							placeholder="Enter the prompt used to negotiate with gate"
+							placeholder="Enter the covering prompt"
 							className="textarea textarea-bordered h-24 w-full"
-							value={negotiatingPrompt}
-							onChange={(e) => setNegotiatingPrompt(e.target.value)}
+							value={coveringPrompt}
+							onChange={(e) => setCoveringPrompt(e.target.value)}
 							required
 						/>
 						<label className="label">
-							<span className="label-text-alt">Prompt used when negotiating with the gate</span>
+							<span className="label-text-alt">Prompt used for covering</span>
 						</label>
 					</div>
 
-					{/* Considering Prompt Field */}
+					{/* Offers Prompt Field */}
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text font-semibold">Considering Prompt</span>
+							<span className="label-text font-semibold">Offers Prompt</span>
 						</label>
 						<textarea
-							placeholder="Enter the prompt used to consider gate's offers"
+							placeholder="Enter the prompt for generating offers for entering the parking"
 							className="textarea textarea-bordered h-24 w-full"
-							value={consideringPrompt}
-							onChange={(e) => setConsideringPrompt(e.target.value)}
+							value={offersPrompt}
+							onChange={(e) => setOffersPrompt(e.target.value)}
 							required
 						/>
 						<label className="label">
-							<span className="label-text-alt">Prompt used when considering gate offers</span>
+							<span className="label-text-alt">Prompt used for generating offers for entering the parking</span>
 						</label>
 					</div>
 
