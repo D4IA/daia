@@ -1,75 +1,85 @@
-import { useState } from "react";
-import { PrivateKey } from "@d4ia/blockchain-bridge";
-import { GateConfigFormData } from "./types";
+import { PrivateKey } from "@d4ia/blockchain-bridge"
+import { useState } from "react"
+import { GateConfigFormData } from "./types"
 
 interface GateConfigFormProps {
-	initialData?: GateConfigFormData;
-	onSubmit: (data: GateConfigFormData) => void;
-	submitButtonText?: string;
+	initialData?: GateConfigFormData
+	onSubmit: (data: GateConfigFormData) => void
+	submitButtonText?: string
 }
 
-export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: GateConfigFormProps) => {
-	const [privateKeyWif, setPrivateKeyWif] = useState(initialData?.privateKeyWif || "");
-	const [coveringPrompt, setCoveringPrompt] = useState(initialData?.coveringPrompt || "");
-	const [offersPrompt, setOffersPrompt] = useState(initialData?.offersPrompt || "");
-	const [privateKeyError, setPrivateKeyError] = useState("");
-	const [testnetAddress, setTestnetAddress] = useState("");
+export const GateConfigForm = ({
+	initialData,
+	onSubmit,
+	submitButtonText,
+}: GateConfigFormProps) => {
+	const [privateKeyWif, setPrivateKeyWif] = useState(
+		initialData?.privateKeyWif || "",
+	)
+	const [coveringPrompt, setCoveringPrompt] = useState(
+		initialData?.coveringPrompt || "",
+	)
+	const [offersPrompt, setOffersPrompt] = useState(
+		initialData?.offersPrompt || "",
+	)
+	const [privateKeyError, setPrivateKeyError] = useState("")
+	const [testnetAddress, setTestnetAddress] = useState("")
 
 	const validatePrivateKey = (wif: string): boolean => {
 		if (!wif.trim()) {
-			setPrivateKeyError("Private key is required");
-			setTestnetAddress("");
-			return false;
+			setPrivateKeyError("Private key is required")
+			setTestnetAddress("")
+			return false
 		}
 
 		try {
-			const privateKey = PrivateKey.fromWif(wif);
-			const publicKey = privateKey.toPublicKey();
-			const address = publicKey.toAddress("testnet");
-			setPrivateKeyError("");
-			setTestnetAddress(address);
-			return true;
+			const privateKey = PrivateKey.fromWif(wif)
+			const publicKey = privateKey.toPublicKey()
+			const address = publicKey.toAddress("testnet")
+			setPrivateKeyError("")
+			setTestnetAddress(address)
+			return true
 		} catch {
-			setPrivateKeyError("Invalid WIF format");
-			setTestnetAddress("");
-			return false;
+			setPrivateKeyError("Invalid WIF format")
+			setTestnetAddress("")
+			return false
 		}
-	};
+	}
 
 	const generateNewKey = () => {
-		const newPrivateKey = PrivateKey.fromRandom();
-		const wif = newPrivateKey.toWif();
-		setPrivateKeyWif(wif);
-		validatePrivateKey(wif);
-	};
+		const newPrivateKey = PrivateKey.fromRandom()
+		const wif = newPrivateKey.toWif()
+		setPrivateKeyWif(wif)
+		validatePrivateKey(wif)
+	}
 
 	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
+		e.preventDefault()
 
 		if (!validatePrivateKey(privateKeyWif)) {
-			return;
+			return
 		}
 
 		if (!coveringPrompt.trim()) {
-			return;
+			return
 		}
 
 		if (!offersPrompt.trim()) {
-			return;
+			return
 		}
 
 		onSubmit({
 			privateKeyWif,
 			coveringPrompt,
 			offersPrompt,
-		});
-	};
+		})
+	}
 
 	const handlePrivateKeyBlur = () => {
 		if (privateKeyWif.trim()) {
-			validatePrivateKey(privateKeyWif);
+			validatePrivateKey(privateKeyWif)
 		}
-	};
+	}
 
 	return (
 		<div className="card bg-base-100 shadow-2xl max-w-3xl mx-auto">
@@ -81,7 +91,9 @@ export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: Gate
 					{/* Private Key Field */}
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text font-semibold">Private Key (WIF Format)</span>
+							<span className="label-text font-semibold">
+								Private Key (WIF Format)
+							</span>
 						</label>
 						<div className="join w-full">
 							<input
@@ -89,7 +101,9 @@ export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: Gate
 								placeholder="Enter private key in WIF format"
 								className={`input input-bordered join-item flex-1 ${privateKeyError ? "input-error" : ""}`}
 								value={privateKeyWif}
-								onChange={(e) => setPrivateKeyWif(e.target.value)}
+								onChange={(e) =>
+									setPrivateKeyWif(e.target.value)
+								}
 								onBlur={handlePrivateKeyBlur}
 								required
 							/>
@@ -103,16 +117,23 @@ export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: Gate
 						</div>
 						{privateKeyError && (
 							<label className="label">
-								<span className="label-text-alt text-error">{privateKeyError}</span>
+								<span className="label-text-alt text-error">
+									{privateKeyError}
+								</span>
 							</label>
 						)}
-						
+
 						{/* Testnet address - always shown */}
-						<div className={`mt-3 p-4 bg-base-200 rounded-lg ${!testnetAddress ? 'opacity-50' : ''}`}>
+						<div
+							className={`mt-3 p-4 bg-base-200 rounded-lg ${!testnetAddress ? "opacity-50" : ""}`}
+						>
 							<div className="flex items-start gap-2">
-								<span className="text-sm font-semibold text-secondary">Testnet Address:</span>
+								<span className="text-sm font-semibold text-secondary">
+									Testnet Address:
+								</span>
 								<code className="text-sm flex-1 break-all">
-									{testnetAddress || 'Enter or generate a valid private key to see address'}
+									{testnetAddress ||
+										"Enter or generate a valid private key to see address"}
 								</code>
 							</div>
 						</div>
@@ -121,7 +142,9 @@ export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: Gate
 					{/* Covering Prompt Field */}
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text font-semibold">Covering Prompt</span>
+							<span className="label-text font-semibold">
+								Covering Prompt
+							</span>
 						</label>
 						<textarea
 							placeholder="Enter the covering prompt"
@@ -131,14 +154,18 @@ export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: Gate
 							required
 						/>
 						<label className="label">
-							<span className="label-text-alt">Prompt used for covering</span>
+							<span className="label-text-alt">
+								Prompt used for covering
+							</span>
 						</label>
 					</div>
 
 					{/* Offers Prompt Field */}
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text font-semibold">Offers Prompt</span>
+							<span className="label-text font-semibold">
+								Offers Prompt
+							</span>
 						</label>
 						<textarea
 							placeholder="Enter the prompt for generating offers for entering the parking"
@@ -148,13 +175,19 @@ export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: Gate
 							required
 						/>
 						<label className="label">
-							<span className="label-text-alt">Prompt used for generating offers for entering the parking</span>
+							<span className="label-text-alt">
+								Prompt used for generating offers for entering
+								the parking
+							</span>
 						</label>
 					</div>
 
 					{/* Submit Button */}
 					<div className="card-actions justify-end mt-8">
-						<button type="submit" className="btn btn-primary btn-lg gap-2">
+						<button
+							type="submit"
+							className="btn btn-primary btn-lg gap-2"
+						>
 							<span>✓</span>
 							{submitButtonText || "Submit Configuration"}
 						</button>
@@ -162,5 +195,5 @@ export const GateConfigForm = ({ initialData, onSubmit, submitButtonText }: Gate
 				</form>
 			</div>
 		</div>
-	);
-};
+	)
+}

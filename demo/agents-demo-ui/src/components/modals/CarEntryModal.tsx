@@ -1,31 +1,71 @@
+import { CarConfiguration } from "@d4ia/agents-demos"
+import { PrivateKey } from "@d4ia/blockchain-bridge"
+import { useContext } from "react"
+import { ParkingSimulationContext } from "../../context/ParkingSimulationContext"
+import { CarConfigForm } from "../forms/CarConfigForm"
+import { CarConfigFormData } from "../forms/types"
+
 export interface CarEntryModalProps {
-	isOpen: boolean;
-	onSubmit: (carConfig: {
-		licensePlate: string;
-		color: string;
-		negotiationPrompt?: string;
-		offerConsiderationPrompt?: string;
-	}) => void;
-	onClose?: () => void;
-	closable?: boolean;
+	isOpen: boolean
+	onClose?: () => void
+	closable?: boolean
 }
 
-export const CarEntryModal = ({ isOpen, onClose, closable = false }: CarEntryModalProps) => {
+export const CarEntryModal = ({
+	isOpen,
+	onClose,
+	closable = false,
+}: CarEntryModalProps) => {
+	const context = useContext(ParkingSimulationContext)
+	if (!context) {
+		throw new Error(
+			"CarEntryModal must be used within ParkingSimulationContextProvider",
+		)
+	}
+
 	const handleClose = () => {
 		if (closable && onClose) {
-			onClose();
+			onClose()
 		}
-	};
+	}
 
-	if (!isOpen) return null;
+	const handleCarConfigSubmit = async (data: CarConfigFormData) => {
+		try {
+			const carConfiguration: CarConfiguration = {
+				licensePlate: data.licensePlate,
+				privateKey: PrivateKey.fromWif(data.privateKeyWif),
+				negotiationPrompt: data.negotiatingPrompt,
+				negotiationModel: "gpt-4o-mini",
+				offerConsiderationPrompt: data.consideringPrompt,
+				offerConsiderationModel: "gpt-4o-mini",
+			}
+
+			context.environment.addCar(carConfiguration)
+
+			context.refreshDisplayData()
+
+			if (onClose) {
+				onClose()
+			}
+		} catch (error) {
+			alert(
+				`Failed to add car: ${error instanceof Error ? error.message : "Unknown error"}`,
+			)
+		}
+	}
+
+	if (!isOpen) return null
 
 	return (
 		<div className="modal modal-open">
-			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8">
+			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8 overflow-y-auto">
 				<div className="flex justify-between items-center mb-6">
-					<h3 className="font-bold text-2xl">Car Entry</h3>
+					<h3 className="font-bold text-2xl">Configure New Car</h3>
 					{closable && onClose && (
-						<button className="btn btn-circle btn-ghost" onClick={handleClose}>
+						<button
+							className="btn btn-circle btn-ghost"
+							onClick={handleClose}
+						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								className="h-6 w-6"
@@ -43,15 +83,18 @@ export const CarEntryModal = ({ isOpen, onClose, closable = false }: CarEntryMod
 						</button>
 					)}
 				</div>
-				
-				<div className="flex items-center justify-center h-full">
-					<div className="text-center">
-						<div className="text-6xl mb-4">🚧</div>
-						<h2 className="text-3xl font-bold">Not Implemented Yet</h2>
-					</div>
-				</div>
+
+				<CarConfigForm
+					onSubmit={handleCarConfigSubmit}
+					submitButtonText="Create Car"
+				/>
 			</div>
-			{closable && <div className="modal-backdrop bg-black/50" onClick={handleClose}></div>}
+			{closable && (
+				<div
+					className="modal-backdrop bg-black/50"
+					onClick={handleClose}
+				></div>
+			)}
 		</div>
-	);
-};
+	)
+}

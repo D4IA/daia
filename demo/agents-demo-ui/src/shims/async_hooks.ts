@@ -3,41 +3,41 @@
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class AsyncLocalStorage<T = any> {
-	private store: T | undefined;
+	private store: T | undefined
 
 	getStore(): T | undefined {
-		return this.store;
+		return this.store
 	}
 
 	run<R>(store: T, callback: () => R): R {
-		const previousStore = this.store;
-		this.store = store;
+		const previousStore = this.store
+		this.store = store
 		try {
-			return callback();
+			return callback()
 		} finally {
-			this.store = previousStore;
+			this.store = previousStore
 		}
 	}
 
 	exit<R>(callback: () => R): R {
-		const previousStore = this.store;
-		this.store = undefined;
+		const previousStore = this.store
+		this.store = undefined
 		try {
-			return callback();
+			return callback()
 		} finally {
-			this.store = previousStore;
+			this.store = previousStore
 		}
 	}
 
 	enterWith(store: T): void {
-		this.store = store;
+		this.store = store
 	}
 
 	disable(): void {
-		this.store = undefined;
+		this.store = undefined
 	}
 }
 
 export default {
 	AsyncLocalStorage,
-};
+}
