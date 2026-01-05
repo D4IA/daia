@@ -1,6 +1,5 @@
 import "dotenv/config"; // MUST be first - loads .env before other imports
 import express from "express";
-import { addressHistoryRouter } from "./routes/addressHistory.router";
 import { daiaTransactionRouter } from "./routes/daiaTransaction.router";
 import "./services/db.service"; // Initialize database
 
@@ -29,7 +28,6 @@ app.get("/", (_, res) => {
   });
 });
 
-app.use(addressHistoryRouter);
 app.use(daiaTransactionRouter);
 
 const PORT = process.env.PORT ?? 3000;

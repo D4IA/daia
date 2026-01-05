@@ -1,7 +1,7 @@
 import { transactionFetcher } from "./transactionFetcher.service";
 import { DaiaInnerOfferContentSchema, DaiaTransactionDataSchema, DaiaTransactionDataType } from "@d4ia/core";
 import db from './db.service';
-import { transactionService } from "./transaction.service";
+import { WHATSONCHAIN_API } from "../constants/externalApi.const";
 
 
 export interface DaiaTransaction {
@@ -22,110 +22,106 @@ export interface DaiaTransaction {
 
 export class DaiaTransactionService {
   /**
-   * Fetches transaction history with caching (Incremental Sync).
+   * Fetches DAIA transaction history with caching.
    * 
-   * Strategy:
-   * 1. Fetch pages from blockchain (newest to oldest).
-   * 2. Filter for DAIA transactions.
-   * 3. If a DAIA tx is found in cache:
-   *    - We know we have synced up to this point.
-   *    - We can link the previous (newer) tx to this one.
-   *    - We can stop fetching from blockchain and serve the rest from DB.
-   * 4. If not in cache:
-   *    - Save to DB.
-   *    - Link previous (newer) tx to this one.
-   *    - Continue fetching.
+   * Strategy: "Sync to depth with txId classification cache"
+   * 1. Fetch tx hashes (limit=1000)
+   * 2. For each txId, check classification cache:
+   *    - is_daia = true → count as DAIA (data already in daia_transactions)
+   *    - is_daia = false → skip
+   *    - unknown → fetch full tx, classify, save to both caches
+   * 3. Continue until daiaCount >= offset + limit
+   * 4. Serve from cache using SQL
    */
   async getDaiaHistory(address: string, offset: number, limit: number) {
-    let currentOffset = 0;
-    let hasMore = true;
+    const needed = offset + limit;
+    let daiaCount = 0;
+    let pageToken: string | undefined;
 
-    // Keep track of the last processed DAIA tx to update its 'next' pointer
-    let previousDaiaTxId: string | null = null;
-
-    // We need to sync enough to cover the requested offset + limit
-    // OR until we hit the cache (and then we can query DB).
-    // But since we don't have a simple "get all from DB" without traversing the list,
-    // we might as well traverse.
-
-    // Optimization: If offset is 0, we are at the head.
-    // If offset > 0, we might need to traverse from head or use a DB query with offset if we trust the cache is contiguous.
-    // For now, let's assume we sync first, then query.
-
-    let hitCache = false;
-
-    while (hasMore) {
-      // 1. Fetch raw history page
-      // We use a small internal limit for syncing, or match the requested limit?
-      // Matching requested limit is safer for pagination alignment.
-      const fetchLimit = 50;
-      const history = await transactionService.getPaginatedHistory(
-        address,
-        currentOffset,
-        fetchLimit
-      );
-
-      if (history.transactions.length === 0) {
-        hasMore = false;
+    while (daiaCount < needed) {
+      // 1. Fetch tx hashes (limit=1000)
+      const page = await transactionFetcher.fetchTransactionHashes(address, { limit: 1000, pageToken });
+      
+      if (!page || page.result.length === 0) {
+        console.log("No more transaction hashes available");
         break;
       }
 
-      for (const tx of history.transactions) {
-        // 2. Check if it's a DAIA tx
-        const daiaData = this.extractDaiaData(tx);
-        if (!daiaData) continue;
+      console.log(`Fetched ${page.result.length} tx hashes, processing...`);
 
-        // 3. Check Cache
-        const cached = this.getFromCache(daiaData.txId);
-
-        if (cached) {
-          console.log("HIT CACHE FOR DAIA")
-          // HIT CACHE!
-          // Link previous (newer) tx to this one
-          if (previousDaiaTxId) {
-            this.updateNextPointer(previousDaiaTxId, daiaData.txId);
-          }
-
-          hitCache = true;
-          hasMore = false; // Stop fetching from blockchain
-          break;
-        } else {
-          console.log("NOT IN CACHE FOR DAIA")
-          // NOT IN CACHE
-          // Save to DB
-          this.saveToCache(daiaData, address);
-
-          // Link previous (newer) tx to this one
-          if (previousDaiaTxId) {
-            this.updateNextPointer(previousDaiaTxId, daiaData.txId);
-          }
-
-          previousDaiaTxId = daiaData.txId;
+      // 2. Partition: known vs unknown
+      const unknown: string[] = [];
+      
+      for (const { tx_hash } of page.result) {
+        const classification = this.getClassification(tx_hash);
+        
+        if (classification === null) {
+          // Unknown - need to fetch and classify
+          unknown.push(tx_hash);
+        } else if (classification === true) {
+          // Known DAIA transaction
+          daiaCount++;
         }
+        // classification === false → skip, don't count
       }
 
-      if (hitCache) break;
+      console.log(`Known DAIA so far: ${daiaCount}, Unknown to fetch: ${unknown.length}`);
 
-      if (!history.hasMore) {
-        hasMore = false;
-      } else {
-        currentOffset += fetchLimit;
+      // 3. Bulk fetch unknown transactions
+      if (unknown.length > 0) {
+        const newDaiaCount = await this.fetchAndClassifyTransactions(unknown, address);
+        daiaCount += newDaiaCount;
+        console.log(`Classified ${unknown.length} txs, found ${newDaiaCount} new DAIA. Total DAIA: ${daiaCount}`);
+      }
+
+      // Check if we have enough
+      if (daiaCount >= needed) {
+        console.log(`Reached needed count (${needed}), stopping sync`);
+        break;
+      }
+
+      // Check for more pages
+      if (!page.nextPageToken) {
+        console.log("No more pages available");
+        break;
+      }
+
+      pageToken = page.nextPageToken;
+    }
+
+    // 4. Serve from cache
+    return this.queryCache(address, offset, limit);
+  }
+
+  /**
+   * Fetches and classifies transactions in bulk.
+   * Returns the count of new DAIA transactions found.
+   */
+  private async fetchAndClassifyTransactions(txIds: string[], address: string): Promise<number> {
+    let newDaiaCount = 0;
+    const BULK_LIMIT = WHATSONCHAIN_API.BULK_TX_LIMIT;
+
+    // Fetch in chunks to respect API limits
+    for (let i = 0; i < txIds.length; i += BULK_LIMIT) {
+      const chunk = txIds.slice(i, i + BULK_LIMIT);
+      const transactions = await transactionFetcher.fetchBulkTransactionDetails(chunk);
+
+      for (const tx of transactions) {
+        const daiaData = this.extractDaiaData(tx);
+        const isDaia = daiaData !== null;
+
+        // Save classification
+        this.saveClassification(tx.txid, isDaia);
+
+        if (isDaia) {
+          // Save DAIA transaction data
+          this.saveDaiaTransaction(daiaData, address);
+          newDaiaCount++;
+        }
       }
     }
 
-    // Now that we (partially) synced, let's fetch the requested page.
-    // Since we have a linked list in DB, we can't easily use SQL OFFSET/LIMIT unless we assume strict ordering by created_at or similar.
-    // But 'created_at' might not be reliable for blockchain time.
-    // Ideally we traverse the linked list from the head (which we don't explicitly store, but we can query by address and sort by something?)
-    // Or we just query by address and sort by timestamp desc (if we trust timestamps).
-    // The linked list is useful for *syncing* integrity, but for *querying* a page, standard SQL is faster if we have the data.
-
-    // Let's use standard SQL query on the cache table for serving the response.
-    // We assume the sync process above populated the necessary range.
-    // Warning: If we hit cache early (e.g. at tx #5), but user asked for offset 100, we might not have synced enough if the cache was sparse/broken.
-    // But the assumption is: if we hit cache, the REST of the chain is there.
-
-    return this.queryCache(address, offset, limit);
+    return newDaiaCount;
   }
 
   /**
@@ -134,6 +130,10 @@ export class DaiaTransactionService {
    * @returns DaiaTransaction object or null if not found or not a DAIA transaction
    */
   async getTransactionById(txId: string): Promise<DaiaTransaction | null> {
+    // Check cache first
+    const cached = this.getDaiaTransactionFromCache(txId);
+    if (cached) return cached;
+
     // Fetch the transaction from the blockchain
     const tx = await transactionFetcher.fetchTransactionById(txId);
 
@@ -147,24 +147,39 @@ export class DaiaTransactionService {
     return daiaData;
   }
 
-  private getFromCache(txId: string): DaiaTransaction | null {
+  // ==================== Classification Cache ====================
+
+  private getClassification(txId: string): boolean | null {
+    const stmt = db.prepare("SELECT is_daia FROM tx_classification WHERE tx_id = ?");
+    const row = stmt.get(txId) as { is_daia: number } | undefined;
+    
+    if (!row) return null;
+    return row.is_daia === 1;
+  }
+
+  private saveClassification(txId: string, isDaia: boolean): void {
+    const stmt = db.prepare(`
+      INSERT OR REPLACE INTO tx_classification (tx_id, is_daia, checked_at)
+      VALUES (?, ?, ?)
+    `);
+    stmt.run(txId, isDaia ? 1 : 0, Date.now());
+  }
+
+  // ==================== DAIA Transaction Cache ====================
+
+  private getDaiaTransactionFromCache(txId: string): DaiaTransaction | null {
     const stmt = db.prepare("SELECT data FROM daia_transactions WHERE tx_id = ?");
     const row = stmt.get(txId) as { data: string } | undefined;
     if (!row) return null;
     return JSON.parse(row.data);
   }
 
-  private saveToCache(tx: DaiaTransaction, address: string) {
+  private saveDaiaTransaction(tx: DaiaTransaction, address: string): void {
     const stmt = db.prepare(`
       INSERT OR REPLACE INTO daia_transactions (tx_id, address, data, timestamp, created_at)
       VALUES (?, ?, ?, ?, ?)
     `);
     stmt.run(tx.txId, address, JSON.stringify(tx), tx.timestamp, Date.now());
-  }
-
-  private updateNextPointer(currentTxId: string, nextTxId: string) {
-    const stmt = db.prepare("UPDATE daia_transactions SET next_tx_id = ? WHERE tx_id = ?");
-    stmt.run(nextTxId, currentTxId);
   }
 
   private queryCache(address: string, offset: number, limit: number) {
@@ -236,9 +251,13 @@ export class DaiaTransactionService {
       offset,
       limit,
       hasMore,
-      transactions: paginatedTransactions
+      transactions: paginatedTransactions,
+      amount: paginatedTransactions.length,
+      total
     };
   }
+
+  // ==================== DAIA Data Extraction ====================
 
   /**
    * Extracts and validates DAIA data from a transaction.

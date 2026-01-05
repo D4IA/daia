@@ -37,12 +37,17 @@ db.exec(`
     tx_id TEXT PRIMARY KEY,
     address TEXT NOT NULL,
     data TEXT NOT NULL,
-    next_tx_id TEXT,
     timestamp INTEGER NOT NULL,
     created_at INTEGER NOT NULL
   );
 
   CREATE INDEX IF NOT EXISTS idx_daia_address ON daia_transactions(address);
+
+  CREATE TABLE IF NOT EXISTS tx_classification (
+    tx_id TEXT PRIMARY KEY,
+    is_daia INTEGER NOT NULL,
+    checked_at INTEGER NOT NULL
+  );
 `);
 
 console.log('✅ Database initialized:', DB_PATH);

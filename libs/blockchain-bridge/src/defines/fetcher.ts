@@ -89,12 +89,12 @@ export interface BlockchainTransactionFetcher {
 	/**
 	 * Fetches a page of transaction hashes for a given address.
 	 * @param address Wallet address
-	 * @param pageToken Optional token for pagination
+	 * @param params Optional pagination parameters (limit, pageToken)
 	 * @returns Page of transaction hashes with optional next page token
 	 */
 	fetchTransactionHashes(
 		address: string,
-		pageToken?: string,
+		params?: { limit?: number; pageToken?: string },
 	): Promise<TransactionHashPage | null>;
 
 	/**

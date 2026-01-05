@@ -10,6 +10,8 @@ export interface PaginatedHistoryResponse {
   transactions: any[];
 }
 
+const ADDRESS_TRANSACTION_HASHES_PER_PAGE = 1_000
+
 export class TransactionService {
   /**
    * Retrieves paginated confirmed transaction history.
@@ -92,7 +94,9 @@ export class TransactionService {
 
   private async fetchFirstPage(address: string): Promise<CachedPage | undefined> {
     console.log(`Fetching first page for ${address} (fresh)`);
-    const response = await transactionFetcher.fetchTransactionHashes(address, undefined);
+    const response = await transactionFetcher.fetchTransactionHashes(address, {
+      limit: ADDRESS_TRANSACTION_HASHES_PER_PAGE
+    });
 
     if (!response) {
       console.log("No response from first page");
@@ -136,7 +140,16 @@ export class TransactionService {
 
     // Fetch from API
     console.log(`Fetching page ${pageNumber} with token`);
-    const response = await transactionFetcher.fetchTransactionHashes(address, currentToken);
+
+    const params: Parameters<typeof transactionFetcher.fetchTransactionHashes>[1] = {
+      limit: ADDRESS_TRANSACTION_HASHES_PER_PAGE
+    }
+
+    if (currentToken) {
+      params.pageToken = currentToken;
+    }
+
+    const response = await transactionFetcher.fetchTransactionHashes(address, params);
 
     if (!response) {
       console.log(`No response for page ${pageNumber}`);

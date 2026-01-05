@@ -47,12 +47,15 @@ export class WhatsOnChainEndpoints {
 
 	getConfirmedTransactionsByAddress(
 		address: string,
-		pageToken?: string,
+		params?: { limit?: number; pageToken?: string },
 	): string {
-		let url = `${this.baseUrl}/address/${address}/confirmed/history`;
-		if (pageToken) {
-			url += `?token=${encodeURIComponent(pageToken)}`;
+		const url = new URL(`${this.baseUrl}/address/${address}/confirmed/history`);
+		if (params?.limit) {
+			url.searchParams.set("limit", params.limit.toString());
 		}
-		return url;
+		if (params?.pageToken) {
+			url.searchParams.set("token", params.pageToken);
+		}
+		return url.toString();
 	}
 }

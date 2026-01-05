@@ -67,10 +67,10 @@ export class WhatsOnChainTransactionFetcher
 
 	async fetchTransactionHashes(
 		address: string,
-		pageToken?: string,
+		params?: { limit?: number; pageToken?: string },
 	): Promise<TransactionHashPage | null> {
 		return this.fetchJson<TransactionHashPage>(
-			this.endpoints.getConfirmedTransactionsByAddress(address, pageToken),
+			this.endpoints.getConfirmedTransactionsByAddress(address, params),
 		);
 	}
 
@@ -109,7 +109,7 @@ export class WhatsOnChainTransactionFetcher
 		let pageCount = 1;
 
 		while (true) {
-			const page = await this.fetchTransactionHashes(address, pageToken);
+			const page = await this.fetchTransactionHashes(address, pageToken ? { pageToken } : undefined);
 
 			if (!page) return [];
 
