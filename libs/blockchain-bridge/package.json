@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/blockchain.es.js",
       "require": "./dist/blockchain.cjs.js"
     }

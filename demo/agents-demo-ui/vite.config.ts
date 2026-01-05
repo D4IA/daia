@@ -49,6 +49,7 @@ export default defineConfig({
 		alias: {
 			"@": resolve(__dirname, "src"),
 			'@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
+			'node:async_hooks': resolve(__dirname, 'src/shims/async_hooks.ts'),
 		}
 	},
 	optimizeDeps: {

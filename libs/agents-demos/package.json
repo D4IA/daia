@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/agents-demos.es.js",
       "require": "./dist/agents-demos.cjs.js"
     }
@@ -18,7 +19,7 @@
   ],
   "private": true,
   "scripts": {
-    "build": "vite build",
+    "build": "rimraf dist && vite build",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test-watch": "vitest",

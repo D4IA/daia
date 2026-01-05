@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import AgreementHeader from "../components/AgreementHeader/AgreementHeader";
 import AgreementDetailsContainer from "../components/AgreementDetailsContainer/AgreementDetailsContainer";
 
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "/api";
 
 const AgreementDetailsPage: React.FC = () => {
   const { t, i18n } = useTranslation();

@@ -41,7 +41,7 @@ interface ApiResponse {
 }
 
 const ITEMS_PER_PAGE = 8;
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "/api";
 
 const AgreementsListView: React.FC<AgreementsListViewProps> = ({
   onSearch,
