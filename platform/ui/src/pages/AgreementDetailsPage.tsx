@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { generateAgreementPDF } from "../services/pdfGenerator";
 import { useTranslation } from "react-i18next";
 import AgreementHeader from "../components/AgreementHeader/AgreementHeader";
@@ -7,55 +7,73 @@ import AgreementDetailsContainer from "../components/AgreementDetailsContainer/A
 
 const API_BASE_URL = "http://localhost:3000";
 
-interface ApiTransaction {
-  txId: string;
-  timestamp: number;
-  agreements: any[];
-}
-
 const AgreementDetailsPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { txId } = useParams();
-  const [transactionData, setTransactionData] = useState<ApiTransaction | null>(
-    null
-  );
+  const location = useLocation();
+
+  // Odczytaj walletAddress z navigation state
+  const walletAddress = (location.state as any)?.walletAddress || null;
+
+  const [offerContent, setOfferContent] = useState("");
+  const [requirementsArray, setRequirementsArray] = useState<any[]>([]);
+  const [proofsArray, setProofsArray] = useState<any[]>([]);
+  const [timestamp, setTimestamp] = useState<number>(0);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTransactionDetails = async () => {
-      if (!txId) {
-        setLoading(false);
-        setError(t("details_view.err_missing_params"));
-        return;
-      }
-
+      if (!txId) return;
       setLoading(true);
       setError(null);
 
       try {
-        const apiUrl = `${API_BASE_URL}/agreements/tx/${txId}`;
-        const response = await fetch(apiUrl);
+        const response = await fetch(`${API_BASE_URL}/agreements/tx/${txId}`);
+        if (!response.ok) throw new Error(t("details_view.err_tx_not_found"));
 
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error(t("details_view.err_tx_not_found"));
+        const data = await response.json();
+        console.log("DANE Z API (RAW):", data);
+
+        const agreementObj =
+          data.agreement ||
+          (data.agreements ? data.agreements[0]?.agreement : null) ||
+          {};
+        console.log("WYEKSTRAHOWANY OBIEKT AGREEMENT:", agreementObj);
+
+        let content = agreementObj.naturalLanguageOfferContent || "";
+
+        if (!content && agreementObj.offerContentSerialized) {
+          try {
+            const parsed = JSON.parse(agreementObj.offerContentSerialized);
+            content = parsed.naturalLanguageOfferContent || "";
+          } catch (e) {
+            console.error("Błąd parsowania serialized content", e);
           }
-          throw new Error(
-            `Failed to fetch transaction (Status: ${response.status})`
-          );
         }
+        setOfferContent(content || t("details_view.msg_content_unavailable"));
 
-        const data: ApiTransaction = await response.json();
+        const rawReqs = agreementObj.requirements || {};
+        const allRequirements = Object.entries(rawReqs).map(([uuid, req]) => ({
+          uuid,
+          ...req,
+        }));
+        console.log("WSZYSTKIE REQUIREMENTS:", allRequirements);
+        setRequirementsArray(allRequirements);
 
-        if (data && data.txId === txId) {
-          setTransactionData(data);
-        } else {
-          setError(t("details_view.err_tx_not_found"));
-        }
+        const rawProofs = agreementObj.proofs || {};
+        const allProofs = Object.entries(rawProofs).map(([uuid, proof]) => ({
+          uuid,
+          ...proof,
+        }));
+        console.log("WSZYSTKIE PROOFS:", allProofs);
+        setProofsArray(allProofs);
+
+        setTimestamp(data.timestamp || 0);
       } catch (err: any) {
-        console.error(err);
-        setError(err.message || t("details_view.err_failed_load"));
+        console.error("Błąd fetch:", err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -64,118 +82,64 @@ const AgreementDetailsPage: React.FC = () => {
     fetchTransactionDetails();
   }, [txId, t]);
 
-  const handleGenerateReport = () => {
-    if (!transactionData) return;
+  const dateStr = timestamp
+    ? new Date(timestamp * 1000).toLocaleString(i18n.language, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
+    : "";
 
-    const pdfData = {
-      txId: transactionData.txId,
-      description: offerContent,
-      publishedDate: dateStr,
-      requirements: {
-        type: (requirementsData as any)?.req_signature?.type || "N/A",
-        pubKey: (requirementsData as any)?.req_signature?.pubKey || "N/A",
-        offererNonce:
-          (requirementsData as any)?.req_signature?.offererNonce || "N/A",
-      },
-      proofs: proofsData
-        ? {
-            type: proofsData.req_signature?.type || proofsData.type || "N/A",
-            signeeNonce: proofsData.req_signature?.signeeNonce || "N/A",
-            signature:
-              proofsData.req_signature?.signature ||
-              proofsData.signature ||
-              "N/A",
-          }
-        : null,
-    };
-
-    generateAgreementPDF(pdfData);
-  };
-
-  if (loading) {
+  if (loading)
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl font-semibold text-gray-600">
-          {t("details_view.msg_loading")}
-        </div>
+        {t("details_view.msg_loading")}
       </div>
     );
-  }
-
-  if (error || !transactionData) {
+  if (error)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <div className="text-xl font-semibold text-red-500">
+        <div className="text-red-500">
           {t("details_view.msg_error")} {error}
         </div>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          className="px-4 py-2 bg-blue-600 text-white rounded"
         >
           {t("details_view.btn_try_again")}
         </button>
       </div>
     );
-  }
 
-  const agreements = transactionData.agreements;
-  const lastAgreement = agreements[agreements.length - 1];
-  const signedAgreement = agreements.find((a) => a.proofs);
-
-  let offerContent = t("details_view.msg_content_unavailable");
-  let requirementsData = {};
-
-  if ((lastAgreement as any).offerContentSerialized) {
-    try {
-      const parsed = JSON.parse((lastAgreement as any).offerContentSerialized);
-      offerContent = parsed.naturalLanguageOfferContent || offerContent;
-      requirementsData = parsed.requirements || {};
-    } catch (err) {
-      console.error("Error parsing offerContentSerialized:", err);
-    }
-  } else {
-    offerContent =
-      lastAgreement.offerContent?.naturalLanguageOfferContent || offerContent;
-    requirementsData = lastAgreement.offerContent?.requirements || {};
-  }
-
-  const proofsData = signedAgreement?.proofs || null;
-  const mainTitle = `${t("details_view.title_tx_id")} ${txId}`;
-  const dateStr = new Date(transactionData.timestamp * 1000).toLocaleString(
-    i18n.language,
-    {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }
-  );
-
-  const breadcrumbsData = [
-    { label: t("agreement_list.title"), path: "/list_of_agreements" },
-    {
-      label: `${t("details_view.title_tx_id")} ${txId?.substring(0, 6)}...`,
-      path: "#",
-    },
-  ];
+  // Breadcrumb path - jeśli mamy walletAddress, użyj go w linku
+  const breadcrumbPath = walletAddress
+    ? `/list_of_agreements/${walletAddress}`
+    : "/list_of_agreements";
 
   return (
     <div>
       <AgreementHeader
-        breadcrumbs={breadcrumbsData}
-        mainTitle={mainTitle}
-        subTitle=""
-        createdDate={`${t("details_view.label_published_at")}${dateStr}`}
-        onGenerateReport={handleGenerateReport}
+        breadcrumbs={[
+          { label: t("agreement_list.title"), path: breadcrumbPath },
+          { label: `ID: ${txId?.substring(0, 6)}...`, path: "#" },
+        ]}
+        mainTitle={`${t("details_view.title_tx_id")} ${txId}`}
+        createdDate={`${t("details_view.label_published_at")} ${dateStr}`}
+        onGenerateReport={() =>
+          generateAgreementPDF({
+            txId: txId || "",
+            description: offerContent,
+            publishedDate: dateStr,
+            requirements: requirementsArray,
+            proofs: proofsArray,
+          })
+        }
       />
 
       <div
-        className="agreement-description-wrapper"
         style={{
           maxWidth: "1000px",
           margin: "0 auto",
           padding: "0 16px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
           marginBottom: "30px",
         }}
       >
@@ -189,14 +153,21 @@ const AgreementDetailsPage: React.FC = () => {
         >
           {t("details_view.label_description")}
         </p>
-        <p style={{ fontSize: "1rem", color: "#555", marginBottom: "20px" }}>
+        <p
+          style={{
+            fontSize: "1rem",
+            color: "#555",
+            marginBottom: "20px",
+            whiteSpace: "pre-wrap",
+          }}
+        >
           {offerContent}
         </p>
       </div>
 
       <AgreementDetailsContainer
-        requirements={requirementsData}
-        proofs={proofsData}
+        requirementsArray={requirementsArray}
+        proofsArray={proofsArray}
       />
     </div>
   );

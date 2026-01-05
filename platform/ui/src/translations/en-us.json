@@ -92,7 +92,7 @@
       "title": "Developers",
       "links": ["For Developers", "Feautres", "Documentation"]
     },
-    "copyright": "© 2025 DAIA. All rights reserved."
+    "copyright": "© 2026 DAIA. All rights reserved."
   },
   "search_agreement": {
     "placeholder": "Wallet address",
@@ -259,7 +259,8 @@
     "card_title": "Agreement Requirements",
     "label_type": "Requirement Type",
     "label_pubkey": "Proposer Public Key (Pubkey)",
-    "label_nonce": "Offerer Nonce"
+    "label_nonce": "Offerer Nonce",
+    "requirement_number": "Requirement {{number}}"
   },
   "agreement_proofs": {
     "card_title": "Agreement Proofs",
@@ -269,7 +270,8 @@
     "label_digital_signature": "Digital Signature",
     "tooltip_proof_type": "The type of cryptographic proof included.",
     "tooltip_signee_nonce": "Random nonce used to prevent replay attacks.",
-    "tooltip_digital_signature": "Cryptographic signature proving agreement acceptance."
+    "tooltip_digital_signature": "Cryptographic signature proving agreement acceptance.",
+    "proof_number": "Proof {{number}}"
   },
   "pdf": {
     "title": "Agreement Details Report",
@@ -289,6 +291,10 @@
     "signee_nonce": "Signee Nonce:",
     "signature": "Digital Signature:",
     "no_proofs": "Proofs not yet available.",
-    "footer": "© 2025 DAIA. All rights reserved."
+    "footer": "© 2026 DAIA. All rights reserved.",
+    "requirement_number": "Requirement {{number}}",
+    "proof_number": "Proof {{number}}",
+    "requirement_label": "Requirement",
+    "proof_label": "Proof"
   }
 }

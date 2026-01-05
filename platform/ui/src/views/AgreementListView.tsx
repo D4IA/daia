@@ -84,23 +84,62 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
 
         const data: ApiResponse = await response.json();
 
-        const mappedAgreements: Agreement[] = data.transactions.flatMap((tx) =>
-          tx.agreements.map((agr, index) => ({
-            id: `${tx.txId}-${agr.vout || index}`,
-            txId: tx.txId,
-            title: agr.offerContent.naturalLanguageOfferContent,
-            date: new Date(tx.timestamp * 1000).toLocaleDateString(
-              i18n.language,
-              {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              }
-            ),
-            status: "Published",
-          }))
+        // POPRAWIONE MAPOWANIE - obsługa zarówno starej jak i nowej struktury
+        const mappedAgreements: Agreement[] = data.transactions.flatMap(
+          (tx) => {
+            // Obsługa TxId vs txId
+            const currentTxId = (tx as any).TxId || tx.txId;
+
+            // Jeśli tx.agreements istnieje i jest tablicą
+            if (tx.agreements && Array.isArray(tx.agreements)) {
+              return tx.agreements.map((agr, index) => ({
+                id: `${currentTxId}-${agr.vout || index}`,
+                txId: currentTxId,
+                title: agr.offerContent.naturalLanguageOfferContent,
+                date: new Date(tx.timestamp * 1000).toLocaleDateString(
+                  i18n.language,
+                  {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                ),
+                status: "Published",
+              }));
+            }
+
+            // Fallback: jeśli tx ma bezpośrednio agreement (alternatywna struktura)
+            if ((tx as any).agreement) {
+              const agreement = (tx as any).agreement;
+              const titleText =
+                agreement.offerContent?.naturalLanguageOfferContent ||
+                agreement.naturalLanguageOfferContent ||
+                "Agreement";
+
+              return [
+                {
+                  id: currentTxId,
+                  txId: currentTxId,
+                  title: titleText,
+                  date: new Date(tx.timestamp * 1000).toLocaleDateString(
+                    i18n.language,
+                    {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  ),
+                  status: "Published",
+                },
+              ];
+            }
+
+            return [];
+          }
         );
 
         setAgreements(mappedAgreements);
@@ -179,6 +218,11 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
       handleSearchAction(query, false);
     }
   }, [query, handleSearchAction]);
+
+  // Reset strony do 1 gdy zmienią się filtry
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [txIdFilter, dateFilter]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -275,7 +319,9 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({
   };
 
   const handleItemClick = (txId: string) => {
-    navigate(`/agreement_details/${txId}`);
+    navigate(`/agreement_details/${txId}`, {
+      state: { walletAddress },
+    });
   };
 
   const renderHeader = () => {

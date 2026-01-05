@@ -3,14 +3,16 @@ import { useTranslation } from "react-i18next";
 import Button from "../components/Button/Button";
 import searchIcon from "../assets/search.svg";
 import styles from "./ReadyToExploreDaia.module.scss";
-import { useNavigate } from "react-router-dom";
 
 const CheckDocumentationView: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const handleNavigation = () => {
-    navigate("/oops");
+    window.open(
+      "https://daiadocs.teawithsand.com",
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   return (
