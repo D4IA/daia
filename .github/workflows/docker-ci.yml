@@ -30,6 +30,7 @@ jobs:
           context: .
           file: ./platform/ui/Dockerfile
           push: false
+          tags: daia-ui:${{ env.VERSION }}
 
   build-and-push-api:
     name: Build and Push Blockchain API Docker Image
@@ -83,6 +84,7 @@ jobs:
           context: .
           file: ./demo/agents-demo-ui/Dockerfile
           push: false
+          tags: daia-demo-frontend:${{ env.VERSION }}
 
   build-and-push-demo-backend:
     name: Build and Push Demo Backend Docker Image
@@ -109,6 +111,7 @@ jobs:
           context: .
           file: ./demo/agents-demos-backend/Dockerfile
           push: false
+          tags: daia-demo-backend:${{ env.VERSION }}
 
   build-and-push-docs:
     name: Build and Push Docs Docker Image
