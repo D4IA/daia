@@ -4,7 +4,11 @@ import {
 	DaiaReferenceRequirementResolver,
 } from "./referenceResolver";
 
-export class DefaultDaiaReferenceRequirementResolver implements DaiaReferenceRequirementResolver {
+/**
+ * ReferenceRequirementResolver, which lets you manually specifiy pointers to agreements that are considered
+ * to be valid agreements when checking an offer.
+ */
+export class MapDaiaReferenceRequirementResolver implements DaiaReferenceRequirementResolver {
 	constructor(private readonly referenceMap: Map<string, DaiaRemoteAgreementPointer>) {}
 
 	async createSignatureProof(
@@ -22,11 +26,15 @@ export class DefaultDaiaReferenceRequirementResolver implements DaiaReferenceReq
 	}
 
 	static readonly builder = () => {
-		return new DefaultDaiaReferenceRequirementResolverBuilder();
+		return new MapDaiaReferenceRequirementResolverBuilder();
 	};
 }
 
-export class DefaultDaiaReferenceRequirementResolverBuilder {
+/**
+ * Builder for MapDaiaReferenceRequirementResolver.
+ * @see MapDaiaReferenceRequirementResolver
+ */
+export class MapDaiaReferenceRequirementResolverBuilder {
 	private readonly referenceMap: Map<string, DaiaRemoteAgreementPointer> = new Map();
 
 	addReference(referenceType: string, pointer: DaiaRemoteAgreementPointer): this {
@@ -34,7 +42,7 @@ export class DefaultDaiaReferenceRequirementResolverBuilder {
 		return this;
 	}
 
-	build(): DefaultDaiaReferenceRequirementResolver {
-		return new DefaultDaiaReferenceRequirementResolver(this.referenceMap);
+	build(): MapDaiaReferenceRequirementResolver {
+		return new MapDaiaReferenceRequirementResolver(this.referenceMap);
 	}
 }

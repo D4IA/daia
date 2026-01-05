@@ -1,0 +1,57 @@
+{{ define "main" }}
+<section class="section container-fluid mt-n3 pb-3">
+  <div class="row justify-content-center">
+    <div class="col-lg-12 text-center">
+      <h1>{{ .Title }}</h1>
+    </div>
+    <div class="col-lg-9 col-xl-8 text-center">
+      <p class="lead">{{ .Params.lead | safeHTML }}</p>
+      <a class="btn btn-primary btn-cta rounded-pill btn-lg my-3" href="/docs/reference/architecture-overview/" role="button">{{ i18n "get_started" }}</a>
+      {{ .Content }}
+    </div>
+  </div>
+</section>
+{{ end }}
+
+{{ define "sidebar-prefooter" }}
+  {{ if site.Params.doks.backgroundDots -}}
+  <div class="d-flex justify-content-start">
+    <div class="bg-dots"></div>
+  </div>
+  {{ end -}}
+  <section class="section section-md section-features">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-5">
+          <h2 class="h4">Architecture</h2>
+          <p>Understand the <a href="{{ ref . "/docs/reference/architecture-overview.md" }}">DAIA protocol architecture</a> and core concepts.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">Guides</h2>
+          <p>Build agents with <a href="{{ ref . "/docs/guides/building-ai-agents.md" }}">LangGraph integration</a> and <a href="{{ ref . "/docs/guides/signer-verifier-setup.md" }}">agreement signing</a>.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">Reference</h2>
+          <p>Learn about <a href="{{ ref . "/docs/reference/offers-and-agreements.md" }}">offers and agreements</a> and <a href="{{ ref . "/docs/reference/message-protocol.md" }}">message protocol</a>.</p>
+        </div>
+        <div class="col-lg-5">
+          <h2 class="h4">Examples</h2>
+          <p>See <a href="{{ ref . "/docs/example/build-sign-verify-example.md" }}">complete examples</a> of building and verifying agreements.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+{{ end }}
+
+{{ define "sidebar-footer" }}
+{{ if site.Params.doks.sectionFooter -}}
+<section class="section section-md container-fluid bg-light">
+  <div class="row justify-content-center text-center">
+    <div class="col-lg-7">
+      <h2 class="mt-2">Start building with Doks today</h2>
+      <a class="btn btn-primary rounded-pill px-4 my-2" href="/docs/{{ if site.Params.doks.docsVersioning }}{{ site.Params.doks.docsVersion }}/{{ end }}prologue/introduction/" role="button">{{ i18n "get-started" }}</a>
+    </div>
+  </div>
+</section>
+{{ end -}}
+{{ end }}
