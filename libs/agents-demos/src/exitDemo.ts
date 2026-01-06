@@ -8,11 +8,8 @@ import {
 } from "./cargate/environment";
 import { CarGateSimulationEventType, type CarGateSimulationEvent } from "./cargate/session";
 
-// Load environment variables
 config();
 
-// System prompts that minimize hallucinations
-// ENTER PHASE PROMPTS (used for initial parking entry)
 const CAR_CONVERSING_PROMPT = `You are a car agent negotiating parking lot entry.
 CRITICAL RULES:
 - You MUST ONLY use information explicitly provided in the conversation
@@ -43,24 +40,6 @@ CRITICAL RULES:
 - Consider standard parking rates
 - The rate should be reasonable and competitive`;
 
-/**
- * Main demo function that runs a complete parking scenario: enter then exit
- *
- * IMPORTANT NOTES:
- * - This demo runs TWO sequential sessions:
- *   1. ENTER: Car negotiates entry, agrees on rate, publishes parking transaction
- *   2. EXIT: Car negotiates exit, pays for parking, gate verifies and allows exit
- * - No state mocking - real transaction IDs flow from enter to exit
- * - Uses the same environment instance so state persists between sessions
- * - The demo uses BSV testnet keys
- * - With funded keys, both parking and payment transactions are published
- *
- * To run the full demo successfully:
- * 1. Run: npm run genkeys (generates keys and saves to .env)
- * 2. Fund both addresses using: https://witnessonchain.com/faucet/tbsv
- * 3. Wait ~10 seconds for funding transactions to be indexed
- * 4. Run the demo
- */
 export async function runExitDemo(): Promise<void> {
 	console.log("=".repeat(80));
 	console.log("CAR PARKING DEMO - Enter then Exit - BSV Testnet");
