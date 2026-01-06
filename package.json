@@ -1,6 +1,6 @@
 {
   "name": "daia",
-  "version": "0.0.2-SNAPSHOT.4",
+  "version": "0.0.2-SNAPSHOT.6",
   "private": true,
   "workspaces": [
     "libs/*",

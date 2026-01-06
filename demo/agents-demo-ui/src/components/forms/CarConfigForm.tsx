@@ -208,7 +208,16 @@ export const CarConfigForm = ({ initialData, onSubmit, submitButtonText }: CarCo
 								<p>
 									Visit the{" "}
 									<a
-										href="https://faucet.bsvblockchain.org/"
+										href="https://scrypt.io/faucet/"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="link link-primary underline"
+									>
+										Scrypt Faucet
+									</a>{" "}
+									or{" "}
+									<a
+										href="https://witnessonchain.com/faucet/tbsv"
 										target="_blank"
 										rel="noopener noreferrer"
 										className="link link-primary underline"
