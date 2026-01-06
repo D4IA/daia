@@ -100,7 +100,7 @@ export const CarConfigForm = ({ initialData, onSubmit, submitButtonText }: CarCo
 
 	return (
 		<div className="card bg-base-100 shadow-2xl max-w-3xl mx-auto">
-			<div className="card-body p-8">
+			<div className="card-body p-2 md:p-8">
 				<h2 className="card-title text-3xl mb-6 text-primary">Car Configuration</h2>
 				<form onSubmit={handleSubmit} className="space-y-6">
 					{/* License Plate Field */}
