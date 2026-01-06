@@ -49,8 +49,6 @@ jobs:
           else
             pnpm publish --no-git-checks --access public --force
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish core
         working-directory: ./libs/core
@@ -61,8 +59,6 @@ jobs:
           else
             pnpm publish --no-git-checks --access public --force
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish langchain
         working-directory: ./libs/langchain
@@ -73,5 +69,3 @@ jobs:
           else
             pnpm publish --no-git-checks --access public --force
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
