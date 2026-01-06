@@ -52,12 +52,14 @@ export class BsvTransactionFactory implements BlockchainTransactionFactory {
 		// Calculate total amount needed for payments
 		const totalPayments = Object.values(data.payments).reduce((sum, amount) => sum + amount, 0);
 
-		// Estimate initial fee for UTXO selection (will be recalculated)
-		const estimatedFee = 2; // Use estimate fee of 2 satoshi
-		const requiredAmount = totalPayments + estimatedFee;
-
-		// Get UTXOs to fund the transaction
-		const utxos = await this.utxoProvider.getUtxosWithTotal(requiredAmount);
+		// Get UTXOs optimistically using some margin for fee
+		const sizeEstimation =
+			(data.customData ?? "").length +
+			Object.keys(data.payments)
+				.map((k) => k.length)
+				.reduce((a, b) => a + b, 0);
+		const marginForFee = Math.min(1, Math.ceil((sizeEstimation / 1024) * 1.1));
+		const utxos = await this.utxoProvider.getUtxosWithTotal(totalPayments + marginForFee, true);
 
 		// Add inputs from UTXOs
 		for (const utxo of utxos) {
@@ -93,6 +95,17 @@ export class BsvTransactionFactory implements BlockchainTransactionFactory {
 
 		// Calculate proper fee based on transaction size
 		await tx.fee(this.feeModel);
+
+		// Check if we have enough funds after fee calculation
+		const totalAvailable = utxos.reduce((sum, utxo) => sum + utxo.satoshis, 0);
+		const actualFee = tx.getFee();
+		const changeAmount = totalAvailable - totalPayments - actualFee;
+
+		if (changeAmount <= 0) {
+			throw new Error(
+				`Insufficient funds. Required: ${totalPayments + actualFee} (${totalPayments} + ${actualFee} fee), Available: ${totalAvailable}`,
+			);
+		}
 
 		// Sign transaction
 		await tx.sign();
