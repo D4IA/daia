@@ -86,7 +86,9 @@ export async function runEnterDemo(): Promise<void> {
 		console.log("  To use funded keys:");
 		console.log("    1. Run: npm run genkeys");
 		console.log("    2. Add keys to .env file");
-		console.log("    3. Fund addresses using: https://scrypt.io/faucet/ or https://witnessonchain.com/faucet/tbsv");
+		console.log(
+			"    3. Fund addresses using: https://scrypt.io/faucet/ or https://witnessonchain.com/faucet/tbsv",
+		);
 		console.log();
 		carPrivateKey = PrivateKey.fromRandom();
 		gatePrivateKey = PrivateKey.fromRandom();
