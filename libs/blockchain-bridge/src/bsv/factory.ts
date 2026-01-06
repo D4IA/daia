@@ -53,7 +53,7 @@ export class BsvTransactionFactory implements BlockchainTransactionFactory {
 		const totalPayments = Object.values(data.payments).reduce((sum, amount) => sum + amount, 0);
 
 		// Estimate initial fee for UTXO selection (will be recalculated)
-		const estimatedFee = 500;
+		const estimatedFee = 2; // Use estimate fee of 2 satoshi
 		const requiredAmount = totalPayments + estimatedFee;
 
 		// Get UTXOs to fund the transaction
