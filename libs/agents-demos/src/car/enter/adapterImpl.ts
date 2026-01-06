@@ -71,7 +71,10 @@ export class DefaultCarEnterAgentAdapter implements CarEnterAgentAdapter {
 		return `${response.content}`;
 	}
 
-	async considerOffer(offerText: string, conversationHistory: ReadonlyArray<Message>): Promise<CarEnterAgentOfferDecision> {
+	async considerOffer(
+		offerText: string,
+		conversationHistory: ReadonlyArray<Message>,
+	): Promise<CarEnterAgentOfferDecision> {
 		const OfferAnalysisSchema = z.object({
 			result: z.enum(["ACCEPT", "REJECT"]).describe("The decision: ACCEPT or REJECT"),
 			rationale: z

@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Run lint and format checking
+        run: pnpm run check:cached
+
       - name: Build
         run: pnpm run build
 

@@ -100,7 +100,7 @@ describe("BlockchainTransactionParser - Security", () => {
 			lockingScript: new P2PKH().lock(publicKey.toHash() as number[]),
 			satoshis: 10000,
 		});
-		
+
 		tx.addInput({
 			sourceTransaction: sourceTx,
 			sourceOutputIndex: 0,

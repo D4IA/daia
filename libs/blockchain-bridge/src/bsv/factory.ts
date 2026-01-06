@@ -17,12 +17,12 @@ import { BsvNetwork } from "./network";
 /**
  * Maps BsvNetwork enum to WhatsOnChain API network strings.
  */
-function toWhatsOnChainNetwork(network: BsvNetwork): 'main' | 'test' | 'stn' {
+function toWhatsOnChainNetwork(network: BsvNetwork): "main" | "test" | "stn" {
 	switch (network) {
 		case BsvNetwork.MAIN:
-			return 'main';
+			return "main";
 		case BsvNetwork.TEST:
-			return 'test';
+			return "test";
 	}
 }
 

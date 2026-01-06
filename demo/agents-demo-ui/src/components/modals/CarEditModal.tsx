@@ -1,32 +1,24 @@
-import { useContext } from "react"
-import { ParkingSimulationContext } from "../../context/ParkingSimulationContext"
-import { CarConfigForm } from "../forms/CarConfigForm"
-import { CarConfigFormData } from "../forms/types"
-import { PrivateKey } from "@d4ia/blockchain-bridge"
+import { useContext } from "react";
+import { ParkingSimulationContext } from "../../context/ParkingSimulationContext";
+import { CarConfigForm } from "../forms/CarConfigForm";
+import { CarConfigFormData } from "../forms/types";
+import { PrivateKey } from "@d4ia/blockchain-bridge";
 
 export interface CarEditModalProps {
-	isOpen: boolean
-	onClose?: () => void
-	licensePlate: string
+	isOpen: boolean;
+	onClose?: () => void;
+	licensePlate: string;
 }
 
-export const CarEditModal = ({
-	isOpen,
-	onClose,
-	licensePlate,
-}: CarEditModalProps) => {
-	const context = useContext(ParkingSimulationContext)
+export const CarEditModal = ({ isOpen, onClose, licensePlate }: CarEditModalProps) => {
+	const context = useContext(ParkingSimulationContext);
 	if (!context) {
-		throw new Error(
-			"CarEditModal must be used within ParkingSimulationContextProvider",
-		)
+		throw new Error("CarEditModal must be used within ParkingSimulationContextProvider");
 	}
 
-	if (!isOpen) return null
+	if (!isOpen) return null;
 
-	const car = context.environment
-		.getAllCars()
-		.find((c) => c.config.licensePlate === licensePlate)
+	const car = context.environment.getAllCars().find((c) => c.config.licensePlate === licensePlate);
 
 	if (!car) {
 		return (
@@ -41,7 +33,7 @@ export const CarEditModal = ({
 					</div>
 				</div>
 			</div>
-		)
+		);
 	}
 
 	const initialData: CarConfigFormData = {
@@ -49,11 +41,11 @@ export const CarEditModal = ({
 		privateKeyWif: car.config.privateKey.toWif(),
 		negotiatingPrompt: car.config.negotiationPrompt,
 		consideringPrompt: car.config.offerConsiderationPrompt,
-	}
+	};
 
 	const handleSubmit = (data: CarConfigFormData) => {
 		// Remove the old car
-		context.environment.removeCar(licensePlate)
+		context.environment.removeCar(licensePlate);
 
 		// Add the updated car
 		context.environment.addCar({
@@ -63,25 +55,22 @@ export const CarEditModal = ({
 			negotiationModel: car.config.negotiationModel,
 			offerConsiderationPrompt: data.consideringPrompt,
 			offerConsiderationModel: car.config.offerConsiderationModel,
-		})
+		});
 
 		// Refresh the display data
-		context.refreshDisplayData()
+		context.refreshDisplayData();
 
 		if (onClose) {
-			onClose()
+			onClose();
 		}
-	}
+	};
 
 	return (
 		<div className="modal modal-open">
 			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8 overflow-y-auto">
 				<div className="flex justify-between items-center mb-6">
 					<h3 className="font-bold text-2xl">Edit Car Configuration</h3>
-					<button
-						className="btn btn-circle btn-ghost"
-						onClick={onClose}
-					>
+					<button className="btn btn-circle btn-ghost" onClick={onClose}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							className="h-6 w-6"
@@ -109,5 +98,5 @@ export const CarEditModal = ({
 			</div>
 			<div className="modal-backdrop bg-black/50" onClick={onClose}></div>
 		</div>
-	)
-}
+	);
+};

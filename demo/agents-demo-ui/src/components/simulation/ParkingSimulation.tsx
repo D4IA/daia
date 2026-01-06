@@ -1,55 +1,48 @@
-import { useCallback, useContext, useState } from "react"
-import { ParkingSimulationContext } from "../../context/ParkingSimulationContext"
-import { CarEnterPickerModal } from "../modals/CarEnterPickerModal"
-import { CarEntryModal } from "../modals/CarEntryModal"
-import { CarExitModal } from "../modals/CarExitModal"
-import { CarSettingsModal } from "../modals/CarSettingsModal"
-import { GateSettingsModal } from "../modals/GateSettingsModal"
-import { ParkingVisualization } from "./ParkingVisualization"
+import { useCallback, useContext, useState } from "react";
+import { ParkingSimulationContext } from "../../context/ParkingSimulationContext";
+import { CarEnterPickerModal } from "../modals/CarEnterPickerModal";
+import { CarEntryModal } from "../modals/CarEntryModal";
+import { CarExitModal } from "../modals/CarExitModal";
+import { CarSettingsModal } from "../modals/CarSettingsModal";
+import { GateSettingsModal } from "../modals/GateSettingsModal";
+import { ParkingVisualization } from "./ParkingVisualization";
 
 export const ParkingSimulation = () => {
-	const context = useContext(ParkingSimulationContext)
+	const context = useContext(ParkingSimulationContext);
 	if (!context) {
-		throw new Error(
-			"ParkingSimulation must be used within ParkingSimulationContextProvider",
-		)
+		throw new Error("ParkingSimulation must be used within ParkingSimulationContextProvider");
 	}
 
 	// Modal states
-	const [entryModalOpen, setEntryModalOpen] = useState(false)
-	const [exitModalOpen, setExitModalOpen] = useState(false)
-	const [exitingCarLicensePlate, setExitingCarLicensePlate] = useState<
-		string | null
-	>(null)
-	const [gateSettingsModalOpen, setGateSettingsModalOpen] = useState(false)
-	const [carSettingsModalOpen, setCarSettingsModalOpen] = useState(false)
-	const [settingsCarLicensePlate, setSettingsCarLicensePlate] = useState<
-		string | null
-	>(null)
-	const [carEnterPickerModalOpen, setCarEnterPickerModalOpen] =
-		useState(false)
+	const [entryModalOpen, setEntryModalOpen] = useState(false);
+	const [exitModalOpen, setExitModalOpen] = useState(false);
+	const [exitingCarLicensePlate, setExitingCarLicensePlate] = useState<string | null>(null);
+	const [gateSettingsModalOpen, setGateSettingsModalOpen] = useState(false);
+	const [carSettingsModalOpen, setCarSettingsModalOpen] = useState(false);
+	const [settingsCarLicensePlate, setSettingsCarLicensePlate] = useState<string | null>(null);
+	const [carEnterPickerModalOpen, setCarEnterPickerModalOpen] = useState(false);
 
 	const handleConfigureNewCar = useCallback(() => {
-		setEntryModalOpen(true)
-	}, [])
+		setEntryModalOpen(true);
+	}, []);
 
 	const handleLeaveParking = useCallback((licensePlate: string) => {
-		setExitingCarLicensePlate(licensePlate)
-		setExitModalOpen(true)
-	}, [])
+		setExitingCarLicensePlate(licensePlate);
+		setExitModalOpen(true);
+	}, []);
 
 	const handleOpenGateSettings = useCallback(() => {
-		setGateSettingsModalOpen(true)
-	}, [])
+		setGateSettingsModalOpen(true);
+	}, []);
 
 	const handleOpenCarSettings = useCallback((licensePlate: string) => {
-		setSettingsCarLicensePlate(licensePlate)
-		setCarSettingsModalOpen(true)
-	}, [])
+		setSettingsCarLicensePlate(licensePlate);
+		setCarSettingsModalOpen(true);
+	}, []);
 
 	const handleOpenEnterPicker = useCallback(() => {
-		setCarEnterPickerModalOpen(true)
-	}, [])
+		setCarEnterPickerModalOpen(true);
+	}, []);
 
 	return (
 		<>
@@ -71,8 +64,8 @@ export const ParkingSimulation = () => {
 				isOpen={exitModalOpen}
 				licensePlate={exitingCarLicensePlate}
 				onClose={() => {
-					setExitModalOpen(false)
-					setExitingCarLicensePlate(null)
+					setExitModalOpen(false);
+					setExitingCarLicensePlate(null);
 				}}
 				closable={true}
 			/>
@@ -86,8 +79,8 @@ export const ParkingSimulation = () => {
 				isOpen={carSettingsModalOpen}
 				licensePlate={settingsCarLicensePlate}
 				onClose={() => {
-					setCarSettingsModalOpen(false)
-					setSettingsCarLicensePlate(null)
+					setCarSettingsModalOpen(false);
+					setSettingsCarLicensePlate(null);
 				}}
 			/>
 
@@ -96,5 +89,5 @@ export const ParkingSimulation = () => {
 				onClose={() => setCarEnterPickerModalOpen(false)}
 			/>
 		</>
-	)
-}
+	);
+};

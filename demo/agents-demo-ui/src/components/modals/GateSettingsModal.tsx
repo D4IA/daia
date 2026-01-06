@@ -1,70 +1,62 @@
-import { useContext } from "react"
-import { ParkingSimulationContext } from "../../context/ParkingSimulationContext"
-import { GateConfigForm } from "../forms/GateConfigForm"
-import { GateConfigFormData } from "../forms/types"
-import { PrivateKey } from "@d4ia/blockchain-bridge"
+import { useContext } from "react";
+import { ParkingSimulationContext } from "../../context/ParkingSimulationContext";
+import { GateConfigForm } from "../forms/GateConfigForm";
+import { GateConfigFormData } from "../forms/types";
+import { PrivateKey } from "@d4ia/blockchain-bridge";
 
 export interface GateSettingsModalProps {
-	isOpen: boolean
-	onClose: () => void
-	onSave?: (settings: GateSettings) => void
+	isOpen: boolean;
+	onClose: () => void;
+	onSave?: (settings: GateSettings) => void;
 }
 
 export interface GateSettings {
-	conversationPrompt: string
-	conversationModel: string
-	offerGeneratingPrompt: string
-	offerGeneratingModel: string
+	conversationPrompt: string;
+	conversationModel: string;
+	offerGeneratingPrompt: string;
+	offerGeneratingModel: string;
 }
 
-export const GateSettingsModal = ({
-	isOpen,
-	onClose,
-}: GateSettingsModalProps) => {
-	const context = useContext(ParkingSimulationContext)
+export const GateSettingsModal = ({ isOpen, onClose }: GateSettingsModalProps) => {
+	const context = useContext(ParkingSimulationContext);
 
 	if (!context) {
-		throw new Error(
-			"GateSettingsModal must be used within ParkingSimulationContextProvider",
-		)
+		throw new Error("GateSettingsModal must be used within ParkingSimulationContextProvider");
 	}
 
-	if (!isOpen) return null
+	if (!isOpen) return null;
 
-	const gateConfig = context.environment.getGateConfig()
+	const gateConfig = context.environment.getGateConfig();
 
 	const initialData: GateConfigFormData = {
 		privateKeyWif: gateConfig.privateKey.toWif(),
 		coveringPrompt: gateConfig.conversationPrompt,
 		offersPrompt: gateConfig.offerGeneratingPrompt,
-	}
+	};
 
 	const handleSubmit = (data: GateConfigFormData) => {
 		// Update the gate configuration
-		const newGateConfig = context.environment.getGateConfig()
-		newGateConfig.privateKey = PrivateKey.fromWif(data.privateKeyWif)
-		newGateConfig.conversationPrompt = data.coveringPrompt
-		newGateConfig.offerGeneratingPrompt = data.offersPrompt
+		const newGateConfig = context.environment.getGateConfig();
+		newGateConfig.privateKey = PrivateKey.fromWif(data.privateKeyWif);
+		newGateConfig.conversationPrompt = data.coveringPrompt;
+		newGateConfig.offerGeneratingPrompt = data.offersPrompt;
 
 		// Update the gate's private key
-		const gate = context.environment.getGate()
-		gate.privateKey = PrivateKey.fromWif(data.privateKeyWif)
+		const gate = context.environment.getGate();
+		gate.privateKey = PrivateKey.fromWif(data.privateKeyWif);
 
 		// Refresh display data
-		context.refreshDisplayData()
+		context.refreshDisplayData();
 
-		onClose()
-	}
+		onClose();
+	};
 
 	return (
 		<div className="modal modal-open">
 			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8 overflow-y-auto">
 				<div className="flex justify-between items-center mb-6">
 					<h3 className="font-bold text-2xl">Gate Settings</h3>
-					<button
-						className="btn btn-circle btn-ghost"
-						onClick={onClose}
-					>
+					<button className="btn btn-circle btn-ghost" onClick={onClose}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							className="h-6 w-6"
@@ -92,5 +84,5 @@ export const GateSettingsModal = ({
 			</div>
 			<div className="modal-backdrop bg-black/50" onClick={onClose}></div>
 		</div>
-	)
-}
+	);
+};

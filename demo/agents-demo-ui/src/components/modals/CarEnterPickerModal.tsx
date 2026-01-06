@@ -1,65 +1,55 @@
-import { useContext, useState } from "react"
-import { ParkingSimulationContext } from "../../context/ParkingSimulationContext"
-import { CarEditModal } from "./CarEditModal"
-import { CarSessionModal } from "./CarSessionModal"
+import { useContext, useState } from "react";
+import { ParkingSimulationContext } from "../../context/ParkingSimulationContext";
+import { CarEditModal } from "./CarEditModal";
+import { CarSessionModal } from "./CarSessionModal";
 
 export interface CarEnterPickerModalProps {
-	isOpen: boolean
-	onClose?: () => void
+	isOpen: boolean;
+	onClose?: () => void;
 }
 
-export const CarEnterPickerModal = ({
-	isOpen,
-	onClose,
-}: CarEnterPickerModalProps) => {
-	const context = useContext(ParkingSimulationContext)
-	const [editingCar, setEditingCar] = useState<string | null>(null)
-	const [sessionCar, setSessionCar] = useState<string | null>(null)
+export const CarEnterPickerModal = ({ isOpen, onClose }: CarEnterPickerModalProps) => {
+	const context = useContext(ParkingSimulationContext);
+	const [editingCar, setEditingCar] = useState<string | null>(null);
+	const [sessionCar, setSessionCar] = useState<string | null>(null);
 
 	if (!context) {
-		throw new Error(
-			"CarEnterPickerModal must be used within ParkingSimulationContextProvider",
-		)
+		throw new Error("CarEnterPickerModal must be used within ParkingSimulationContextProvider");
 	}
 
-	const allCars = context.environment.getAllCars()
-	const availableCars = allCars.filter((car) => !car.memory.isParked)
+	const allCars = context.environment.getAllCars();
+	const availableCars = allCars.filter((car) => !car.memory.isParked);
 
 	const handleSelectCar = (licensePlate: string) => {
-		setSessionCar(licensePlate)
-	}
+		setSessionCar(licensePlate);
+	};
 
 	const handleEditCar = (licensePlate: string, e: React.MouseEvent) => {
-		e.stopPropagation()
-		setEditingCar(licensePlate)
-	}
+		e.stopPropagation();
+		setEditingCar(licensePlate);
+	};
 
 	const handleCloseEdit = () => {
-		setEditingCar(null)
-		context.refreshDisplayData()
-	}
+		setEditingCar(null);
+		context.refreshDisplayData();
+	};
 
 	const handleCloseSession = () => {
-		setSessionCar(null)
-		context.refreshDisplayData()
+		setSessionCar(null);
+		context.refreshDisplayData();
 		if (onClose) {
-			onClose()
+			onClose();
 		}
-	}
+	};
 
-	if (!isOpen) return null
+	if (!isOpen) return null;
 
 	return (
 		<div className="modal modal-open">
 			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8">
 				<div className="flex justify-between items-center mb-6">
-					<h3 className="font-bold text-2xl">
-						Select Car to Enter Parking
-					</h3>
-					<button
-						className="btn btn-circle btn-ghost"
-						onClick={onClose}
-					>
+					<h3 className="font-bold text-2xl">Select Car to Enter Parking</h3>
+					<button className="btn btn-circle btn-ghost" onClick={onClose}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							className="h-6 w-6"
@@ -82,12 +72,8 @@ export const CarEnterPickerModal = ({
 						<div className="flex items-center justify-center h-96">
 							<div className="text-center space-y-4">
 								<div className="text-6xl mb-4">🚗</div>
-								<h2 className="text-2xl font-bold">
-									No Available Cars
-								</h2>
-								<p className="text-lg text-gray-600">
-									All cars are currently parked
-								</p>
+								<h2 className="text-2xl font-bold">No Available Cars</h2>
+								<p className="text-lg text-gray-600">All cars are currently parked</p>
 							</div>
 						</div>
 					) : (
@@ -101,24 +87,14 @@ export const CarEnterPickerModal = ({
 										<div className="flex items-center gap-6 flex-1">
 											<div className="text-5xl">🚗</div>
 											<div className="flex-1">
-												<h3 className="text-xl font-bold">
-													{car.config.licensePlate}
-												</h3>
-												<p className="text-sm text-gray-600 mt-1">
-													Ready to enter parking
-												</p>
+												<h3 className="text-xl font-bold">{car.config.licensePlate}</h3>
+												<p className="text-sm text-gray-600 mt-1">Ready to enter parking</p>
 											</div>
 										</div>
 										<div className="flex gap-2">
 											<button
 												className="btn btn-secondary btn-sm"
-												onClick={(e) =>
-													handleEditCar(
-														car.config
-															.licensePlate,
-														e,
-													)
-												}
+												onClick={(e) => handleEditCar(car.config.licensePlate, e)}
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -138,12 +114,7 @@ export const CarEnterPickerModal = ({
 											</button>
 											<button
 												className="btn btn-primary"
-												onClick={() =>
-													handleSelectCar(
-														car.config
-															.licensePlate,
-													)
-												}
+												onClick={() => handleSelectCar(car.config.licensePlate)}
 											>
 												Select Car
 											</button>
@@ -158,20 +129,12 @@ export const CarEnterPickerModal = ({
 			<div className="modal-backdrop bg-black/50" onClick={onClose}></div>
 
 			{editingCar && (
-				<CarEditModal
-					isOpen={true}
-					onClose={handleCloseEdit}
-					licensePlate={editingCar}
-				/>
+				<CarEditModal isOpen={true} onClose={handleCloseEdit} licensePlate={editingCar} />
 			)}
 
 			{sessionCar && (
-				<CarSessionModal
-					isOpen={true}
-					onClose={handleCloseSession}
-					licensePlate={sessionCar}
-				/>
+				<CarSessionModal isOpen={true} onClose={handleCloseSession} licensePlate={sessionCar} />
 			)}
 		</div>
-	)
-}
+	);
+};

@@ -55,10 +55,12 @@ export type DaiaAgreementFromTransactionResponse =
 
 export interface DaiaAgreementVerifier {
 	verifyAgreement: (request: DaiaAgreementVerifyRequest) => Promise<DaiaAgreementVerifyResponse>;
-	
+
 	/**
 	 * Downloads blockchain transaction by ID and extracts agreement if present.
 	 * Returns the agreement along with its verification result.
 	 */
-	getAgreementFromTransaction: (transactionId: string) => Promise<DaiaAgreementFromTransactionResponse>;
+	getAgreementFromTransaction: (
+		transactionId: string,
+	) => Promise<DaiaAgreementFromTransactionResponse>;
 }

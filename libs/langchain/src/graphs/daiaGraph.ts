@@ -23,6 +23,7 @@ export const makeDaiaGraph = <T extends DaiaLanggraphNamespacedState>(config: Da
 		publicKey: config.publicKey,
 	});
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const graph = new StateGraph(DaiaLanggraphNamespacedStateSchema as any)
 		.addNode("input", async (state: T) => {
 			const output = await machine.run(state.daia);
@@ -36,7 +37,6 @@ export const makeDaiaGraph = <T extends DaiaLanggraphNamespacedState>(config: Da
 			});
 		})
 		.addEdge(START, "input");
-
 
 	return graph.compile();
 };

@@ -1,97 +1,97 @@
-@use '../styles/tailwind-vars' as tv; 
+@use "../styles/tailwind-vars" as tv;
 
 .agreementsPageContainer {
-  min-height: calc(100vh - 5rem);
-  padding: tv.$spacing-8 tv.$spacing-4;
+	min-height: calc(100vh - 5rem);
+	padding: tv.$spacing-8 tv.$spacing-4;
 
-  @media (min-width: tv.$md) {
-    padding: tv.$spacing-12 tv.$spacing-8;
-  }
+	@media (min-width: tv.$md) {
+		padding: tv.$spacing-12 tv.$spacing-8;
+	}
 }
 
 .contentWrapper {
-  max-width: tv.$max-w-6xl;
-  margin: 0 auto;
-  padding: 0 tv.$spacing-4;
-  text-align: center;
+	max-width: tv.$max-w-6xl;
+	margin: 0 auto;
+	padding: 0 tv.$spacing-4;
+	text-align: center;
 }
 
 .searchBarHeader {
-  margin-bottom: tv.$spacing-8;
+	margin-bottom: tv.$spacing-8;
 }
 
 .agreementsListContainer {
-  max-width: tv.$max-w-1000px;
-  margin: tv.$spacing-10 auto 0 auto;
-  padding: 0;
-  text-align: left;
-  min-height: 50vh;
+	max-width: tv.$max-w-1000px;
+	margin: tv.$spacing-10 auto 0 auto;
+	padding: 0;
+	text-align: left;
+	min-height: 50vh;
 }
 
 .agreementsList {
-  margin-top: tv.$spacing-4;
-  width: 100%;
+	margin-top: tv.$spacing-4;
+	width: 100%;
 }
 
 .paginationWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: tv.$spacing-12;
-  max-width: tv.$max-w-1000px;
-  margin-left: auto;
-  margin-right: auto;
-  overflow-x: hidden;
-  white-space: nowrap;
-  gap: tv.$spacing-2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: tv.$spacing-12;
+	max-width: tv.$max-w-1000px;
+	margin-left: auto;
+	margin-right: auto;
+	overflow-x: hidden;
+	white-space: nowrap;
+	gap: tv.$spacing-2;
 }
 
 .paginationArrow,
 .pageButton {
-  background: none;
-  border: 1px solid tv.$gray-300;
-  padding: 0.5rem 0.8rem;
-  margin: 0 0.3rem;
-  cursor: pointer;
-  border-radius: 0.25rem;
-  color: tv.$gray-700;
-  font-weight: tv.$font-regular;
-  transition: all 0.2s ease-in-out;
-  min-width: 2.5rem;
-  text-align: center;
+	background: none;
+	border: 1px solid tv.$gray-300;
+	padding: 0.5rem 0.8rem;
+	margin: 0 0.3rem;
+	cursor: pointer;
+	border-radius: 0.25rem;
+	color: tv.$gray-700;
+	font-weight: tv.$font-regular;
+	transition: all 0.2s ease-in-out;
+	min-width: 2.5rem;
+	text-align: center;
 
-  &:hover:not(:disabled):not(.pageButtonActive) {
-    background-color: tv.$gray-100;
-  }
+	&:hover:not(:disabled):not(.pageButtonActive) {
+		background-color: tv.$gray-100;
+	}
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
 }
 
 .pageButtonActive {
-  background-color: tv.$black;
-  color: tv.$white;
-  border-color: tv.$black;
+	background-color: tv.$black;
+	color: tv.$white;
+	border-color: tv.$black;
 }
 
 .currentPageMobile {
-  font-weight: 600;
-  color: tv.$gray-800;
-  font-size: 1rem;
-  min-width: 2.5rem;
-  text-align: center;
+	font-weight: 600;
+	color: tv.$gray-800;
+	font-size: 1rem;
+	min-width: 2.5rem;
+	text-align: center;
 }
 
 @media (max-width: 640px) {
-  .pageButton,
-  .paginationDots {
-    display: none;
-  }
+	.pageButton,
+	.paginationDots {
+		display: none;
+	}
 
-  .paginationWrapper {
-    justify-content: space-between;
-    max-width: 200px;
-  }
+	.paginationWrapper {
+		justify-content: space-between;
+		max-width: 200px;
+	}
 }

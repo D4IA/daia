@@ -1,36 +1,31 @@
-import { useState, useEffect } from "react"
-import {
-	CarGateSimulationEnvironmentConfig,
-} from "@d4ia/agents-demos"
-import { BsvNetwork, PrivateKey } from "@d4ia/blockchain-bridge"
-import { PageRefreshGuard } from "./components/PageRefreshGuard"
-import { ParkingSimulation } from "./components/simulation/ParkingSimulation"
-import { ParkingSimulationContextProvider } from "./context/simulation"
-import {
-	DEFAULT_GATE_CONVERSATION_PROMPT,
-	DEFAULT_GATE_OFFER_PROMPT,
-} from "./constants/prompts"
+import { useState, useEffect } from "react";
+import { CarGateSimulationEnvironmentConfig } from "@d4ia/agents-demos";
+import { BsvNetwork, PrivateKey } from "@d4ia/blockchain-bridge";
+import { PageRefreshGuard } from "./components/PageRefreshGuard";
+import { ParkingSimulation } from "./components/simulation/ParkingSimulation";
+import { ParkingSimulationContextProvider } from "./context/simulation";
+import { DEFAULT_GATE_CONVERSATION_PROMPT, DEFAULT_GATE_OFFER_PROMPT } from "./constants/prompts";
 
 interface RuntimeConfig {
-	OPENAI_API_KEY: string
+	OPENAI_API_KEY: string;
 }
 
 export const App = () => {
-	const [config, setConfig] = useState<CarGateSimulationEnvironmentConfig | null>(null)
-	const [error, setError] = useState<string | null>(null)
+	const [config, setConfig] = useState<CarGateSimulationEnvironmentConfig | null>(null);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchConfig = async () => {
 			try {
 				// Try to fetch runtime config from server
-				const response = await fetch('/api/config')
-				const runtimeConfig: RuntimeConfig = await response.json()
-				
-				const openAIApiKey = runtimeConfig.OPENAI_API_KEY || ""
-				
+				const response = await fetch("/api/config");
+				const runtimeConfig: RuntimeConfig = await response.json();
+
+				const openAIApiKey = runtimeConfig.OPENAI_API_KEY || "";
+
 				if (!openAIApiKey) {
-					setError("OPENAI_API_KEY is not configured")
-					return
+					setError("OPENAI_API_KEY is not configured");
+					return;
 				}
 
 				const envConfig: CarGateSimulationEnvironmentConfig = {
@@ -44,16 +39,18 @@ export const App = () => {
 						offerGeneratingModel: "gpt-4o-mini",
 					},
 					maxTurns: 20,
-				}
-				
-				setConfig(envConfig)
-			} catch (error) {
-				setError(`Failed to load configuration: ${error instanceof Error ? error.message : 'Unknown error'}`)
-			}
-		}
+				};
 
-		fetchConfig()
-	}, [])
+				setConfig(envConfig);
+			} catch (error) {
+				setError(
+					`Failed to load configuration: ${error instanceof Error ? error.message : "Unknown error"}`,
+				);
+			}
+		};
+
+		fetchConfig();
+	}, []);
 
 	if (error) {
 		return (
@@ -62,7 +59,7 @@ export const App = () => {
 					<span>{error}</span>
 				</div>
 			</div>
-		)
+		);
 	}
 
 	if (!config) {
@@ -70,7 +67,7 @@ export const App = () => {
 			<div className="min-h-screen bg-base-200 flex items-center justify-center">
 				<div className="loading loading-spinner loading-lg"></div>
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -80,5 +77,5 @@ export const App = () => {
 				<ParkingSimulation />
 			</ParkingSimulationContextProvider>
 		</div>
-	)
-}
+	);
+};

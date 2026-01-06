@@ -7,9 +7,9 @@ import App from "./App.tsx";
 import React from "react";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <React.Suspense fallback={<div>Loading DAIA...</div>}>
-      <App />
-    </React.Suspense>
-  </StrictMode>
+	<StrictMode>
+		<React.Suspense fallback={<div>Loading DAIA...</div>}>
+			<App />
+		</React.Suspense>
+	</StrictMode>,
 );

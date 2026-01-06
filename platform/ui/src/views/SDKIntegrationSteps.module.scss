@@ -1,19 +1,19 @@
-@use '../styles/tailwind-vars' as tv;
+@use "../styles/tailwind-vars" as tv;
 
 .sectionContainer {
-    background-color: tv.$white;
-    padding: tv.$spacing-12 tv.$spacing-4;
+	background-color: tv.$white;
+	padding: tv.$spacing-12 tv.$spacing-4;
 }
 
 .contentWrapper {
-    max-width: tv.$max-w-1000px;
-    margin: 0 auto;
-    
-    display: flex;
-    flex-direction: column;
-    gap: tv.$spacing-6;
+	max-width: tv.$max-w-1000px;
+	margin: 0 auto;
+
+	display: flex;
+	flex-direction: column;
+	gap: tv.$spacing-6;
 }
 
 .sectionTitle {
-    padding-top: 4rem;
+	padding-top: 4rem;
 }

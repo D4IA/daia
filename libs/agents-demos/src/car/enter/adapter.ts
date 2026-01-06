@@ -62,7 +62,10 @@ export interface CarEnterAgentAdapter {
 	 * @param conversationHistory Array of previous messages in the conversation
 	 * @returns Decision (accept or reject with rationale)
 	 */
-	considerOffer(offerText: string, conversationHistory: ReadonlyArray<Message>): Promise<CarEnterAgentOfferDecision>;
+	considerOffer(
+		offerText: string,
+		conversationHistory: ReadonlyArray<Message>,
+	): Promise<CarEnterAgentOfferDecision>;
 
 	/**
 	 * Log a message

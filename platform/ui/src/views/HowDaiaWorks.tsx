@@ -5,33 +5,30 @@ import CardFeatureSection from "../components/CardFeatureSection/CardFeatureSect
 import animationStyles from "../styles/_animations.module.scss";
 
 const HowDaiaWorks: React.FC = () => {
-  const { t } = useTranslation();
+	const { t } = useTranslation();
 
-  const mapCardsData = () => {
-    const cardsData = t("how_daia_works.cards", {
-      returnObjects: true,
-    }) as any[];
+	const mapCardsData = () => {
+		const cardsData = t("how_daia_works.cards", {
+			returnObjects: true,
+		}) as any[];
 
-    return cardsData.map((card) => ({
-      id: parseInt(card.id, 10),
-      iconKey: card.iconKey as any,
-      title: card.title,
-      description: card.description,
-    }));
-  };
+		return cardsData.map((card) => ({
+			id: parseInt(card.id, 10),
+			iconKey: card.iconKey as any,
+			title: card.title,
+			description: card.description,
+		}));
+	};
 
-  const cards = mapCardsData();
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
-  const animationClass = `${animationStyles.reveal} ${animationStyles.slideRight} ${inView ? animationStyles.isVisible : ""}`;
+	const cards = mapCardsData();
+	const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
+	const animationClass = `${animationStyles.reveal} ${animationStyles.slideRight} ${inView ? animationStyles.isVisible : ""}`;
 
-  return (
-    <div ref={ref} className={animationClass}>
-      <CardFeatureSection
-        sectionTitle={t("how_daia_works.title")}
-        cardsData={cards}
-      />
-    </div>
-  );
+	return (
+		<div ref={ref} className={animationClass}>
+			<CardFeatureSection sectionTitle={t("how_daia_works.title")} cardsData={cards} />
+		</div>
+	);
 };
 
 export default HowDaiaWorks;

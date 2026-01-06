@@ -1,4 +1,4 @@
-@use '../../styles/tailwind-vars' as tv; 
+@use "../../styles/tailwind-vars" as tv;
 
 $color-text-dark: #1a202c;
 $color-text-medium: #4a5568;
@@ -7,100 +7,102 @@ $color-brand-blue: #4299e1;
 $color-button-border: #cbd5e0;
 
 .headerWrapper {
-  max-width: 1000px;
-  padding-top: 30px;
-  margin: 0 auto;
-  margin-bottom: 24px;
-  box-sizing: border-box;
-  padding: tv.$spacing-4;
+	max-width: 1000px;
+	padding-top: 30px;
+	margin: 0 auto;
+	margin-bottom: 24px;
+	box-sizing: border-box;
+	padding: tv.$spacing-4;
 }
 
 .breadcrumbs {
-padding-bottom: 30px;
-  font-size: 14px;
-  color: $color-text-light;
-  margin-bottom: 10px;
-  text-align: left;
+	padding-bottom: 30px;
+	font-size: 14px;
+	color: $color-text-light;
+	margin-bottom: 10px;
+	text-align: left;
 
-  .breadcrumbItem {
-    color: $color-text-medium;
-    text-decoration: none;
+	.breadcrumbItem {
+		color: $color-text-medium;
+		text-decoration: none;
 
-    &:hover {
-      color: $color-brand-blue;
-    }
+		&:hover {
+			color: $color-brand-blue;
+		}
 
-    &:last-of-type {
-      color: $color-text-dark;
-      font-weight: 500;
-    }
-  }
+		&:last-of-type {
+			color: $color-text-dark;
+			font-weight: 500;
+		}
+	}
 
-  .separator {
-    margin: 0 8px;
-    color: $color-text-light;
-  }
+	.separator {
+		margin: 0 8px;
+		color: $color-text-light;
+	}
 }
 
 .contentRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  text-align: left;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	text-align: left;
 }
 
 .titles {
-  flex: 1;
-  text-align: left;
+	flex: 1;
+	text-align: left;
 }
 
 .mainTitle {
-  font-size: 30px;
-  font-weight: 700;
-  color: $color-text-dark;
-  margin: 0;
-  word-break: break-all;
-  overflow-wrap: break-word;
-  
-  @media (max-width: 640px) {
-      font-size: tv.$text-xl;
-  }
+	font-size: 30px;
+	font-weight: 700;
+	color: $color-text-dark;
+	margin: 0;
+	word-break: break-all;
+	overflow-wrap: break-word;
+
+	@media (max-width: 640px) {
+		font-size: tv.$text-xl;
+	}
 }
 
 .subTitle {
-  font-size: 20px;
-  font-weight: 500;
-  color: $color-text-medium;
-  margin: 4px 0 0;
+	font-size: 20px;
+	font-weight: 500;
+	color: $color-text-medium;
+	margin: 4px 0 0;
 }
 
 .createdDate {
-  font-size: 14px;
-  color: $color-text-light;
-  margin: 4px 0 0;
+	font-size: 14px;
+	color: $color-text-light;
+	margin: 4px 0 0;
 }
 
 .pdfButton {
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-  border: 1px solid $color-button-border;
-  border-radius: 6px;
-  background-color: white;
-  color: $color-text-medium;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
-  height: fit-content;
-  margin-bottom: 24px;
+	display: flex;
+	align-items: center;
+	padding: 8px 16px;
+	border: 1px solid $color-button-border;
+	border-radius: 6px;
+	background-color: white;
+	color: $color-text-medium;
+	font-weight: 600;
+	cursor: pointer;
+	transition:
+		background-color 0.2s,
+		border-color 0.2s;
+	height: fit-content;
+	margin-bottom: 24px;
 
-  &:hover {
-    background-color: #f7fafc;
-    border-color: #a0aec0;
-  }
+	&:hover {
+		background-color: #f7fafc;
+		border-color: #a0aec0;
+	}
 
-  .pdfIcon {
-    margin-right: 8px;
-    font-size: 16px;
-  }
+	.pdfIcon {
+		margin-right: 8px;
+		font-size: 16px;
+	}
 }

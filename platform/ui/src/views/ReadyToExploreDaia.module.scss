@@ -1,19 +1,18 @@
-@use '../styles/tailwind-vars' as tv; 
-
+@use "../styles/tailwind-vars" as tv;
 
 .section {
-    background-color: tv.$black;
-    color: tv.$white;
-    padding-top: tv.$spacing-20; 
-    padding-bottom: tv.$spacing-20;
-    padding-left: tv.$spacing-4;
-    padding-right: tv.$spacing-4;
+	background-color: tv.$black;
+	color: tv.$white;
+	padding-top: tv.$spacing-20;
+	padding-bottom: tv.$spacing-20;
+	padding-left: tv.$spacing-4;
+	padding-right: tv.$spacing-4;
 }
 
 .whiteTitle {
-    color: tv.$white; 
+	color: tv.$white;
 }
 
 .whiteSubtitle {
-    color: tv.$gray-300; 
+	color: tv.$gray-300;
 }

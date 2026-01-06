@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { PrivateKey, BsvTransactionFactory, BsvTransactionParser, BsvNetwork } from "@d4ia/blockchain-bridge";
+import {
+	PrivateKey,
+	BsvTransactionFactory,
+	BsvTransactionParser,
+	BsvNetwork,
+} from "@d4ia/blockchain-bridge";
 import type {
 	BlockchainTransactionParser,
 	ParsedBlockchainTransactionHandle,
@@ -216,15 +221,20 @@ describe("Signer-Verifier Integration Test", () => {
 		// Verify the offer has the self-signature
 		expect(offer.signatures).toBeDefined();
 		expect(Object.keys(offer.signatures).length).toBe(1);
-		
+
 		// Find the requirement ID that has a signature (the self-signed one)
-		const selfSignedRequirementId = requirementIds.find(id => offer.signatures[id]);
+		const selfSignedRequirementId = requirementIds.find((id) => offer.signatures[id]);
 		expect(selfSignedRequirementId).toBeDefined();
 		expect(offer.signatures[selfSignedRequirementId!]?.signature).toBeTruthy();
 
 		// Step 3: Create signer for the signee
 		const mockUtxoProvider = new MockUtxoProvider();
-		const testSigneeFactory = new BsvTransactionFactory(testSigneePrivateKey, BsvNetwork.TEST, 1, mockUtxoProvider);
+		const testSigneeFactory = new BsvTransactionFactory(
+			testSigneePrivateKey,
+			BsvNetwork.TEST,
+			1,
+			mockUtxoProvider,
+		);
 		const testSignResolver = new DefaultDaiaSignRequirementResolver(testSigneePrivateKey);
 		const testPaymentResolver = new DefaultDaiaPaymentRequirementResolver(testSigneeFactory);
 
@@ -314,7 +324,10 @@ describe("Signer-Verifier Integration Test", () => {
 		const { agreement, transaction } = signResponse;
 
 		// Step 3: Tamper with the offer data by modifying the inner content
-		const tamperedInnerOffer = { ...innerOffer, naturalLanguageOfferContent: "Tampered offer content" };
+		const tamperedInnerOffer = {
+			...innerOffer,
+			naturalLanguageOfferContent: "Tampered offer content",
+		};
 		const tamperedAgreement: DaiaAgreement = {
 			...agreement,
 			offerContent: {
@@ -341,7 +354,7 @@ describe("Signer-Verifier Integration Test", () => {
 		expect(verifyResponse.result).toBe(DaiaAgreementVerificationResult.FAILED);
 		if (verifyResponse.result === DaiaAgreementVerificationResult.FAILED) {
 			expect(verifyResponse.failure.type).toBe(
-				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH
+				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH,
 			);
 		}
 	});
@@ -415,7 +428,7 @@ describe("Signer-Verifier Integration Test", () => {
 		expect(verifyResponse.result).toBe(DaiaAgreementVerificationResult.FAILED);
 		if (verifyResponse.result === DaiaAgreementVerificationResult.FAILED) {
 			expect(verifyResponse.failure.type).toBe(
-				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH
+				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH,
 			);
 		}
 	});
@@ -485,7 +498,7 @@ describe("Signer-Verifier Integration Test", () => {
 		expect(verifyResponse.result).toBe(DaiaAgreementVerificationResult.FAILED);
 		if (verifyResponse.result === DaiaAgreementVerificationResult.FAILED) {
 			expect(verifyResponse.failure.type).toBe(
-				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH
+				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH,
 			);
 		}
 	});
@@ -559,7 +572,7 @@ describe("Signer-Verifier Integration Test", () => {
 		expect(verifyResponse.result).toBe(DaiaAgreementVerificationResult.FAILED);
 		if (verifyResponse.result === DaiaAgreementVerificationResult.FAILED) {
 			expect(verifyResponse.failure.type).toBe(
-				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH
+				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH,
 			);
 		}
 	});
@@ -635,7 +648,7 @@ describe("Signer-Verifier Integration Test", () => {
 		expect(verifyResponse.result).toBe(DaiaAgreementVerificationResult.FAILED);
 		if (verifyResponse.result === DaiaAgreementVerificationResult.FAILED) {
 			expect(verifyResponse.failure.type).toBe(
-				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH
+				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH,
 			);
 		}
 	});
@@ -654,14 +667,19 @@ describe("Signer-Verifier Integration Test", () => {
 		const parsedInnerOffer = JSON.parse(offer.inner) as DaiaInnerOfferContent;
 		const requirementIds = Object.keys(parsedInnerOffer.requirements);
 		const selfSignedReqId = requirementIds[0];
-		
+
 		if (!selfSignedReqId) {
 			throw new Error("Expected at least one requirement");
 		}
 
 		// Step 2: Create a mock signer to process the self-signed offer
 		const mockUtxoProvider = new MockUtxoProvider();
-		const testFactory = new BsvTransactionFactory(testPrivateKey, BsvNetwork.TEST, 1, mockUtxoProvider);
+		const testFactory = new BsvTransactionFactory(
+			testPrivateKey,
+			BsvNetwork.TEST,
+			1,
+			mockUtxoProvider,
+		);
 
 		const testSigner = new DefaultDaiaOfferSigner({
 			transactionFactory: testFactory,
@@ -714,7 +732,7 @@ describe("Signer-Verifier Integration Test", () => {
 		expect(verifyResponse.result).toBe(DaiaAgreementVerificationResult.FAILED);
 		if (verifyResponse.result === DaiaAgreementVerificationResult.FAILED) {
 			expect(verifyResponse.failure.type).toBe(
-				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH
+				DaiaAgreementVerificationFailureType.REQUIREMENTS_TO_PROOFS_MISMATCH,
 			);
 		}
 	});

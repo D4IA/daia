@@ -312,7 +312,7 @@ describe("DefaultDaiaOfferSigner - Summarize Methods", () => {
 			};
 
 			await expect(signer.summarizeOffer(offer)).rejects.toThrow(
-				"Deserialization of inner offer has failed"
+				"Deserialization of inner offer has failed",
 			);
 		});
 

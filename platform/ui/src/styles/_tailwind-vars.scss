@@ -24,17 +24,17 @@ $spacing-20: 5rem;
 $spacing-24: 6rem;
 $spacing-32: 8rem;
 $spacing-50: 12.5rem;
-$spacing-10px: 0.625rem; 
+$spacing-10px: 0.625rem;
 
-$text-3xl: 1.875rem; 
+$text-3xl: 1.875rem;
 $text-4xl: 2.25rem;
 $text-5xl: 3rem;
 $text-6xl: 3.75rem;
 $text-lg: 1.125rem;
 $text-xl: 1.25rem;
-$text-base: 1rem; 
+$text-base: 1rem;
 
-$text-20px: 1.25rem; 
+$text-20px: 1.25rem;
 $text-30px: 1.875rem;
 $text-48px: 3rem;
 
@@ -52,10 +52,12 @@ $md: 768px;
 $lg: 1024px;
 
 $shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+$shadow-md:
+	0 4px 6px -1px rgba(0, 0, 0, 0.1),
+	0 2px 4px -2px rgba(0, 0, 0, 0.1);
 
 $font-regular: 400;
 $font-semibold: 600;
 
-$width-input-xl: 448px; 
+$width-input-xl: 448px;
 $height-input-xl: 50px;

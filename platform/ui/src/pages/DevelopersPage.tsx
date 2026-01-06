@@ -5,18 +5,18 @@ import SdkFeatures from "../views/SdkFeatures";
 import CheckDocumentationView from "../views/CheckDocumentationView";
 
 const DevelopersPage: React.FC = () => {
-  return (
-    <>
-      <SdkScreen />
-      <div id="quick-integration">
-        <SDKIntegrationSteps />
-      </div>
-      <div id="sdk-features">
-        <SdkFeatures />
-      </div>
-      <CheckDocumentationView />
-    </>
-  );
+	return (
+		<>
+			<SdkScreen />
+			<div id="quick-integration">
+				<SDKIntegrationSteps />
+			</div>
+			<div id="sdk-features">
+				<SdkFeatures />
+			</div>
+			<CheckDocumentationView />
+		</>
+	);
 };
 
 export default DevelopersPage;

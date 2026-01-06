@@ -108,8 +108,8 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 				}
 				verificationPassed = Boolean(
 					verificationResult &&
-					verificationResult.found &&
-					verificationResult.verification.result === "passed",
+						verificationResult.found &&
+						verificationResult.verification.result === "passed",
 				);
 
 				if (verificationResult) {

@@ -1,18 +1,18 @@
-import Database from 'better-sqlite3';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import Database from "better-sqlite3";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Database path
-const DB_PATH = path.join(__dirname, '../../data/cache.db');
+const DB_PATH = path.join(__dirname, "../../data/cache.db");
 
 // Initialize database
 export const db = new Database(DB_PATH);
 
 // Enable WAL mode for better concurrency
-db.pragma('journal_mode = WAL');
+db.pragma("journal_mode = WAL");
 
 // Create tables if they don't exist
 db.exec(`
@@ -33,6 +33,6 @@ db.exec(`
   );
 `);
 
-console.log('✅ Database initialized:', DB_PATH);
+console.log("✅ Database initialized:", DB_PATH);
 
 export default db;

@@ -3,19 +3,16 @@ import AgreementsListSearchBar from "../components/AgreementsListSearchBar/Agree
 import NoAgreementsFound from "../components/NoAgreementsFound/NoAgreementsFound";
 
 const NotFoundPage: React.FC = () => {
-  const handleAgreementSearch = (walletAddress: string) => {
-    console.log("Searching for agreements by wallet:", walletAddress);
-  };
+	const handleAgreementSearch = (walletAddress: string) => {
+		console.log("Searching for agreements by wallet:", walletAddress);
+	};
 
-  return (
-    <>
-      <AgreementsListSearchBar
-        onSearch={handleAgreementSearch}
-        onErrorChange={() => {}}
-      />
-      <NoAgreementsFound />
-    </>
-  );
+	return (
+		<>
+			<AgreementsListSearchBar onSearch={handleAgreementSearch} onErrorChange={() => {}} />
+			<NoAgreementsFound />
+		</>
+	);
 };
 
 export default NotFoundPage;
