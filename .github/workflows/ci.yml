@@ -1,7 +1,6 @@
 name: CI
 
 on:
-  push:
   pull_request:
 
 jobs:
@@ -36,11 +35,5 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      # TODO
-      # - name: Test
-      #   run: pnpm run test
-
-      # - name: Publish to npm
-      #   run: pnpm run publish:all
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Test
+        run: pnpm run test
