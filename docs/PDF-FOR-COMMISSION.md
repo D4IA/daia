@@ -12,6 +12,9 @@
 ## Ograniczenia
 1. Demo jest przeznaczone do uruchamiania na komputerze (desktop). Interfejs nie jest dostosowany do telefonów ani tabletów.
 2. Dostęp do strony jest ograniczony do użytkowników posiadających dane logowania (podane powyżej).
+3. Demo działa w sieci BSV Testnet, a nie w sieci produkcyjnej (Mainnet).  
+   Oznacza to, że wszystkie transakcje, umowy i płatności są zapisywane w prawdziwym blockchainie BSV, ale z użyciem testowych monet, które nie mają wartości rynkowej.  
+   Dzięki temu możliwe jest bezpieczne testowanie i demonstrowanie systemu bez ryzyka utraty prawdziwych środków finansowych.
 
 ## Samodzielne testowanie demo
 
