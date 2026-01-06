@@ -3,6 +3,7 @@ import type {
 	RawTransaction,
 	RawTransactionShortDetails,
 	TransactionHashPage,
+	UnconfirmedTransactionHashPage,
 } from "../defines/fetcher";
 import { TRANSACTIONS_PER_BATCH, WhatsOnChainEndpoints, type FetcherConfig } from "./fetcherConfig";
 import { FetchThrottler } from "./fetchThrottler";
@@ -59,6 +60,15 @@ export class WhatsOnChainTransactionFetcher implements BlockchainTransactionFetc
 	): Promise<TransactionHashPage | null> {
 		return this.fetchJson<TransactionHashPage>(
 			this.endpoints.getConfirmedTransactionsByAddress(address, params),
+		);
+	}
+
+	async fetchUnconfirmedTransactionHashes(
+		address: string,
+		params?: { limit?: number; pageToken?: string },
+	): Promise<UnconfirmedTransactionHashPage | null> {
+		return this.fetchJson<UnconfirmedTransactionHashPage>(
+			this.endpoints.getUnconfirmedTransactionsByAddress(address, params),
 		);
 	}
 

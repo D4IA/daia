@@ -22,12 +22,17 @@ export class DaiaTransactionService {
 	 * Fetches DAIA transaction history with caching and pagination.
 	 */
 	async getDaiaHistory(address: string, offset: number, limit: number) {
+		// 1. Fetch unconfirmed transactions first (no caching)
+		const unconfirmedDaia = offset > 0 ? [] : await this.fetchUnconfirmedDaiaTransactions(address);
+		console.log(`Found ${unconfirmedDaia.length} unconfirmed DAIA transactions`);
+
+		// 2. Fetch confirmed transactions with caching
 		const needed = offset + limit;
 		let daiaCount = 0;
 		let pageToken: string | undefined;
 
 		while (daiaCount < needed) {
-			// 1. Fetch tx hashes (limit=1000)
+			// Fetch tx hashes (limit=1000)
 			const page = await transactionFetcher.fetchTransactionHashes(address, {
 				limit: 1000,
 				pageToken,
@@ -40,7 +45,7 @@ export class DaiaTransactionService {
 
 			console.log(`Fetched ${page.result.length} tx hashes, processing...`);
 
-			// 2. Partition: known vs unknown
+			// Partition: known vs unknown
 			const unknown: string[] = [];
 
 			for (const { tx_hash } of page.result) {
@@ -56,7 +61,7 @@ export class DaiaTransactionService {
 
 			console.log(`Known DAIA so far: ${daiaCount}, Unknown to fetch: ${unknown.length}`);
 
-			// 3. Bulk fetch unknown transactions
+			// Bulk fetch unknown transactions
 			if (unknown.length > 0) {
 				const newDaiaCount = await this.fetchAndClassifyTransactions(unknown, address);
 				daiaCount += newDaiaCount;
@@ -78,16 +83,57 @@ export class DaiaTransactionService {
 			pageToken = page.nextPageToken;
 		}
 
-		// 4. Serve from cache with proper pagination
-		const { transactions, hasMore } = daiaCacheService.queryByAddress(address, offset, limit);
+		// 3. Serve from cache with proper pagination
+		const { transactions: confirmedTransactions, hasMore } = daiaCacheService.queryByAddress(
+			address,
+			offset,
+			limit,
+		);
+
+		// 4. Combine: unconfirmed first, then confirmed (only on first page)
+		let transactions: CachedDaiaTransaction[];
+		if (offset === 0) {
+			transactions = [...unconfirmedDaia, ...confirmedTransactions];
+		} else {
+			transactions = confirmedTransactions;
+		}
 
 		return {
 			address,
 			offset,
 			limit,
 			hasMore,
+			unconfirmedTransactionsCount: unconfirmedDaia.length,
 			transactions,
 		};
+	}
+
+	/**
+	 * Fetches unconfirmed DAIA transactions without caching.
+	 */
+	private async fetchUnconfirmedDaiaTransactions(address: string): Promise<CachedDaiaTransaction[]> {
+		const unconfirmedDaia: CachedDaiaTransaction[] = [];
+
+		const page = await transactionFetcher.fetchUnconfirmedTransactionHashes(address, { limit: 100 });
+		if (!page || page.result.length === 0) {
+			return [];
+		}
+
+		const txIds = page.result.map((tx) => tx.tx_hash);
+		const chunks = chunkArray(txIds, WHATSONCHAIN_API.BULK_TX_LIMIT);
+
+		for (const chunk of chunks) {
+			const transactions = await transactionFetcher.fetchBulkTransactionDetails(chunk);
+
+			for (const tx of transactions) {
+				const daiaData = this.extractDaiaData(tx);
+				if (daiaData) {
+					unconfirmedDaia.push(daiaData);
+				}
+			}
+		}
+
+		return unconfirmedDaia;
 	}
 
 	/**
@@ -142,6 +188,8 @@ export class DaiaTransactionService {
 			return null;
 		}
 
+		const isConfirmedTransaction = tx?.blocktime !== undefined;
+
 		// Find first OP_RETURN output with DAIA data
 		for (const output of tx.vout) {
 			if (!output.scriptPubKey?.asm?.startsWith("OP_RETURN") || !output.scriptPubKey?.hex) {
@@ -179,6 +227,7 @@ export class DaiaTransactionService {
 					txId: tx.txid,
 					agreement: agreementData,
 					timestamp: tx.time || Date.now() / 1000,
+					confirmed: isConfirmedTransaction,
 				};
 			} catch (e) {
 				console.error("Invalid DAIA data in output, skipping", e);
