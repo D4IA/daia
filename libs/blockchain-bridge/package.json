@@ -1,6 +1,6 @@
 {
   "name": "@d4ia/blockchain-bridge",
-  "version": "0.0.2-SNAPSHOT.7",
+  "version": "0.0.2-SNAPSHOT.8",
   "description": "DAIA protocol utilities",
   "type": "module",
   "exports": {
