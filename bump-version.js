@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const path = require('path');
 
-// Hardcoded list of all package.json files in the workspace
 const packageFiles = [
   '/workspaces/jak-zdac-inz/package.json',
   '/workspaces/jak-zdac-inz/demo/agents-demo-ui/package.json',
@@ -16,83 +14,35 @@ const packageFiles = [
   '/workspaces/jak-zdac-inz/platform/ui/package.json'
 ];
 
-/**
- * Bumps the minor version of a semver version string
- * Example: 1.2.3 -> 1.3.0
- */
-function bumpMinorVersion(version) {
-  const parts = version.split('.');
-  if (parts.length < 2) {
-    throw new Error(`Invalid version format: ${version}`);
-  }
+const isMajor = process.argv.includes('--major');
+const isMinor = process.argv.includes('--minor');
+const isPatch = process.argv.includes('--patch');
+const isSnapshot = !isMajor && !isMinor && !isPatch;
+
+packageFiles.forEach(file => {
+  const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const version = pkg.version;
   
-  const major = parseInt(parts[0], 10);
-  const minor = parseInt(parts[1], 10);
-  
-  return `${major}.${minor + 1}.0`;
-}
-
-/**
- * Process a single package.json file
- */
-function processPackageFile(filePath) {
-  try {
-    if (!fs.existsSync(filePath)) {
-      console.log(`⚠️  File not found: ${filePath}`);
-      return false;
-    }
-
-    const content = fs.readFileSync(filePath, 'utf8');
-    const pkg = JSON.parse(content);
-    
-    if (!pkg.version) {
-      console.log(`⚠️  No version field in: ${filePath}`);
-      return false;
-    }
-
-    const oldVersion = pkg.version;
-    const newVersion = bumpMinorVersion(oldVersion);
-    pkg.version = newVersion;
-
-    // Write back with proper formatting (2 spaces indent)
-    fs.writeFileSync(filePath, JSON.stringify(pkg, null, 2) + '\n');
-    
-    console.log(`✅ ${filePath}`);
-    console.log(`   ${oldVersion} -> ${newVersion}`);
-    return true;
-  } catch (error) {
-    console.error(`❌ Error processing ${filePath}:`, error.message);
-    return false;
-  }
-}
-
-/**
- * Main function
- */
-function main() {
-  console.log('🚀 Starting minor version bump...\n');
-  
-  let successCount = 0;
-  let failCount = 0;
-  
-  packageFiles.forEach(filePath => {
-    if (processPackageFile(filePath)) {
-      successCount++;
+  if (isSnapshot) {
+    const snapshotMatch = version.match(/^(.+)-SNAPSHOT\.(\d+)$/);
+    if (snapshotMatch) {
+      pkg.version = `${snapshotMatch[1]}-SNAPSHOT.${parseInt(snapshotMatch[2]) + 1}`;
     } else {
-      failCount++;
+      pkg.version = `${version.replace(/-SNAPSHOT.*$/, '')}-SNAPSHOT.0`;
     }
-    console.log(''); // Empty line for readability
-  });
-  
-  console.log('─────────────────────────────────────');
-  console.log(`✅ Successfully updated: ${successCount}`);
-  console.log(`❌ Failed: ${failCount}`);
-  console.log(`📦 Total files: ${packageFiles.length}`);
-  
-  if (failCount > 0) {
-    process.exit(1);
+  } else {
+    const baseVersion = version.replace(/-SNAPSHOT.*$/, '');
+    const [major, minor, patch] = baseVersion.split('.');
+    
+    if (isMajor) {
+      pkg.version = `${parseInt(major) + 1}.0.0`;
+    } else if (isMinor) {
+      pkg.version = `${major}.${parseInt(minor) + 1}.0`;
+    } else {
+      pkg.version = `${major}.${minor}.${parseInt(patch) + 1}`;
+    }
   }
-}
-
-// Run the script
-main();
+  
+  fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + '\n');
+  console.log(`${file}: ${pkg.version}`);
+});
