@@ -64,7 +64,10 @@ export class GateAgentCarsDB {
 		return true;
 	};
 
-	public readonly updateByPlate = (licensePlate: string, updates: Partial<GateAgentCarData>): boolean => {
+	public readonly updateByPlate = (
+		licensePlate: string,
+		updates: Partial<GateAgentCarData>,
+	): boolean => {
 		const id = this.licenseIndex.get(licensePlate);
 		return id ? this.update(id, updates) : false;
 	};
