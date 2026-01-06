@@ -21,40 +21,44 @@
 }
 
 .requirementLabel {
-	font-size: 0.9rem;
-	font-weight: 700;
+	font-size: 0.875rem;
+	font-weight: tv.$font-semibold;
 	color: black;
-	@media (max-width: 640px) {
-		font-size: 0.85rem;
-	}
-}
-
-.tooltipIcon {
-	margin-left: 5px;
-	cursor: help;
-	color: tv.$gray-600;
-	font-weight: 600;
-}
-
-.requirementValue {
-	font-size: 0.85rem;
-	color: black;
-	overflow-wrap: break-word;
-	text-align: left;
-	padding-top: 2px;
-	word-break: break-all;
-
+	margin: 0;
+	
 	@media (max-width: 640px) {
 		font-size: 0.8rem;
 	}
 }
 
-.hashValue {
-	font-family: monospace;
+.tooltipIcon {
+	margin-left: tv.$spacing-2;
+	cursor: help;
+	color: tv.$gray-600;
+	font-weight: tv.$font-semibold;
 	font-size: 0.75rem;
+}
+
+.requirementValue {
+	font-size: tv.$text-base;
+	color: black;
+	overflow-wrap: break-word;
+	text-align: left;
+	padding-top: 2px;
+	word-break: break-all;
+	line-height: 1.4;
 
 	@media (max-width: 640px) {
-		font-size: 0.7rem;
+		font-size: 0.85rem;
+	}
+}
+
+.hashValue {
+	font-family: monospace;
+	font-size: 0.8rem; 
+
+	@media (max-width: 640px) {
+		font-size: 0.75rem;
 	}
 }
 

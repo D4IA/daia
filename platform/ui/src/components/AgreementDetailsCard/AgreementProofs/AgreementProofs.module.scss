@@ -11,10 +11,20 @@
 }
 
 .proofRowContainer {
+	background-color: tv.$gray-50;
+	border-radius: tv.$spacing-2;
+	padding: tv.$spacing-2;
 	margin-bottom: tv.$spacing-4;
+
+	display: flex;
+	flex-direction: column;
 
 	&:last-child {
 		margin-bottom: 0;
+	}
+
+	@media (max-width: 992px) {
+		padding: tv.$spacing-2;
 	}
 }
 
@@ -59,13 +69,9 @@
 
 .hashValue {
 	font-family: monospace;
-	background-color: tv.$gray-50;
-	padding: 2px tv.$spacing-2;
-	border-radius: 4px;
 	font-size: 0.8rem;
 
 	@media (max-width: 640px) {
 		font-size: 0.75rem;
-		padding: 2px tv.$spacing-2;
 	}
 }
