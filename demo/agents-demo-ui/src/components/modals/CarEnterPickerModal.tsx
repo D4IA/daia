@@ -46,7 +46,7 @@ export const CarEnterPickerModal = ({ isOpen, onClose }: CarEnterPickerModalProp
 
 	return (
 		<div className="modal modal-open">
-			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8">
+			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-2 md:p-8 overflow-y-auto">
 				<div className="flex justify-between items-center mb-6">
 					<h3 className="font-bold text-2xl">Select Car to Enter Parking</h3>
 					<button className="btn btn-circle btn-ghost" onClick={onClose}>
@@ -83,7 +83,7 @@ export const CarEnterPickerModal = ({ isOpen, onClose }: CarEnterPickerModalProp
 									key={car.config.licensePlate}
 									className="bg-base-200 rounded-lg p-6 hover:bg-base-300 transition-colors"
 								>
-									<div className="flex items-center justify-between">
+									<div className="flex flex-col md:flex-row items-center justify-between">
 										<div className="flex items-center gap-6 flex-1">
 											<div className="text-5xl">🚗</div>
 											<div className="flex-1">
@@ -93,7 +93,7 @@ export const CarEnterPickerModal = ({ isOpen, onClose }: CarEnterPickerModalProp
 										</div>
 										<div className="flex gap-2">
 											<button
-												className="btn btn-secondary btn-sm"
+												className="btn btn-secondary"
 												onClick={(e) => handleEditCar(car.config.licensePlate, e)}
 											>
 												<svg
