@@ -6,7 +6,7 @@ import { PrivateKey } from "@d4ia/blockchain-bridge";
  * This script generates two private keys and displays their corresponding addresses.
  * Use a BSV testnet faucet to fund these addresses before running the demo.
  *
- * Recommended faucet: https://faucet.bsvblockchain.org/
+ * Recommended faucet: https://witnessonchain.com/faucet/tbsv
  */
 function generateKeys(): void {
 	console.log("=".repeat(80));
@@ -43,7 +43,7 @@ function generateKeys(): void {
 	console.log(`   GATE_PRIVATE_KEY=${gatePrivateKey.toWif()}`);
 	console.log();
 	console.log("3. Fund the addresses using BSV testnet faucet:");
-	console.log("   https://faucet.bsvblockchain.org/");
+	console.log("   https://witnessonchain.com/faucet/tbsv");
 	console.log(`   Car Address:  ${carAddress}`);
 	console.log(`   Gate Address: ${gateAddress}`);
 	console.log();
