@@ -106,6 +106,7 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 										className="text-primary text-xs"
 										target="_blank"
 										href={`https://daiaui.teawithsand.com/agreement_details/${message.agreementReference}`}
+										rel="noopener noreferrer"
 									>
 										View on DAIA platform
 									</a>
@@ -113,6 +114,7 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 										className="text-secondary text-xs"
 										target="_blank"
 										href={`https://test.whatsonchain.com/tx/${message.agreementReference}`}
+										rel="noopener noreferrer"
 									>
 										View on WhatsOnChain.com
 									</a>
