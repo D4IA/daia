@@ -1,4 +1,4 @@
-import {DEFAULT_REQUESTS_PER_SECOND} from "./fetcherConfig";
+import { DEFAULT_REQUESTS_PER_SECOND } from "./fetcherConfig";
 
 const SECOND_IN_MS = 1000;
 

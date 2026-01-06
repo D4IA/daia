@@ -1,6 +1,6 @@
 {
   "name": "@d4ia/blockchain-bridge",
-  "version": "0.0.1",
+  "version": "0.0.1-SNAPSHOT.1",
   "description": "DAIA protocol utilities",
   "type": "module",
   "exports": {
@@ -18,7 +18,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "rimraf dist && vite build",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test-watch": "vitest",
@@ -26,13 +26,12 @@
     "format:check": "prettier ./src --check",
     "format:check:cached": "prettier ./src --check --cache",
     "lint": "eslint ./src --max-warnings 0",
+    "lint:check": "eslint ./src --max-warnings 0",
     "lint:cached": "eslint ./src --max-warnings 0 --cache",
     "lint:fix": "eslint ./src --fix",
+    "check:cached": "npm run lint:check && npm run format:check:cached",
     "build:check": "tsc --noEmit",
-    "fix": "npm run format:fix && npm run lint:fix",
-    "pre-commit-check": "npm run build:check && npm run lint:cached && npm run format:check:cached",
-    "pre-push-check": "npm run build:check && npm run lint:cached && npm run format:check:cached && npm run test",
-    "prepublishOnly": "npm run build && npm run lint && npm run format:check && npm run test"
+    "fix": "npm run format:fix && npm run lint:fix"
   },
   "author": "teawithsand",
   "license": "AGPL-3.0-only",

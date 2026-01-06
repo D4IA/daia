@@ -1,71 +1,71 @@
-@use '../../../styles/tailwind-vars' as tv;
+@use "../../../styles/tailwind-vars" as tv;
 
 .cardContent {
-  padding: tv.$spacing-2 0;
+	padding: tv.$spacing-2 0;
 }
 
 .noProofsMessage {
-  font-style: italic;
-  color: tv.$gray-500;
-  padding: tv.$spacing-2 0;
+	font-style: italic;
+	color: tv.$gray-500;
+	padding: tv.$spacing-2 0;
 }
 
 .proofRowContainer {
-  margin-bottom: tv.$spacing-4;
+	margin-bottom: tv.$spacing-4;
 
-  &:last-child {
-    margin-bottom: 0;
-  }
+	&:last-child {
+		margin-bottom: 0;
+	}
 }
 
 .labelWrapper {
-  display: flex;
-  align-items: center;
-  margin-bottom: 2px;
+	display: flex;
+	align-items: center;
+	margin-bottom: 2px;
 }
 
 .proofLabel {
-  font-size: 0.875rem;
-  font-weight: tv.$font-semibold;
-  color: tv.$black;
-  margin: 0;
-  
-  @media (max-width: 640px) {
-    font-size: 0.8rem;
-  }
+	font-size: 0.875rem;
+	font-weight: tv.$font-semibold;
+	color: tv.$black;
+	margin: 0;
+
+	@media (max-width: 640px) {
+		font-size: 0.8rem;
+	}
 }
 
 .tooltipIcon {
-  margin-left: tv.$spacing-2;
-  cursor: help;
-  color: tv.$gray-600;
-  font-weight: tv.$font-semibold;
-  font-size: 0.75rem;
+	margin-left: tv.$spacing-2;
+	cursor: help;
+	color: tv.$gray-600;
+	font-weight: tv.$font-semibold;
+	font-size: 0.75rem;
 }
 
 .proofValue {
-  font-size: tv.$text-base;
-  color: tv.$black;
-  text-align: left;
-  overflow-wrap: break-word;
-  word-break: break-all;
-  padding-top: 2px;
-  line-height: 1.4;
-  
-  @media (max-width: 640px) {
-    font-size: 0.85rem;
-  }
+	font-size: tv.$text-base;
+	color: tv.$black;
+	text-align: left;
+	overflow-wrap: break-word;
+	word-break: break-all;
+	padding-top: 2px;
+	line-height: 1.4;
+
+	@media (max-width: 640px) {
+		font-size: 0.85rem;
+	}
 }
 
 .hashValue {
-  font-family: monospace;
-  background-color: tv.$gray-50;
-  padding: 2px tv.$spacing-2;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  
-  @media (max-width: 640px) {
-    font-size: 0.75rem;
-    padding: 2px tv.$spacing-2;
-  }
+	font-family: monospace;
+	background-color: tv.$gray-50;
+	padding: 2px tv.$spacing-2;
+	border-radius: 4px;
+	font-size: 0.8rem;
+
+	@media (max-width: 640px) {
+		font-size: 0.75rem;
+		padding: 2px tv.$spacing-2;
+	}
 }

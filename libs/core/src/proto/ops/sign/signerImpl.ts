@@ -107,17 +107,14 @@ export class DefaultDaiaOfferSigner implements DaiaOfferSigner {
 				if (offer.signatures && offer.signatures[requirementId]) {
 					// Validate the self-signed signature
 					const selfSignature = offer.signatures[requirementId].signature;
-					
+
 					let isValid = false;
 					try {
 						const publicKey = PublicKey.fromString(requirement.pubKey);
 						// Self-signed signatures have empty signeeNonce
 						const messageToVerify = requirement.offererNonce + "" + offer.inner;
-						isValid = publicKey.verify(
-							messageToVerify,
-							Signature.fromDER(selfSignature, "base64"),
-						);
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+						isValid = publicKey.verify(messageToVerify, Signature.fromDER(selfSignature, "base64"));
+						// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					} catch (_e) {
 						// Signature verification failed (invalid format or verification failed)
 						isValid = false;

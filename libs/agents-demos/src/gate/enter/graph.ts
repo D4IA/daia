@@ -92,7 +92,7 @@ export function createGateAgentGraph(adapter: GateAgentEnterAdapter) {
 
 					// If not found, wait and retry
 					if (!verificationResult.found && attempt < 5) {
-						await sleep(5000)
+						await sleep(5000);
 					}
 				}
 

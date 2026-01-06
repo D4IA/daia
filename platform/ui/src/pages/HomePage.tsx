@@ -6,17 +6,17 @@ import WhyChooseDAIAView from "../views/WhyChooseDaia";
 import ReadyToExploreDaia from "../views/ReadyToExploreDaia";
 
 const HomePage: React.FC = () => {
-  return (
-    <>
-      <LandingScreen />
-      <div id="how-daia-works">
-        <HowDaiaWorks />
-      </div>
-      <SearchForYourAgreementView />
-      <WhyChooseDAIAView />
-      <ReadyToExploreDaia />
-    </>
-  );
+	return (
+		<>
+			<LandingScreen />
+			<div id="how-daia-works">
+				<HowDaiaWorks />
+			</div>
+			<SearchForYourAgreementView />
+			<WhyChooseDAIAView />
+			<ReadyToExploreDaia />
+		</>
+	);
 };
 
 export default HomePage;

@@ -1,16 +1,16 @@
-import { useContext, useState, useEffect, useRef } from "react"
-import { ParkingSimulationContext } from "../../context/ParkingSimulationContext"
-import { CarGateSimulationEventType, ConversationViewer } from "../viewers/ConversationViewer"
-import type { CarGateSimulationEvent } from "../viewers/ConversationViewer"
+import { useContext, useState, useEffect, useRef } from "react";
+import { ParkingSimulationContext } from "../../context/ParkingSimulationContext";
+import { CarGateSimulationEventType, ConversationViewer } from "../viewers/ConversationViewer";
+import type { CarGateSimulationEvent } from "../viewers/ConversationViewer";
 
 export interface CarExitModalProps {
-	isOpen: boolean
-	licensePlate?: string | null
-	onClose?: () => void
-	closable?: boolean
+	isOpen: boolean;
+	licensePlate?: string | null;
+	onClose?: () => void;
+	closable?: boolean;
 }
 
-type SessionStatus = "idle" | "running" | "completed" | "error"
+type SessionStatus = "idle" | "running" | "completed" | "error";
 
 export const CarExitModal = ({
 	isOpen,
@@ -18,83 +18,87 @@ export const CarExitModal = ({
 	onClose,
 	closable = false,
 }: CarExitModalProps) => {
-	const context = useContext(ParkingSimulationContext)
-	const [events, setEvents] = useState<CarGateSimulationEvent[]>([])
-	const [status, setStatus] = useState<SessionStatus>("idle")
-	const [error, setError] = useState<string | null>(null)
-	const sessionStartedRef = useRef(false)
+	const context = useContext(ParkingSimulationContext);
+	const [events, setEvents] = useState<CarGateSimulationEvent[]>([]);
+	const [status, setStatus] = useState<SessionStatus>("idle");
+	const [error, setError] = useState<string | null>(null);
+	const sessionStartedRef = useRef(false);
 
 	if (!context) {
-		throw new Error(
-			"CarExitModal must be used within ParkingSimulationContextProvider",
-		)
+		throw new Error("CarExitModal must be used within ParkingSimulationContextProvider");
 	}
 
 	useEffect(() => {
 		if (isOpen && status === "idle" && !sessionStartedRef.current && licensePlate) {
-			sessionStartedRef.current = true
-			startSession()
+			sessionStartedRef.current = true;
+			startSession();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isOpen, licensePlate])
+	}, [isOpen, licensePlate]);
 
 	const startSession = async () => {
-		if (!licensePlate) return
+		if (!licensePlate) return;
 
 		try {
-			setStatus("running")
-			setError(null)
-			setEvents([])
+			setStatus("running");
+			setError(null);
+			setEvents([]);
 
 			// Create session
-			const session = context.environment.createSession(licensePlate)
+			const session = context.environment.createSession(licensePlate);
 
 			// Run the session
 			const result = await session.run({
 				onNewMessage: (event) => {
-					setEvents((prev) => [...prev, event])
+					setEvents((prev) => [...prev, event]);
 				},
-			})
+			});
 
-			const hasGateOpenEvent = session.getEvents().find(e => e.type === CarGateSimulationEventType.GATE_ACTION && (e.action === "let-in" || e.action === "let-out"));
+			const hasGateOpenEvent = session
+				.getEvents()
+				.find(
+					(e) =>
+						e.type === CarGateSimulationEventType.GATE_ACTION &&
+						(e.action === "let-in" || e.action === "let-out"),
+				);
 
 			if (hasGateOpenEvent) {
 				// Write results back to environment
-				context.environment.setCarMemory(licensePlate, result.carMemory)
-				context.environment.setGateDatabase(result.gateDb)
+				context.environment.setCarMemory(licensePlate, result.carMemory);
+				context.environment.setGateDatabase(result.gateDb);
 
 				// eslint-disable-next-line no-console
-				console.log("Car/Gate session results", result)
+				console.log("Car/Gate session results", result);
 			}
 
 			// Refresh display data
-			context.refreshDisplayData()
+			context.refreshDisplayData();
 
-			setStatus("completed")
+			setStatus("completed");
 		} catch (err) {
-			setStatus("error")
-			setError(err instanceof Error ? err.message : "Unknown error")
+			setStatus("error");
+			setError(err instanceof Error ? err.message : "Unknown error");
 		}
-	}
+	};
 
 	const handleClose = () => {
 		if (status === "running") {
 			// Don't allow closing while running
-			return
+			return;
 		}
 		if (!closable) {
-			return
+			return;
 		}
-		setStatus("idle")
-		setEvents([])
-		setError(null)
-		sessionStartedRef.current = false
+		setStatus("idle");
+		setEvents([]);
+		setError(null);
+		sessionStartedRef.current = false;
 		if (onClose) {
-			onClose()
+			onClose();
 		}
-	}
+	};
 
-	if (!isOpen) return null
+	if (!isOpen) return null;
 
 	if (!licensePlate) {
 		return (
@@ -109,12 +113,10 @@ export const CarExitModal = ({
 					</div>
 				</div>
 			</div>
-		)
+		);
 	}
 
-	const car = context.environment
-		.getAllCars()
-		.find((c) => c.config.licensePlate === licensePlate)
+	const car = context.environment.getAllCars().find((c) => c.config.licensePlate === licensePlate);
 
 	if (!car) {
 		return (
@@ -129,7 +131,7 @@ export const CarExitModal = ({
 					</div>
 				</div>
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -138,28 +140,25 @@ export const CarExitModal = ({
 				{/* Header */}
 				<div className="flex justify-between items-center p-6 border-b border-base-300">
 					<div>
-						<h3 className="font-bold text-2xl">
-							Car Exit: {licensePlate}
-						</h3>
+						<h3 className="font-bold text-2xl">Car Exit: {licensePlate}</h3>
 						<div className="flex items-center gap-4 mt-2">
 							<span
-								className={`badge ${status === "idle"
-									? "badge-ghost"
-									: status === "running"
-										? "badge-warning"
-										: status === "completed"
-											? "badge-success"
-											: "badge-error"
-									}`}
+								className={`badge ${
+									status === "idle"
+										? "badge-ghost"
+										: status === "running"
+											? "badge-warning"
+											: status === "completed"
+												? "badge-success"
+												: "badge-error"
+								}`}
 							>
 								{status === "idle" && "Initializing"}
 								{status === "running" && "🔄 Running"}
 								{status === "completed" && "✓ Completed"}
 								{status === "error" && "✗ Error"}
 							</span>
-							{status === "running" && (
-								<span className="loading loading-spinner loading-sm"></span>
-							)}
+							{status === "running" && <span className="loading loading-spinner loading-sm"></span>}
 						</div>
 					</div>
 					{closable && (
@@ -167,11 +166,7 @@ export const CarExitModal = ({
 							className={`btn btn-circle btn-ghost ${status === "running" ? "btn-disabled" : ""}`}
 							onClick={handleClose}
 							disabled={status === "running"}
-							title={
-								status === "running"
-									? "Cannot close while session is running"
-									: "Close"
-							}
+							title={status === "running" ? "Cannot close while session is running" : "Close"}
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -216,10 +211,7 @@ export const CarExitModal = ({
 							</div>
 						</div>
 					) : (
-						<ConversationViewer
-							events={events}
-							title="Exit Session"
-						/>
+						<ConversationViewer events={events} title="Exit Session" />
 					)}
 				</div>
 
@@ -227,10 +219,7 @@ export const CarExitModal = ({
 				{(status === "completed" || status === "error") && (
 					<div className="p-6 border-t border-base-300">
 						<div className="flex justify-end">
-							<button
-								className="btn btn-primary"
-								onClick={handleClose}
-							>
+							<button className="btn btn-primary" onClick={handleClose}>
 								Close
 							</button>
 						</div>
@@ -238,11 +227,8 @@ export const CarExitModal = ({
 				)}
 			</div>
 			{status !== "running" && closable && (
-				<div
-					className="modal-backdrop bg-black/50"
-					onClick={handleClose}
-				></div>
+				<div className="modal-backdrop bg-black/50" onClick={handleClose}></div>
 			)}
 		</div>
-	)
-}
+	);
+};

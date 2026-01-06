@@ -1,12 +1,16 @@
-import { parser, transactionFetcher } from "./transactionFetcher.service";
-import { DaiaTransactionDataSchema, DaiaTransactionDataType, DaiaInnerOfferContentSchema } from "@d4ia/core";
-import { daiaCacheService, CachedDaiaTransaction, DaiaAgreementData } from "./daiaCache.service";
-import { WHATSONCHAIN_API } from "../constants/externalApi.const";
+import { parser, transactionFetcher } from "./transactionFetcher.service.js";
+import {
+	DaiaTransactionDataSchema,
+	DaiaTransactionDataType,
+	DaiaInnerOfferContentSchema,
+} from "@d4ia/core";
+import { daiaCacheService, CachedDaiaTransaction, DaiaAgreementData } from "./daiaCache.service.js";
+import { WHATSONCHAIN_API } from "../constants/externalApi.const.js";
 import { chunkArray } from "@d4ia/blockchain-bridge";
 
 /**
  * Service for fetching and caching DAIA transactions.
- * 
+ *
  * Caching Strategy: "Sync to depth with txId classification cache"
  * - Fetches tx hashes in bulk (limit=1000)
  * - Checks classification cache to skip known non-DAIA transactions
@@ -14,170 +18,175 @@ import { chunkArray } from "@d4ia/blockchain-bridge";
  * - Continues until enough DAIA transactions are found for the requested page
  */
 export class DaiaTransactionService {
-  /**
-   * Fetches DAIA transaction history with caching and pagination.
-   */
-  async getDaiaHistory(address: string, offset: number, limit: number) {
-    const needed = offset + limit;
-    let daiaCount = 0;
-    let pageToken: string | undefined;
+	/**
+	 * Fetches DAIA transaction history with caching and pagination.
+	 */
+	async getDaiaHistory(address: string, offset: number, limit: number) {
+		const needed = offset + limit;
+		let daiaCount = 0;
+		let pageToken: string | undefined;
 
-    while (daiaCount < needed) {
-      // 1. Fetch tx hashes (limit=1000)
-      const page = await transactionFetcher.fetchTransactionHashes(address, { limit: 1000, pageToken });
-      
-      if (!page || page.result.length === 0) {
-        console.log("No more transaction hashes available");
-        break;
-      }
+		while (daiaCount < needed) {
+			// 1. Fetch tx hashes (limit=1000)
+			const page = await transactionFetcher.fetchTransactionHashes(address, {
+				limit: 1000,
+				pageToken,
+			});
 
-      console.log(`Fetched ${page.result.length} tx hashes, processing...`);
+			if (!page || page.result.length === 0) {
+				console.log("No more transaction hashes available");
+				break;
+			}
 
-      // 2. Partition: known vs unknown
-      const unknown: string[] = [];
-      
-      for (const { tx_hash } of page.result) {
-        const classification = daiaCacheService.getClassification(tx_hash);
-        
-        if (classification === null) {
-          unknown.push(tx_hash);
-        } else if (classification === true) {
-          daiaCount++;
-        }
-        // classification === false → skip
-      }
+			console.log(`Fetched ${page.result.length} tx hashes, processing...`);
 
-      console.log(`Known DAIA so far: ${daiaCount}, Unknown to fetch: ${unknown.length}`);
+			// 2. Partition: known vs unknown
+			const unknown: string[] = [];
 
-      // 3. Bulk fetch unknown transactions
-      if (unknown.length > 0) {
-        const newDaiaCount = await this.fetchAndClassifyTransactions(unknown, address);
-        daiaCount += newDaiaCount;
-        console.log(`Classified ${unknown.length} txs, found ${newDaiaCount} new DAIA. Total: ${daiaCount}`);
-      }
+			for (const { tx_hash } of page.result) {
+				const classification = daiaCacheService.getClassification(tx_hash);
 
-      if (daiaCount >= needed) {
-        console.log(`Reached needed count (${needed}), stopping sync`);
-        break;
-      }
+				if (classification === null) {
+					unknown.push(tx_hash);
+				} else if (classification === true) {
+					daiaCount++;
+				}
+				// classification === false → skip
+			}
 
-      if (!page.nextPageToken) {
-        console.log("No more pages available");
-        break;
-      }
+			console.log(`Known DAIA so far: ${daiaCount}, Unknown to fetch: ${unknown.length}`);
 
-      pageToken = page.nextPageToken;
-    }
+			// 3. Bulk fetch unknown transactions
+			if (unknown.length > 0) {
+				const newDaiaCount = await this.fetchAndClassifyTransactions(unknown, address);
+				daiaCount += newDaiaCount;
+				console.log(
+					`Classified ${unknown.length} txs, found ${newDaiaCount} new DAIA. Total: ${daiaCount}`,
+				);
+			}
 
-    // 4. Serve from cache with proper pagination
-    const { transactions, hasMore } = daiaCacheService.queryByAddress(address, offset, limit);
+			if (daiaCount >= needed) {
+				console.log(`Reached needed count (${needed}), stopping sync`);
+				break;
+			}
 
-    return {
-      address,
-      offset,
-      limit,
-      hasMore,
-      transactions
-    };
-  }
+			if (!page.nextPageToken) {
+				console.log("No more pages available");
+				break;
+			}
 
-  /**
-   * Fetches a single DAIA transaction by ID.
-   */
-  async getTransactionById(txId: string): Promise<CachedDaiaTransaction | null> {
-    // Check cache first
-    const cached = daiaCacheService.getDaiaTransaction(txId);
-    if (cached) return cached;
+			pageToken = page.nextPageToken;
+		}
 
-    // Fetch from blockchain
-    const tx = await transactionFetcher.fetchTransactionById(txId);
-    if (!tx) return null;
+		// 4. Serve from cache with proper pagination
+		const { transactions, hasMore } = daiaCacheService.queryByAddress(address, offset, limit);
 
-    return this.extractDaiaData(tx);
-  }
+		return {
+			address,
+			offset,
+			limit,
+			hasMore,
+			transactions,
+		};
+	}
 
-  /**
-   * Fetches and classifies transactions in bulk.
-   * Returns the count of new DAIA transactions found.
-   */
-  private async fetchAndClassifyTransactions(txIds: string[], address: string): Promise<number> {
-    let newDaiaCount = 0;
-    const chunks = chunkArray(txIds, WHATSONCHAIN_API.BULK_TX_LIMIT);
+	/**
+	 * Fetches a single DAIA transaction by ID.
+	 */
+	async getTransactionById(txId: string): Promise<CachedDaiaTransaction | null> {
+		// Check cache first
+		const cached = daiaCacheService.getDaiaTransaction(txId);
+		if (cached) return cached;
 
-    for (const chunk of chunks) {
-      const transactions = await transactionFetcher.fetchBulkTransactionDetails(chunk);
+		// Fetch from blockchain
+		const tx = await transactionFetcher.fetchTransactionById(txId);
+		if (!tx) return null;
 
-      for (const tx of transactions) {
-        const daiaData = this.extractDaiaData(tx);
-        const isDaia = daiaData !== null;
+		return this.extractDaiaData(tx);
+	}
 
-        daiaCacheService.saveClassification(tx.txid, isDaia);
+	/**
+	 * Fetches and classifies transactions in bulk.
+	 * Returns the count of new DAIA transactions found.
+	 */
+	private async fetchAndClassifyTransactions(txIds: string[], address: string): Promise<number> {
+		let newDaiaCount = 0;
+		const chunks = chunkArray(txIds, WHATSONCHAIN_API.BULK_TX_LIMIT);
 
-        if (isDaia) {
-          daiaCacheService.saveDaiaTransaction(daiaData, address);
-          newDaiaCount++;
-        }
-      }
-    }
+		for (const chunk of chunks) {
+			const transactions = await transactionFetcher.fetchBulkTransactionDetails(chunk);
 
-    return newDaiaCount;
-  }
+			for (const tx of transactions) {
+				const daiaData = this.extractDaiaData(tx);
+				const isDaia = daiaData !== null;
 
-  /**
-   * Extracts DAIA agreement data from a raw transaction.
-   * Returns null if the transaction doesn't contain valid DAIA data.
-   */
-  private extractDaiaData(tx: any): CachedDaiaTransaction | null {
-    if (!tx.vout || !Array.isArray(tx.vout)) {
-      return null;
-    }
+				daiaCacheService.saveClassification(tx.txid, isDaia);
 
-    // Find first OP_RETURN output with DAIA data
-    for (const output of tx.vout) {
-      if (!output.scriptPubKey?.asm?.startsWith("OP_RETURN") || !output.scriptPubKey?.hex) {
-        continue;
-      }
+				if (isDaia) {
+					daiaCacheService.saveDaiaTransaction(daiaData, address);
+					newDaiaCount++;
+				}
+			}
+		}
 
-      const jsonString = parser.extractOpReturnData(output.scriptPubKey.hex);
-      if (!jsonString) continue;
+		return newDaiaCount;
+	}
 
-      try {
-        const parsed = JSON.parse(jsonString);
-        
-        // Convert proofs object to Map if present (Zod expects it)
-        if (parsed.proofs && typeof parsed.proofs === 'object') {
-          parsed.proofs = new Map(Object.entries(parsed.proofs));
-        }
+	/**
+	 * Extracts DAIA agreement data from a raw transaction.
+	 * Returns null if the transaction doesn't contain valid DAIA data.
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private extractDaiaData(tx: any): CachedDaiaTransaction | null {
+		if (!tx.vout || !Array.isArray(tx.vout)) {
+			return null;
+		}
 
-        const txData = DaiaTransactionDataSchema.parse(parsed);
-        if (txData.type !== DaiaTransactionDataType.AGREEMENT) {
-          continue;
-        }
+		// Find first OP_RETURN output with DAIA data
+		for (const output of tx.vout) {
+			if (!output.scriptPubKey?.asm?.startsWith("OP_RETURN") || !output.scriptPubKey?.hex) {
+				continue;
+			}
 
-        const agreement = txData.agreement;
-        const contentParsed = JSON.parse(agreement.offerContent.inner);
-        const offerContent = DaiaInnerOfferContentSchema.parse(contentParsed);
+			const jsonString = parser.extractOpReturnData(output.scriptPubKey.hex);
+			if (!jsonString) continue;
 
-        const agreementData: DaiaAgreementData = {
-          offerContentSerialized: agreement.offerContent.inner,
-          proofs: Object.fromEntries(Object.entries(agreement.proofs)),
-          naturalLanguageOfferContent: offerContent.naturalLanguageOfferContent,
-          requirements: Object.fromEntries(Object.entries(offerContent.requirements))
-        };
+			try {
+				const parsed = JSON.parse(jsonString);
 
-        return {
-          txId: tx.txid,
-          agreement: agreementData,
-          timestamp: tx.time || Date.now() / 1000,
-        };
+				// Convert proofs object to Map if present (Zod expects it)
+				if (parsed.proofs && typeof parsed.proofs === "object") {
+					parsed.proofs = new Map(Object.entries(parsed.proofs));
+				}
 
-      } catch (e) {
-        console.error("Invalid DAIA data in output, skipping", e);
-      }
-    }
+				const txData = DaiaTransactionDataSchema.parse(parsed);
+				if (txData.type !== DaiaTransactionDataType.AGREEMENT) {
+					continue;
+				}
 
-    return null;
-  }
+				const agreement = txData.agreement;
+				const contentParsed = JSON.parse(agreement.offerContent.inner);
+				const offerContent = DaiaInnerOfferContentSchema.parse(contentParsed);
+
+				const agreementData: DaiaAgreementData = {
+					offerContentSerialized: agreement.offerContent.inner,
+					proofs: Object.fromEntries(Object.entries(agreement.proofs)),
+					naturalLanguageOfferContent: offerContent.naturalLanguageOfferContent,
+					requirements: Object.fromEntries(Object.entries(offerContent.requirements)),
+				};
+
+				return {
+					txId: tx.txid,
+					agreement: agreementData,
+					timestamp: tx.time || Date.now() / 1000,
+				};
+			} catch (e) {
+				console.error("Invalid DAIA data in output, skipping", e);
+			}
+		}
+
+		return null;
+	}
 }
 
 export const daiaTransactionService = new DaiaTransactionService();

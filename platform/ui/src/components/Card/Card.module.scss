@@ -1,60 +1,59 @@
-@use '../../styles/tailwind-vars' as tv; 
+@use "../../styles/tailwind-vars" as tv;
 
 .cardContainer {
-    margin-top: tv.$spacing-12;
-    margin-bottom: tv.$spacing-10;
-    background-color: tv.$white;
-    padding: tv.$spacing-6; 
-    border-radius: 0.75rem; 
-    
-    transition: all 150ms ease-in-out;
-    box-shadow: tv.$shadow-xl; 
-    
-    border: 1px solid tv.$gray-100;
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    height: auto;
+	margin-top: tv.$spacing-12;
+	margin-bottom: tv.$spacing-10;
+	background-color: tv.$white;
+	padding: tv.$spacing-6;
+	border-radius: 0.75rem;
 
-    &:hover {
-        box-shadow: tv.$shadow-xl;
-    }
-    
-    @media (min-width: tv.$md) {
-        padding: tv.$spacing-8; 
-    }
+	transition: all 150ms ease-in-out;
+	box-shadow: tv.$shadow-xl;
+
+	border: 1px solid tv.$gray-100;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	height: auto;
+
+	&:hover {
+		box-shadow: tv.$shadow-xl;
+	}
+
+	@media (min-width: tv.$md) {
+		padding: tv.$spacing-8;
+	}
 }
 
 .iconWrapper {
-    width: 4rem;
-    height: 4rem;
-    background-color: tv.$gray-50;
-    border-radius: 50%;
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    margin-bottom: tv.$spacing-6;
-    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-    
-    color: tv.$gray-900; 
+	width: 4rem;
+	height: 4rem;
+	background-color: tv.$gray-50;
+	border-radius: 50%;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	margin-bottom: tv.$spacing-6;
+	box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+	color: tv.$gray-900;
 }
 
 .iconStyle {
-    width: 2rem;
-    height: 2rem;
+	width: 2rem;
+	height: 2rem;
 }
 
 .descriptionText {
-    max-width: 100%;
-    font-size: 16px; 
-    margin-bottom: tv.$spacing-6;
-    color: tv.$gray-900;
-    line-height: tv.$leading-tight;
-    font-family: 'Inter', sans-serif; 
-    font-weight: tv.$font-regular;
-  }
-  
+	max-width: 100%;
+	font-size: 16px;
+	margin-bottom: tv.$spacing-6;
+	color: tv.$gray-900;
+	line-height: tv.$leading-tight;
+	font-family: "Inter", sans-serif;
+	font-weight: tv.$font-regular;
+}

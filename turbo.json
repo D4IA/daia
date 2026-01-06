@@ -10,12 +10,15 @@
       "cache": false,
       "persistent": true
     },
+    "check:cached": {
+      "outputs": []
+    },
     "lint": {
       "outputs": []
     },
     "test": {
       "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
+      "outputs": []
     },
     "clean": {
       "cache": false

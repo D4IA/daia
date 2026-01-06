@@ -4,11 +4,7 @@ import type {
 	RawTransactionShortDetails,
 	TransactionHashPage,
 } from "../defines/fetcher";
-import {
-	TRANSACTIONS_PER_BATCH,
-	WhatsOnChainEndpoints,
-	type FetcherConfig,
-} from "./fetcherConfig";
+import { TRANSACTIONS_PER_BATCH, WhatsOnChainEndpoints, type FetcherConfig } from "./fetcherConfig";
 import { FetchThrottler } from "./fetchThrottler";
 import { chunkArray, promisePool } from "./fetcherUtils";
 import { BsvNetwork } from "./network";
@@ -17,26 +13,18 @@ import { BsvNetwork } from "./network";
  * WhatsOnChain implementation of BlockchainTransactionFetcher.
  * Fetches transaction data from the WhatsOnChain API with rate limiting.
  */
-export class WhatsOnChainTransactionFetcher
-	implements BlockchainTransactionFetcher
-{
+export class WhatsOnChainTransactionFetcher implements BlockchainTransactionFetcher {
 	private readonly endpoints: WhatsOnChainEndpoints;
 	private readonly throttler: FetchThrottler;
 	private readonly apiKey: string | undefined;
 
-	constructor(
-		network: BsvNetwork = BsvNetwork.MAIN,
-		config: FetcherConfig = {},
-	) {
+	constructor(network: BsvNetwork = BsvNetwork.MAIN, config: FetcherConfig = {}) {
 		this.endpoints = new WhatsOnChainEndpoints(network);
 		this.throttler = new FetchThrottler(config.rps);
 		this.apiKey = config.apiKey;
 	}
 
-	private async fetchJson<T>(
-		url: string,
-		options?: RequestInit,
-	): Promise<T | null> {
+	private async fetchJson<T>(url: string, options?: RequestInit): Promise<T | null> {
 		try {
 			const headers = new Headers(options?.headers);
 			if (this.apiKey) {
@@ -74,9 +62,7 @@ export class WhatsOnChainTransactionFetcher
 		);
 	}
 
-	async fetchBulkTransactionDetails(
-		txIds: string[],
-	): Promise<RawTransaction[]> {
+	async fetchBulkTransactionDetails(txIds: string[]): Promise<RawTransaction[]> {
 		const result = await this.fetchJson<RawTransaction[]>(
 			this.endpoints.getBulkTransactionDetails(),
 			{
@@ -87,9 +73,7 @@ export class WhatsOnChainTransactionFetcher
 		return result ?? [];
 	}
 
-	async fetchBulkRawTransactionData(
-		txIds: string[],
-	): Promise<RawTransactionShortDetails[]> {
+	async fetchBulkRawTransactionData(txIds: string[]): Promise<RawTransactionShortDetails[]> {
 		const result = await this.fetchJson<RawTransactionShortDetails[]>(
 			this.endpoints.getBulkRawTransactionData(),
 			{
@@ -100,9 +84,7 @@ export class WhatsOnChainTransactionFetcher
 		return result ?? [];
 	}
 
-	async fetchTransactionsByAddress(
-		address: string,
-	): Promise<RawTransaction[]> {
+	async fetchTransactionsByAddress(address: string): Promise<RawTransaction[]> {
 		// Collect all transaction hashes with pagination
 		const transactionHashes: string[] = [];
 		let pageToken: string | undefined = undefined;
@@ -140,4 +122,3 @@ export class WhatsOnChainTransactionFetcher
 
 // Re-export config types for convenience
 export type { FetcherConfig } from "./fetcherConfig";
-

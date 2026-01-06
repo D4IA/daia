@@ -1,40 +1,40 @@
-@use '../../styles/tailwind-vars' as tv; 
+@use "../../styles/tailwind-vars" as tv;
 
 .filterBarWrapper {
-    display: flex;
-    gap: 16px; 
-    margin-bottom: 50px;
-    justify-content: center;
-    width: 100%;
-    
-    @media (max-width: 767px) {
-        flex-direction: column;
-        gap: 10px;
-        padding: 0 10px;
-    }
-    
-    @media (min-width: tv.$md) {
-         max-width: tv.$max-w-1000px;
-         padding: 0 20px;
-    }
+	display: flex;
+	gap: 16px;
+	margin-bottom: 50px;
+	justify-content: center;
+	width: 100%;
+
+	@media (max-width: 767px) {
+		flex-direction: column;
+		gap: 10px;
+		padding: 0 10px;
+	}
+
+	@media (min-width: tv.$md) {
+		max-width: tv.$max-w-1000px;
+		padding: 0 20px;
+	}
 }
 
 .filterInput {
-    padding: 10px 15px;
-    border: 1px solid tv.$gray-300;
-    border-radius: 4px;
-    flex-grow: 1;
-    max-width: 45%; 
+	padding: 10px 15px;
+	border: 1px solid tv.$gray-300;
+	border-radius: 4px;
+	flex-grow: 1;
+	max-width: 45%;
 
-    background-color: white;
-    color: black;
-    
-    @media (max-width: 767px) {
-        max-width: 100%;
-    }
+	background-color: white;
+	color: black;
 
-    &:focus {
-        outline: none;
-        border-color: tv.$black; 
-    }
+	@media (max-width: 767px) {
+		max-width: 100%;
+	}
+
+	&:focus {
+		outline: none;
+		border-color: tv.$black;
+	}
 }

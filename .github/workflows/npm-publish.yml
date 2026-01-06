@@ -1,0 +1,79 @@
+name: Publish to NPM
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'libs/blockchain-bridge/package.json'
+      - 'libs/core/package.json'
+      - 'libs/langchain/package.json'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish NPM Packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm run build
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Publish blockchain-bridge
+        working-directory: ./libs/blockchain-bridge
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ $VERSION == *"SNAPSHOT"* ]]; then
+            pnpm publish --no-git-checks --access public --force --tag snapshot
+          else
+            pnpm publish --no-git-checks --access public --force
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish core
+        working-directory: ./libs/core
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ $VERSION == *"SNAPSHOT"* ]]; then
+            pnpm publish --no-git-checks --access public --force --tag snapshot
+          else
+            pnpm publish --no-git-checks --access public --force
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish langchain
+        working-directory: ./libs/langchain
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ $VERSION == *"SNAPSHOT"* ]]; then
+            pnpm publish --no-git-checks --access public --force --tag snapshot
+          else
+            pnpm publish --no-git-checks --access public --force
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

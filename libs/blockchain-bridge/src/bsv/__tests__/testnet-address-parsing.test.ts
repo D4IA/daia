@@ -8,7 +8,7 @@ describe("BsvTransactionParser - Testnet Address Parsing", () => {
 		// Step 1: Generate a private key for the recipient
 		const recipientPrivateKey = PrivateKey.fromRandom();
 		const recipientPublicKey = recipientPrivateKey.toPublicKey();
-		
+
 		// Step 2: Convert it to a testnet address
 		const testnetAddress = recipientPublicKey.toAddress("test");
 		const paymentAmount = 5000;
@@ -49,10 +49,10 @@ describe("BsvTransactionParser - Testnet Address Parsing", () => {
 		// Step 5: Verify that payments field matches the input
 		expect(parsed.data.payments).toHaveProperty(testnetAddress);
 		expect(parsed.data.payments[testnetAddress]).toBe(paymentAmount);
-		
+
 		// Ensure it's actually a testnet address (starts with 'm' or 'n')
 		expect(testnetAddress[0]).toMatch(/[mn]/);
-		
+
 		// Verify only one payment entry
 		expect(Object.keys(parsed.data.payments)).toHaveLength(1);
 	});

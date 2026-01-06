@@ -76,7 +76,10 @@ export function createCarEnterAgentGraph(adapter: CarEnterAgentAdapter) {
 
 			// TODO: assert that offer is signed by the gate and has a requirement for our signature with proper public key
 
-			const decision = await adapter.considerOffer(result.content.naturalLanguageOfferContent, state.conversationHistory);
+			const decision = await adapter.considerOffer(
+				result.content.naturalLanguageOfferContent,
+				state.conversationHistory,
+			);
 
 			if (decision.accepted) {
 				const signResponse = await adapter.getSigner().signOffer({

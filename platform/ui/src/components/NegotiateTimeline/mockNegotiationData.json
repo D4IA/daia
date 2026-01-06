@@ -1,37 +1,37 @@
 [
-  {
-    "id": 1,
-    "agreementType": "Parking Agreement",
-    "createdAt": "Jan 15 2025, 14:30:22",
-    "members": [
-      { "id": 1, "name": "Wallet Address 1", "color": "purple" },
-      { "id": 2, "name": "Wallet Address 2", "color": "green" }
-    ],
-    "proposer": {
-      "status": "Publishing on blockchain",
-      "transactionHash": "0x8f2a5c7e9b1d4a6c8e0e"
-    },
-    "responder": {
-      "status": "Published on blockchain",
-      "transactionHash": "0x8f2a5c7e9b1d4a6c8e0f"
-    },
-    "timelineEvents": [
-      {
-        "id": 1,
-        "walletAddress": "Parking Gate",
-        "action": "Proposing an offer",
-        "transactionHash": "0x8f2a5c7e9b1d4a6c8e0e",
-        "timestamp": "Apr 21 2025, 13:15:20",
-        "colorClass": "colorBlue"
-      },
-      {
-        "id": 2,
-        "walletAddress": "Smart Vehicle",
-        "action": "Accepting offer",
-        "transactionHash": "0x8f2a5c7e9b1d4a6c8e0f",
-        "timestamp": "Apr 21 2025, 13:15:35",
-        "colorClass": "colorGreen"
-      }
-    ]
-  }
+	{
+		"id": 1,
+		"agreementType": "Parking Agreement",
+		"createdAt": "Jan 15 2025, 14:30:22",
+		"members": [
+			{ "id": 1, "name": "Wallet Address 1", "color": "purple" },
+			{ "id": 2, "name": "Wallet Address 2", "color": "green" }
+		],
+		"proposer": {
+			"status": "Publishing on blockchain",
+			"transactionHash": "0x8f2a5c7e9b1d4a6c8e0e"
+		},
+		"responder": {
+			"status": "Published on blockchain",
+			"transactionHash": "0x8f2a5c7e9b1d4a6c8e0f"
+		},
+		"timelineEvents": [
+			{
+				"id": 1,
+				"walletAddress": "Parking Gate",
+				"action": "Proposing an offer",
+				"transactionHash": "0x8f2a5c7e9b1d4a6c8e0e",
+				"timestamp": "Apr 21 2025, 13:15:20",
+				"colorClass": "colorBlue"
+			},
+			{
+				"id": 2,
+				"walletAddress": "Smart Vehicle",
+				"action": "Accepting offer",
+				"transactionHash": "0x8f2a5c7e9b1d4a6c8e0f",
+				"timestamp": "Apr 21 2025, 13:15:35",
+				"colorClass": "colorGreen"
+			}
+		]
+	}
 ]

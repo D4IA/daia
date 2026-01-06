@@ -109,7 +109,5 @@ export interface BlockchainTransactionFetcher {
 	 * @param txIds Array of transaction IDs
 	 * @returns Array of short transaction details with hex
 	 */
-	fetchBulkRawTransactionData(
-		txIds: string[],
-	): Promise<RawTransactionShortDetails[]>;
+	fetchBulkRawTransactionData(txIds: string[]): Promise<RawTransactionShortDetails[]>;
 }

@@ -1,12 +1,19 @@
 {
   "name": "@d4ia/ui",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.1-SNAPSHOT.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint ./src --max-warnings 0",
+    "lint:check": "eslint ./src --max-warnings 0",
+    "lint:fix": "eslint ./src --fix",
+    "format:check": "prettier ./src --check",
+    "format:check:cached": "prettier ./src --check --cache",
+    "format:fix": "prettier ./src --write",
+    "fix": "npm run format:fix && npm run lint:fix",
+    "check:cached": "npm run lint:check && npm run format:check:cached",
     "preview": "vite preview"
   },
   "dependencies": {

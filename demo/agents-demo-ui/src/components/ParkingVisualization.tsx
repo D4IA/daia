@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 // State types
 export interface CarConfig {
-	licensePlate: string
-	color: string
-	parkedAt: Date
+	licensePlate: string;
+	color: string;
+	parkedAt: Date;
 }
 
 export interface ParkingState {
-	cars: CarConfig[]
-	gateOpen: boolean
+	cars: CarConfig[];
+	gateOpen: boolean;
 }
 
 interface ParkingVisualizationProps {
-	parkingState: ParkingState
-	onEnterParking: (licensePlate: string) => void
-	onLeaveParking: (licensePlate: string) => void
-	onConfigureNewCar: () => void
-	onOpenGateSettings: () => void
-	onOpenCarSettings: (licensePlate: string) => void
+	parkingState: ParkingState;
+	onEnterParking: (licensePlate: string) => void;
+	onLeaveParking: (licensePlate: string) => void;
+	onConfigureNewCar: () => void;
+	onOpenGateSettings: () => void;
+	onOpenCarSettings: (licensePlate: string) => void;
 }
 
 export const ParkingVisualization = ({
@@ -28,32 +28,32 @@ export const ParkingVisualization = ({
 	onOpenGateSettings,
 	onOpenCarSettings,
 }: ParkingVisualizationProps) => {
-	const [selectedCar, setSelectedCar] = useState<CarConfig | null>(null)
-	const [currentTime, setCurrentTime] = useState(new Date())
+	const [selectedCar, setSelectedCar] = useState<CarConfig | null>(null);
+	const [currentTime, setCurrentTime] = useState(new Date());
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			setCurrentTime(new Date())
-		}, 1000)
+			setCurrentTime(new Date());
+		}, 1000);
 
-		return () => clearInterval(interval)
-	}, [])
+		return () => clearInterval(interval);
+	}, []);
 
 	const getParkedDurationMinutes = (parkedAt: Date): number => {
-		const durationMs = currentTime.getTime() - parkedAt.getTime()
-		return Math.floor(durationMs / (1000 * 60))
-	}
+		const durationMs = currentTime.getTime() - parkedAt.getTime();
+		return Math.floor(durationMs / (1000 * 60));
+	};
 
 	const handleCarClick = (car: CarConfig) => {
-		setSelectedCar(car)
-	}
+		setSelectedCar(car);
+	};
 
 	const handleLeave = () => {
 		if (selectedCar) {
-			onLeaveParking(selectedCar.licensePlate)
-			setSelectedCar(null)
+			onLeaveParking(selectedCar.licensePlate);
+			setSelectedCar(null);
 		}
-	}
+	};
 
 	return (
 		<div className="flex gap-8 h-screen p-8">
@@ -62,33 +62,21 @@ export const ParkingVisualization = ({
 				<div className="card bg-base-100 shadow-xl">
 					<div className="card-body">
 						<h2 className="card-title">Parking Control</h2>
-						<button
-							className="btn btn-primary"
-							onClick={onConfigureNewCar}
-						>
+						<button className="btn btn-primary" onClick={onConfigureNewCar}>
 							+ Configure New Car
 						</button>{" "}
-						<button
-							className="btn btn-secondary"
-							onClick={onOpenGateSettings}
-						>
+						<button className="btn btn-secondary" onClick={onOpenGateSettings}>
 							⚙️ Gate Settings
 						</button>{" "}
 						<div className="divider"></div>
 						<div className="stats stats-vertical shadow">
 							<div className="stat">
 								<div className="stat-title">Total Cars</div>
-								<div className="stat-value">
-									{parkingState.cars.length}
-								</div>
+								<div className="stat-value">{parkingState.cars.length}</div>
 							</div>
 							<div className="stat">
 								<div className="stat-title">Gate Status</div>
-								<div className="stat-value text-sm">
-									{parkingState.gateOpen
-										? "🟢 Open"
-										: "🔴 Closed"}
-								</div>
+								<div className="stat-value text-sm">{parkingState.gateOpen ? "🟢 Open" : "🔴 Closed"}</div>
 							</div>
 						</div>
 					</div>
@@ -101,8 +89,7 @@ export const ParkingVisualization = ({
 							<h2 className="card-title">Car Details</h2>
 							<div className="space-y-2">
 								<p>
-									<strong>License Plate:</strong>{" "}
-									{selectedCar.licensePlate}
+									<strong>License Plate:</strong> {selectedCar.licensePlate}
 								</p>
 								<p>
 									<strong>Color:</strong>{" "}
@@ -114,40 +101,26 @@ export const ParkingVisualization = ({
 									></span>
 								</p>
 								<p>
-									<strong>Parked At:</strong>{" "}
-									{selectedCar.parkedAt.toLocaleTimeString()}
+									<strong>Parked At:</strong> {selectedCar.parkedAt.toLocaleTimeString()}
 								</p>
 								<p>
 									<strong>Duration:</strong>{" "}
 									<span className="badge badge-info">
-										{getParkedDurationMinutes(
-											selectedCar.parkedAt,
-										)}{" "}
-										minutes
+										{getParkedDurationMinutes(selectedCar.parkedAt)} minutes
 									</span>
 								</p>
 							</div>
 							<div className="card-actions justify-end mt-4">
 								<button
 									className="btn btn-info"
-									onClick={() =>
-										onOpenCarSettings(
-											selectedCar.licensePlate,
-										)
-									}
+									onClick={() => onOpenCarSettings(selectedCar.licensePlate)}
 								>
 									⚙️ Car Settings
 								</button>
-								<button
-									className="btn btn-warning"
-									onClick={handleLeave}
-								>
+								<button className="btn btn-warning" onClick={handleLeave}>
 									Leave Parking
 								</button>
-								<button
-									className="btn btn-ghost"
-									onClick={() => setSelectedCar(null)}
-								>
+								<button className="btn btn-ghost" onClick={() => setSelectedCar(null)}>
 									Close
 								</button>
 							</div>
@@ -159,13 +132,9 @@ export const ParkingVisualization = ({
 			{/* Center - Gate */}
 			<div className="w-1/6 flex flex-col items-center justify-center">
 				<div className="text-center">
-					<div className="text-6xl mb-4">
-						{parkingState.gateOpen ? "🚧" : "🚪"}
-					</div>
+					<div className="text-6xl mb-4">{parkingState.gateOpen ? "🚧" : "🚪"}</div>
 					<h3 className="text-xl font-bold">GATE</h3>
-					<div
-						className={`badge ${parkingState.gateOpen ? "badge-success" : "badge-error"} mt-2`}
-					>
+					<div className={`badge ${parkingState.gateOpen ? "badge-success" : "badge-error"} mt-2`}>
 						{parkingState.gateOpen ? "OPEN" : "CLOSED"}
 					</div>
 				</div>
@@ -179,23 +148,14 @@ export const ParkingVisualization = ({
 						<div
 							key={car.licensePlate}
 							className={`card bg-base-200 shadow cursor-pointer hover:shadow-2xl transition-all ${
-								selectedCar?.licensePlate === car.licensePlate
-									? "ring-4 ring-primary"
-									: ""
+								selectedCar?.licensePlate === car.licensePlate ? "ring-4 ring-primary" : ""
 							}`}
 							onClick={() => handleCarClick(car)}
 						>
 							<div className="card-body p-4">
-								<div className="text-5xl text-center mb-2">
-									🚗
-								</div>
-								<h3 className="font-bold text-center text-sm">
-									{car.licensePlate}
-								</h3>
-								<div
-									className="w-full h-4 rounded mt-2"
-									style={{ backgroundColor: car.color }}
-								></div>{" "}
+								<div className="text-5xl text-center mb-2">🚗</div>
+								<h3 className="font-bold text-center text-sm">{car.licensePlate}</h3>
+								<div className="w-full h-4 rounded mt-2" style={{ backgroundColor: car.color }}></div>{" "}
 								<div className="text-xs text-center mt-2 text-base-content/70">
 									{getParkedDurationMinutes(car.parkedAt)} min
 								</div>{" "}
@@ -211,5 +171,5 @@ export const ParkingVisualization = ({
 				)}
 			</div>
 		</div>
-	)
-}
+	);
+};

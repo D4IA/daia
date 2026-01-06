@@ -1,116 +1,116 @@
-@use '../../styles/tailwind-vars' as tv;
+@use "../../styles/tailwind-vars" as tv;
 
 .itemContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: tv.$white;
-  border: 1px solid tv.$gray-100;
-  border-radius: tv.$spacing-2;
-  padding: tv.$spacing-4 tv.$spacing-6;
-  margin-bottom: tv.$spacing-4;
-  cursor: pointer;
-  transition: background-color 0.15s ease-in-out;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: tv.$white;
+	border: 1px solid tv.$gray-100;
+	border-radius: tv.$spacing-2;
+	padding: tv.$spacing-4 tv.$spacing-6;
+	margin-bottom: tv.$spacing-4;
+	cursor: pointer;
+	transition: background-color 0.15s ease-in-out;
 
-  &:hover {
-    background-color: tv.$gray-50;
-  }
+	&:hover {
+		background-color: tv.$gray-50;
+	}
 }
 
 .itemContent {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
 }
 
 .mainInfo {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 
-  gap: tv.$spacing-4;
-  flex-wrap: wrap;
+	gap: tv.$spacing-4;
+	flex-wrap: wrap;
 }
 
 .titleText {
-  font-size: tv.$text-lg;
-  font-weight: tv.$font-regular;
-  color: tv.$gray-900;
-  word-break: break-word;
-  flex-shrink: 1;
-  flex-grow: 0;
-  min-width: 0;
+	font-size: tv.$text-lg;
+	font-weight: tv.$font-regular;
+	color: tv.$gray-900;
+	word-break: break-word;
+	flex-shrink: 1;
+	flex-grow: 0;
+	min-width: 0;
 }
 
 .statusBadge {
-  display: flex;
-  align-items: center;
-  border-radius: 9999px;
-  padding: 0.25rem 0.6rem;
-  font-size: 0.8rem;
-  font-weight: tv.$font-regular;
-  white-space: nowrap;
+	display: flex;
+	align-items: center;
+	border-radius: 9999px;
+	padding: 0.25rem 0.6rem;
+	font-size: 0.8rem;
+	font-weight: tv.$font-regular;
+	white-space: nowrap;
 
-  @media (max-width: 640px) {
-    display: none;
-  }
+	@media (max-width: 640px) {
+		display: none;
+	}
 }
 
 .statusIconImage {
-  width: 0.75rem;
-  height: 0.75rem;
-  margin-right: 0.25rem;
+	width: 0.75rem;
+	height: 0.75rem;
+	margin-right: 0.25rem;
 }
 
 .mobileStatusText {
-  display: none;
-  font-size: 0.8rem;
-  margin-top: 0.2rem;
+	display: none;
+	font-size: 0.8rem;
+	margin-top: 0.2rem;
 
-  @media (max-width: 640px) {
-    display: block;
-  }
+	@media (max-width: 640px) {
+		display: block;
+	}
 }
 
 .badgeSuccess {
-  background-color: #e6ffed;
-  color: #38a169;
-  .statusIconImage {
-    filter: invert(30%) sepia(80%) saturate(1500%) hue-rotate(80deg);
-  }
+	background-color: #e6ffed;
+	color: #38a169;
+	.statusIconImage {
+		filter: invert(30%) sepia(80%) saturate(1500%) hue-rotate(80deg);
+	}
 }
 .badgeFailed {
-  background-color: #ffeaea;
-  color: #e53e3e;
-  .statusIconImage {
-    filter: invert(20%) sepia(80%) saturate(4000%) hue-rotate(340deg);
-  }
+	background-color: #ffeaea;
+	color: #e53e3e;
+	.statusIconImage {
+		filter: invert(20%) sepia(80%) saturate(4000%) hue-rotate(340deg);
+	}
 }
 .badgeVerifying {
-  background-color: #e6f0ff;
-  color: #4c7cff;
+	background-color: #e6f0ff;
+	color: #4c7cff;
 }
 
 .textSuccess {
-  color: #38a169;
+	color: #38a169;
 }
 .textFailed {
-  color: #e53e3e;
+	color: #e53e3e;
 }
 .textVerifying {
-  color: #4c7cff;
+	color: #4c7cff;
 }
 
 .dateText {
-  font-size: 0.875rem;
-  color: tv.$gray-600;
-  margin-top: 0.25rem;
+	font-size: 0.875rem;
+	color: tv.$gray-600;
+	margin-top: 0.25rem;
 }
 
 .arrowIcon {
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-  color: tv.$gray-500;
-  margin-left: tv.$spacing-4;
+	width: 1.5rem;
+	height: 1.5rem;
+	flex-shrink: 0;
+	color: tv.$gray-500;
+	margin-left: tv.$spacing-4;
 }

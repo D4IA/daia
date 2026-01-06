@@ -1,6 +1,6 @@
 {
   "name": "daia",
-  "version": "0.0.1-pre-release",
+  "version": "0.0.1-pre-release-SNAPSHOT.1",
   "private": true,
   "workspaces": [
     "libs/*",
@@ -16,6 +16,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "check:cached": "turbo run check:cached",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "clean": "turbo run clean",

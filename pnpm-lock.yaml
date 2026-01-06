@@ -155,91 +155,6 @@ importers:
         specifier: 3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.10.4)(jiti@1.21.7)(jsdom@27.2.0)(lightningcss@1.30.2)(sass-embedded@1.89.2)(sass@1.97.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
-  demo/agents-demos-backend:
-    dependencies:
-      '@d4ia/blockchain-bridge':
-        specifier: workspace:*
-        version: link:../../libs/blockchain-bridge
-      '@d4ia/core':
-        specifier: workspace:*
-        version: link:../../libs/core
-      '@d4ia/langchain':
-        specifier: workspace:*
-        version: link:../../libs/langchain
-      '@langchain/core':
-        specifier: ~1.1.7
-        version: 1.1.7(openai@6.15.0(ws@8.18.3)(zod@4.1.13))
-      '@langchain/langgraph':
-        specifier: ~1.0.7
-        version: 1.0.7(@langchain/core@1.1.7(openai@6.15.0(ws@8.18.3)(zod@4.1.13)))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(zod-to-json-schema@3.25.0(zod@4.1.13))(zod@4.1.13)
-      '@langchain/openai':
-        specifier: ~1.2.0
-        version: 1.2.0(@langchain/core@1.1.7(openai@6.15.0(ws@8.18.3)(zod@4.1.13)))(ws@8.18.3)
-      express:
-        specifier: ~5.2.1
-        version: 5.2.1
-    devDependencies:
-      '@bsv/sdk':
-        specifier: ~1.9.29
-        version: 1.9.29
-      '@eslint/js':
-        specifier: ^9.26.0
-        version: 9.39.2
-      '@types/express':
-        specifier: ~5.0.6
-        version: 5.0.6
-      '@types/node':
-        specifier: ^24.8.1
-        version: 24.10.4
-      '@typescript-eslint/parser':
-        specifier: ^8.32.0
-        version: 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-      '@vitest/coverage-istanbul':
-        specifier: ~3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
-      dotenv:
-        specifier: ~17.2.3
-        version: 17.2.3
-      eslint:
-        specifier: ^9.26.0
-        version: 9.39.2(jiti@2.6.1)
-      eslint-config-prettier:
-        specifier: ^10.0.1
-        version: 10.1.8(eslint@9.39.2(jiti@2.6.1))
-      eslint-plugin-unused-imports:
-        specifier: ^4.1.4
-        version: 4.3.0(@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))
-      globals:
-        specifier: ^16.1.0
-        version: 16.5.0
-      jsdom:
-        specifier: ~27.2.0
-        version: 27.2.0
-      prettier:
-        specifier: ^3.5.3
-        version: 3.6.2
-      prettier-plugin-organize-imports:
-        specifier: ^4.1.0
-        version: 4.3.0(prettier@3.6.2)(typescript@5.9.3)
-      rimraf:
-        specifier: ~6.0.1
-        version: 6.0.1
-      tsx:
-        specifier: ~4.21.0
-        version: 4.21.0
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-      typescript-eslint:
-        specifier: ^8.32.0
-        version: 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-      vitest:
-        specifier: 3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1)(sugarss@4.0.1(postcss@8.5.6))(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
-      zod:
-        specifier: ~4.1.13
-        version: 4.1.13
-
   libs/agents-demos:
     dependencies:
       '@d4ia/blockchain-bridge':
@@ -547,6 +462,9 @@ importers:
         specifier: ^5.1.0
         version: 5.2.1
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.26.0
+        version: 9.39.2
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -556,6 +474,27 @@ importers:
       '@types/node':
         specifier: ^24.8.1
         version: 24.10.4
+      '@typescript-eslint/parser':
+        specifier: ^8.32.0
+        version: 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      eslint:
+        specifier: ^9.26.0
+        version: 9.39.2(jiti@2.6.1)
+      eslint-config-prettier:
+        specifier: ^10.0.1
+        version: 10.1.8(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-unused-imports:
+        specifier: ^4.1.4
+        version: 4.3.0(@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))
+      globals:
+        specifier: ^16.1.0
+        version: 16.5.0
+      prettier:
+        specifier: ^3.5.3
+        version: 3.6.2
+      prettier-plugin-organize-imports:
+        specifier: ^4.1.0
+        version: 4.3.0(prettier@3.6.2)(typescript@5.9.3)
       rimraf:
         specifier: ~6.0.1
         version: 6.0.1
@@ -565,6 +504,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      typescript-eslint:
+        specifier: ^8.32.0
+        version: 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
 
   platform/ui:
     dependencies:

@@ -6,49 +6,49 @@ $white: #ffffff;
 $gray-100: #f3f4f6;
 $gray-400: #9ca3af;
 $gray-900: #111827;
-$blue-600: #2563eb;   
-$green-600: #10b981; 
-$blue-bg: #eff6ff;    
-$green-bg: #d1fae5;   
+$blue-600: #2563eb;
+$green-600: #10b981;
+$blue-bg: #eff6ff;
+$green-bg: #d1fae5;
 $text-lg: 1rem;
 $text-sm: 0.875rem;
 $font-medium: 500;
 $font-semibold: 600;
 
 .cardWrapper {
-    width: 100%;
-    max-width: 450px;
-    box-sizing: border-box;
-    
-    background-color: $white;
-    padding: $spacing-6;
-    border-radius: $spacing-2;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    border: 1px solid $gray-100;
+	width: 100%;
+	max-width: 450px;
+	box-sizing: border-box;
 
-    @media (max-width: 480px) {
-        padding: $spacing-4;
-    }
+	background-color: $white;
+	padding: $spacing-6;
+	border-radius: $spacing-2;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	border: 1px solid $gray-100;
+
+	@media (max-width: 480px) {
+		padding: $spacing-4;
+	}
 }
 
 .cardHeader {
-    display: flex;
-    align-items: center;
-    margin-bottom: $spacing-4;
+	display: flex;
+	align-items: center;
+	margin-bottom: $spacing-4;
 }
 
 .icon {
-    width: $spacing-6;
-    height: $spacing-6;
-    color: $gray-900;
-    margin-right: $spacing-2;
+	width: $spacing-6;
+	height: $spacing-6;
+	color: $gray-900;
+	margin-right: $spacing-2;
 }
 
 .cardTitle {
-    font-size: $text-lg; 
-    font-weight: $font-medium;
-    color: $gray-900;
-    margin: 0;
+	font-size: $text-lg;
+	font-weight: $font-medium;
+	color: $gray-900;
+	margin: 0;
 }
 
 .cardBody {
@@ -56,63 +56,63 @@ $font-semibold: 600;
 
 .walletAddressBlue,
 .walletAddressGreen {
-    padding: $spacing-2 $spacing-4;
-    border-radius: $spacing-1;
-    font-size: $text-lg;
-    font-weight: $font-semibold;
-    margin-bottom: $spacing-2;
-    cursor: pointer;
-    transition: background-color 0.15s;
+	padding: $spacing-2 $spacing-4;
+	border-radius: $spacing-1;
+	font-size: $text-lg;
+	font-weight: $font-semibold;
+	margin-bottom: $spacing-2;
+	cursor: pointer;
+	transition: background-color 0.15s;
 }
 
 .walletAddressBlue {
-    background-color: $blue-bg;
-    color: $blue-600;
+	background-color: $blue-bg;
+	color: $blue-600;
 }
 
 .walletAddressGreen {
-    background-color: $green-bg;
-    color: $green-600;
+	background-color: $green-bg;
+	color: $green-600;
 }
 
 .detailSection {
-    &:not(:last-child) {
-        margin-bottom: $spacing-6;
-    }
+	&:not(:last-child) {
+		margin-bottom: $spacing-6;
+	}
 }
 
 .detailTitle {
-    font-size: $text-lg;
-    font-weight: $font-medium;
-    color: $gray-900;
-    margin-top: 0;
-    margin-bottom: $spacing-2;
+	font-size: $text-lg;
+	font-weight: $font-medium;
+	color: $gray-900;
+	margin-top: 0;
+	margin-bottom: $spacing-2;
 }
 
 .statusLine {
-    display: flex;
-    justify-content: space-between;
-    font-size: $text-sm;
-    margin-bottom: $spacing-1;
-    line-height: 1.5;
+	display: flex;
+	justify-content: space-between;
+	font-size: $text-sm;
+	margin-bottom: $spacing-1;
+	line-height: 1.5;
 }
 
 .statusLabel {
-    color: $gray-400;
+	color: $gray-400;
 }
 
 .statusBlue {
-    font-weight: $font-semibold;
-    color: $blue-600;
+	font-weight: $font-semibold;
+	color: $blue-600;
 }
 
 .statusGreen {
-    font-weight: $font-semibold;
-    color: $green-600;
+	font-weight: $font-semibold;
+	color: $green-600;
 }
 
 .transactionHash {
-    color: $gray-900;
-    font-weight: $font-semibold;
-    font-family: monospace; 
+	color: $gray-900;
+	font-weight: $font-semibold;
+	font-family: monospace;
 }

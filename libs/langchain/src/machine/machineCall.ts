@@ -3,7 +3,7 @@ import {
 	DaiaMessage,
 	DaiaMessageType,
 	DaiaMessageUtil,
-	DaiaTransferOfferContent
+	DaiaTransferOfferContent,
 } from "@d4ia/core";
 import { Draft, produce } from "immer";
 import { DaiaLanggraphMethodCall, DaiaLanggraphMethodId, DaiaLanggraphState } from "../state";

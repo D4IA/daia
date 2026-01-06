@@ -34,9 +34,9 @@ export class DefaultDaiaAgreementVerifier implements DaiaAgreementVerifier {
 
 		// Try to parse as DaiaTransactionData first (wrapped format, as stored by signer)
 		const transactionData = JsonUtils.parseNoThrow(tx.data.customData, DaiaTransactionDataSchema);
-		
+
 		let agreement = null;
-		
+
 		if (transactionData) {
 			// Successfully parsed as DaiaTransactionData
 			if (transactionData.type === DaiaTransactionDataType.AGREEMENT) {

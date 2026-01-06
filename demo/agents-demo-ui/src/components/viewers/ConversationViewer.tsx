@@ -1,84 +1,72 @@
-import type { CarGateSimulationEvent } from "@d4ia/agents-demos"
-import { CarGateSimulationEventType } from "@d4ia/agents-demos"
-import { DaiaMessageUtil } from "@d4ia/core"
-import { useEffect, useRef, useState } from "react"
-import { DaiaMessageViewer } from "./DaiaMessageViewer"
+import type { CarGateSimulationEvent } from "@d4ia/agents-demos";
+import { CarGateSimulationEventType } from "@d4ia/agents-demos";
+import { DaiaMessageUtil } from "@d4ia/core";
+import { useEffect, useRef, useState } from "react";
+import { DaiaMessageViewer } from "./DaiaMessageViewer";
 
 // Re-export types from agents-demos for convenience
-export { CarGateSimulationEventType }
-export type { CarGateSimulationEvent }
+export { CarGateSimulationEventType };
+export type { CarGateSimulationEvent };
 
 interface ConversationViewerProps {
-	events: CarGateSimulationEvent[]
-	title?: string
+	events: CarGateSimulationEvent[];
+	title?: string;
 }
 
 export const ConversationViewer = ({
 	events,
 	title = "Agent Conversation",
 }: ConversationViewerProps) => {
-	const messagesEndRef = useRef<HTMLDivElement>(null)
-	const [autoScroll, setAutoScroll] = useState(true)
+	const messagesEndRef = useRef<HTMLDivElement>(null);
+	const [autoScroll, setAutoScroll] = useState(true);
 
 	useEffect(() => {
 		if (autoScroll) {
-			messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+			messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 		}
-	}, [events, autoScroll])
+	}, [events, autoScroll]);
 
 	const tryParseDaiaMessage = (message: string) => {
 		try {
 			if (DaiaMessageUtil.isDaiaMessage(message)) {
-				return DaiaMessageUtil.deserialize(message)
+				return DaiaMessageUtil.deserialize(message);
 			}
 		} catch {
 			// If parsing fails, return null
 		}
-		return null
-	}
+		return null;
+	};
 
 	const renderEvent = (event: CarGateSimulationEvent, index: number) => {
 		switch (event.type) {
 			case CarGateSimulationEventType.GATE_TO_CAR_MESSAGE: {
-				const daiaMessage = tryParseDaiaMessage(event.message)
+				const daiaMessage = tryParseDaiaMessage(event.message);
 				return (
 					<div key={index} className="chat chat-start">
 						<div className="chat-header">
 							🚪 Gate
-							<time className="text-xs opacity-50 ml-2">
-								{new Date().toLocaleTimeString()}
-							</time>
+							<time className="text-xs opacity-50 ml-2">{new Date().toLocaleTimeString()}</time>
 						</div>
 						<div className="chat-bubble chat-bubble-primary">
-							{daiaMessage ? (
-								<DaiaMessageViewer message={daiaMessage} />
-							) : (
-								event.message
-							)}
+							{daiaMessage ? <DaiaMessageViewer message={daiaMessage} /> : event.message}
 						</div>
 					</div>
-				)
+				);
 			}
 
 			case CarGateSimulationEventType.CAR_TO_GATE_MESSAGE: {
-				const daiaMessage = tryParseDaiaMessage(event.message)
+				const daiaMessage = tryParseDaiaMessage(event.message);
 				return (
 					<div key={index} className="chat chat-end">
 						<div className="chat-header">
 							🚗 Car
-							<time className="text-xs opacity-50 ml-2">
-								{new Date().toLocaleTimeString()}
-							</time>
+							<time className="text-xs opacity-50 ml-2">{new Date().toLocaleTimeString()}</time>
 						</div>
 						<div className="chat-bubble chat-bubble-secondary">
-							{daiaMessage ? (
-								<DaiaMessageViewer message={daiaMessage} />
-							) : (
-								event.message
-							)}
+							{daiaMessage ? <DaiaMessageViewer message={daiaMessage} /> : event.message}
 						</div>
 					</div>
-				)
+				);
 			}
 
 			case CarGateSimulationEventType.GATE_ACTION: {
@@ -86,17 +74,17 @@ export const ConversationViewer = ({
 					"let-in": "✅",
 					"let-out": "👋",
 					reject: "❌",
-				}[event.action]
+				}[event.action];
 				const actionText = {
 					"let-in": "Gate let the car IN",
 					"let-out": "Gate let the car OUT",
 					reject: "Gate REJECTED the car",
-				}[event.action]
+				}[event.action];
 				const actionColor = {
 					"let-in": "alert-success",
 					"let-out": "alert-info",
 					reject: "alert-error",
-				}[event.action]
+				}[event.action];
 
 				return (
 					<div key={index} className="flex justify-center my-4">
@@ -105,7 +93,7 @@ export const ConversationViewer = ({
 							<span className="font-bold">{actionText}</span>
 						</div>
 					</div>
-				)
+				);
 			}
 
 			case CarGateSimulationEventType.GATE_LOG:
@@ -116,7 +104,7 @@ export const ConversationViewer = ({
 							{event.message}
 						</div>
 					</div>
-				)
+				);
 
 			case CarGateSimulationEventType.CAR_LOG:
 				return (
@@ -126,7 +114,7 @@ export const ConversationViewer = ({
 							{event.message}
 						</div>
 					</div>
-				)
+				);
 
 			case CarGateSimulationEventType.SESSION_END:
 				return (
@@ -136,7 +124,7 @@ export const ConversationViewer = ({
 							<span>Session ended by {event.side}</span>
 						</div>
 					</div>
-				)
+				);
 
 			case CarGateSimulationEventType.MAX_TURNS_REACHED:
 				return (
@@ -146,7 +134,7 @@ export const ConversationViewer = ({
 							<span>Maximum turns reached: {event.turns}</span>
 						</div>
 					</div>
-				)
+				);
 
 			case CarGateSimulationEventType.CAR_ERROR:
 				return (
@@ -156,14 +144,12 @@ export const ConversationViewer = ({
 								<span className="text-2xl">🚗❌</span>
 								<div className="flex-1">
 									<h3 className="font-bold">Car Error</h3>
-									<div className="text-sm mt-1 break-words">
-										{event.error}
-									</div>
+									<div className="text-sm mt-1 break-words">{event.error}</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				)
+				);
 
 			case CarGateSimulationEventType.GATE_ERROR:
 				return (
@@ -173,19 +159,17 @@ export const ConversationViewer = ({
 								<span className="text-2xl">🚪❌</span>
 								<div className="flex-1">
 									<h3 className="font-bold">Gate Error</h3>
-									<div className="text-sm mt-1 break-words">
-										{event.error}
-									</div>
+									<div className="text-sm mt-1 break-words">{event.error}</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				)
+				);
 
 			default:
-				return null
+				return null;
 		}
-	}
+	};
 
 	return (
 		<div className="flex flex-col h-full">
@@ -203,9 +187,7 @@ export const ConversationViewer = ({
 							onChange={(e) => setAutoScroll(e.target.checked)}
 						/>
 					</label>
-					<div className="badge badge-neutral">
-						{events.length} events
-					</div>
+					<div className="badge badge-neutral">{events.length} events</div>
 				</div>
 			</div>
 
@@ -214,19 +196,15 @@ export const ConversationViewer = ({
 					<div className="flex flex-col items-center justify-center h-full text-base-content/50">
 						<div className="text-6xl mb-4">💬</div>
 						<p className="text-xl">No conversation yet</p>
-						<p className="text-sm mt-2">
-							Events will appear here as the agents communicate
-						</p>
+						<p className="text-sm mt-2">Events will appear here as the agents communicate</p>
 					</div>
 				) : (
 					<>
-						{events.map((event, index) =>
-							renderEvent(event, index),
-						)}
+						{events.map((event, index) => renderEvent(event, index))}
 						<div ref={messagesEndRef} />
 					</>
 				)}
 			</div>
 		</div>
-	)
-}
+	);
+};

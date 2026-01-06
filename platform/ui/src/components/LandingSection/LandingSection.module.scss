@@ -1,60 +1,60 @@
-@use '../../styles/tailwind-vars' as tv;
+@use "../../styles/tailwind-vars" as tv;
 
 .container {
-    width: 100%;
-    min-height: 70vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-left: tv.$spacing-4;
-    padding-right: tv.$spacing-4;
-    overflow: hidden;
-    position: relative;
-    background-color: tv.$gray-100;
+	width: 100%;
+	min-height: 70vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-left: tv.$spacing-4;
+	padding-right: tv.$spacing-4;
+	overflow: hidden;
+	position: relative;
+	background-color: tv.$gray-100;
 
-    @media (max-width: 640px) {
-        min-height: auto;
-        padding-top: tv.$spacing-16;
-        padding-bottom: tv.$spacing-16;
-    }
+	@media (max-width: 640px) {
+		min-height: auto;
+		padding-top: tv.$spacing-16;
+		padding-bottom: tv.$spacing-16;
+	}
 }
-  
+
 .dynamicBackground {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 0;
-    opacity: 1;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 0;
+	opacity: 1;
 }
 
 .landingContentPadding {
-    padding: tv.$spacing-10;
-    @media (max-width: 640px) {
-        padding: tv.$spacing-4;
-    }
+	padding: tv.$spacing-10;
+	@media (max-width: 640px) {
+		padding: tv.$spacing-4;
+	}
 }
 
 .title {
-    color: tv.$gray-900;
-    line-height: tv.$leading-tight;
-    font-family: 'Inter', sans-serif; 
-    font-weight: tv.$font-regular;
-    margin-bottom: 2rem;
+	color: tv.$gray-900;
+	line-height: tv.$leading-tight;
+	font-family: "Inter", sans-serif;
+	font-weight: tv.$font-regular;
+	margin-bottom: 2rem;
 
-    font-size: tv.$text-4xl; 
-    line-height: 1.1;
+	font-size: tv.$text-4xl;
+	line-height: 1.1;
 
-    @media (max-width: 640px) {
-        font-size: tv.$text-3xl;
-        margin-bottom: 1rem;
-        line-height: 1.2;
-    }
+	@media (max-width: 640px) {
+		font-size: tv.$text-3xl;
+		margin-bottom: 1rem;
+		line-height: 1.2;
+	}
 
-    @media (min-width: tv.$md) {
-        font-size: tv.$text-48px;
-        line-height: 1;
-    }
+	@media (min-width: tv.$md) {
+		font-size: tv.$text-48px;
+		line-height: 1;
+	}
 }

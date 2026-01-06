@@ -286,7 +286,7 @@ export class CarGateSimulationSession {
 
 			// Emit car's message to gate
 			onEvent({ type: CarGateSimulationEventType.CAR_TO_GATE_MESSAGE, message: carMessage });
-			
+
 			let gateResponse;
 			try {
 				gateResponse = await agents.gate.processInput(carMessage);
@@ -312,7 +312,7 @@ export class CarGateSimulationSession {
 					type: CarGateSimulationEventType.GATE_TO_CAR_MESSAGE,
 					message: gateResponse.content,
 				});
-				
+
 				let carResponse;
 				try {
 					carResponse = await agents.car.processInput(gateResponse.content);
