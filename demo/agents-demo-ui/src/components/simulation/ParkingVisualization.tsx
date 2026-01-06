@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 import { CarConfig, ParkingSimulationContext } from "../../context/ParkingSimulationContext";
 
 interface ParkingVisualizationProps {
@@ -33,9 +33,17 @@ export const ParkingVisualization = ({
 		return () => clearInterval(interval);
 	}, []);
 
-	const getParkedDurationMinutes = (parkedAt: Date): number => {
+	const formatDuration = (parkedAt: Date): string => {
 		const durationMs = currentTime.getTime() - parkedAt.getTime();
-		return Math.floor(durationMs / (1000 * 60));
+		const totalMinutes = Math.floor(durationMs / (1000 * 60));
+		const hours = Math.floor(totalMinutes / 60);
+		const minutes = totalMinutes % 60;
+
+		const parts: string[] = [];
+		if (hours > 0) parts.push(`${hours} hours`);
+		if (minutes > 0 || parts.length === 0) parts.push(`${minutes} minutes`);
+
+		return parts.join(" ");
 	};
 
 	const handleCarClick = (car: CarConfig) => {
@@ -49,6 +57,34 @@ export const ParkingVisualization = ({
 		}
 	};
 
+	const parkedCars = useMemo(() => {
+		return context.environment.getAllCars().filter((car) => car.memory.isParked);
+	}, [context]);
+
+	const selectedCarInfo = useMemo(() => {
+		if (!selectedCar) return null;
+		const car = context.environment
+			.getAllCars()
+			.find((car) => car.config.licensePlate === selectedCar.licensePlate);
+		return car;
+	}, [selectedCar, context.environment]);
+
+	useEffect(() => {
+		setSelectedCar((prev) => {
+			if (!prev) return null;
+			const car = context.environment
+				.getAllCars()
+				.find((c) => c.config.licensePlate === prev.licensePlate);
+			if (car) {
+				return {
+					...prev,
+					parkedAt: new Date(car.memory.getParkAgreement()?.parkTime ?? prev.parkedAt),
+				};
+			}
+			return prev;
+		});
+	}, [context]);
+
 	return (
 		<div className="flex flex-col lg:flex-row gap-6 md:h-[calc(100vh-2rem)] p-4 bg-base-200">
 			{/* Left Column - Controls & Stats */}
@@ -57,7 +93,7 @@ export const ParkingVisualization = ({
 				<div className="stats shadow bg-base-100 w-full">
 					<div className="stat place-items-center">
 						<div className="stat-title">Total Cars Parked</div>
-						<div className="stat-value text-primary">{displayData.totalCarsCount}</div>
+						<div className="stat-value text-primary">{parkedCars.length}</div>
 						<div className="stat-desc">Current occupancy</div>
 					</div>
 				</div>
@@ -127,17 +163,26 @@ export const ParkingVisualization = ({
 									</div>
 									<div className="text-xs text-base-content/70">
 										Parked at{" "}
-										{selectedCar.parkedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+										{selectedCar.parkedAt.toLocaleTimeString([], {
+											hour: "2-digit",
+											minute: "2-digit",
+											day: "2-digit",
+											month: "2-digit",
+											year: "2-digit",
+										})}
 									</div>
 								</div>
 							</div>
 
 							<div className="divider my-1"></div>
 
-							<div className="flex justify-between items-center text-sm mb-4">
+							<div className="flex justify-between items-center text-sm">
 								<span className="text-base-content/70">Duration</span>
-								<span className="font-bold font-mono">
-									{getParkedDurationMinutes(selectedCar.parkedAt)} min
+								<span className="font-bold font-mono">{formatDuration(selectedCar.parkedAt)}</span>
+							</div>
+							<div className="flex justify-between items-center text-sm mb-4">
+								<span className="text-base-content italic">
+									{selectedCarInfo?.memory.getParkAgreement()?.content}
 								</span>
 							</div>
 
@@ -206,7 +251,7 @@ export const ParkingVisualization = ({
 											{/* Bottom Info Bar */}
 											<div className="absolute bottom-0 inset-x-0 bg-base-100/90 backdrop-blur-sm p-2 flex justify-between items-center text-xs border-t border-base-200 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
 												<span className="font-semibold text-base-content/70">
-													{getParkedDurationMinutes(car.parkedAt)}m
+													{formatDuration(car.parkedAt)}
 												</span>
 												<div
 													className="w-3 h-3 rounded-full shadow-sm ring-1 ring-base-300"
