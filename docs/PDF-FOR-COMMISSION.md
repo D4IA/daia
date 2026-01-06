@@ -5,26 +5,66 @@
 - [Platforma Dowodowa](https://daiaui.teawithsand.com/) - Landing page oraz strona, na której można sprawdzić transakcje na blockchain - umowy zawarte między agentami.
 - [Dokumentacja](https://daiadocs.teawithsand.com/) - Dokumentacja.
 
-## Dane Logowania
+## Dane logowania
 - Login: `Jeffrey`
 - Hasło: `SerwerJestNaMojejTajnejWyspieUwU`
 
 ## Ograniczenia
-1. Demo zostało zaprojektowane z myślą o korzystaniu z niego na desktopie (nie telefonie/tablecie).
-2. Dostęp do strony jest og
+1. Demo jest przeznaczone do uruchamiania na komputerze (desktop). Interfejs nie jest dostosowany do telefonów ani tabletów.
+2. Dostęp do strony jest ograniczony do użytkowników posiadających dane logowania (podane powyżej).
 
-## Samodzielne Testowanie Demo
-1. Wejdź na [stronę z symulacją demo](https://daiademo.teawithsand.com/) i podaj dane logowania.
-2. Zapoznaj się z komunikatem.
-3. Utwórz agenta samochodu przez opcję "Configure new car" podążając zgodnie z instrukcjami. W najprostrzej wersji wybierz predefiniowany klucz.
-    - Tymczasowo zapisz w notatce klucz prywatny i adres publiczny portfela w infrastrukturze BSV widoczne na ekranie.
-4. Jeśli chcesz możesz zmodyfikować ustawienia agenta bramki parkingowej przez opcję "Gate settings".
-5. Powinieneś posiadać 1 pojazd. Możesz wybrać opcję "Enter parking" i wybrać utworzony pojazd przez opcję "select".
-6. Pojawi się ekran z widoczną konwersacją agentów: bramki parkingowej oraz samochodu.
-    - Agenci komunikują się tekstem naturalnym oraz za pośrednictwem protokołu DAIA - specjalnego formatu wiadomości.
-    - Strony nawiązują kontakt, rozpoczyna się negocjacja ceny (w demo waluta to satoshi - drobne składowe kryptowaluty BSV - odpowiednik BSV odpowiada złotym polskim, a satoshi groszom).
-    - Padają oferty od agenta bramki parkingowej. Jeśli któraś zostanie przyjęta przez agenta samochodu, zostaje nawiązana umowa między agentami na moment wjazdu oraz cenę za godzinę parkowania. Utrwalenie jej odbywa się przez transakcję na blokchain.
-    - Sesja kończy się po wjeździe samochodu na parking.
-7. Po zamknięciu widoku ("x" lub opcja "close") widok wraca do głównego dashboardu, na którym widać samochód na parkingu oraz to jak długo znajduje się na parkingu. 
-8. Po wybraniu samochodu można kliknąć opcję "leave parking". Wtedy ponownie agenci nawiązują konwersację widoczną na ekranie - obliczana jest należna płatność i realizowana jest transakcja. Po zweryfikowaniu pozystywnego przejścia płatności samochód opuszcza parking.
-9. Faktyczne transakcje na blockchain można sprawdzić za pośrednictwem publicznego adresu wyświetlonego w punkcie 3. na [platformie dowodowej](https://daiaui.teawithsand.com/) lub na niezależnej stronie [whatsonchain](https://test.whatsonchain.com/) (którego API wykorzystujemy).
+## Samodzielne testowanie demo
+
+1. Wejdź na stronę [demo](https://daiademo.teawithsand.com/) i zaloguj się przy użyciu podanych danych.
+
+2. Po zalogowaniu zapoznaj się z komunikatem startowym wyświetlonym przez aplikację.
+
+3. Utwórz agenta samochodu:
+   - wybierz **"Configure new car"**,
+   - postępuj zgodnie z instrukcjami,
+   - w najprostszej wersji wybierz **predefiniowany klucz**.
+
+   Po utworzeniu agenta:
+   - zapisz tymczasowo **adres publiczny portfela BSV**, które są widoczne na ekranie — będą używane do transakcji w trakcie symulacji.
+
+4. (Opcjonalnie) Możesz zmodyfikować ustawienia agenta bramki parkingowej poprzez **"Gate settings"**  
+   — np. zmienić politykę cenową lub parametry negocjacji.
+
+5. Powinieneś mieć teraz co najmniej jeden pojazd.  
+   Kliknij **"Enter parking"**, a następnie wybierz swój samochód przyciskiem **"Select"**.
+
+6. Otworzy się widok rozmowy agentów:
+   - agenta samochodu,
+   - oraz agenta bramki parkingowej.
+
+   W tym widoku:
+   - agenci komunikują się w języku naturalnym oraz za pomocą **protokołu DAIA** (ustrukturyzowany format komunikatów),
+   - rozpoczyna się negocjacja ceny parkowania,
+   - walutą w demo są **satoshi** (najmniejsze jednostki BSV – analogiczne do groszy przy złotówkach).
+
+   Przebieg:
+   - agent bramki wysyła oferty cenowe,
+   - agent samochodu może je przyjąć lub odrzucić,
+   - po zaakceptowaniu oferty zostaje zawarta **umowa** określająca:
+     - moment wjazdu,
+     - cenę za godzinę parkowania,
+   - umowa jest **utrwalana w blockchainie BSV** jako transakcja.
+
+   Sesja kończy się, gdy samochód wjeżdża na parking.
+
+7. Po zamknięciu widoku rozmowy (**"X"** lub **"Close"**) wrócisz do głównego dashboardu.  
+   Zobaczysz tam:
+   - samochód zaparkowany na parkingu,
+   - czas, przez jaki aktualnie tam przebywa.
+
+8. Aby opuścić parking:
+   - wybierz samochód,
+   - kliknij **"Leave parking"**.
+
+   Następnie:
+   - agenci ponownie rozpoczynają rozmowę,
+   - wyliczana jest należna opłata za parkowanie,
+   - realizowana jest transakcja w BSV,
+   - po jej pozytywnej weryfikacji samochód opuszcza parking.
+
+9. Faktyczne transakcje na blockchain możesz zweryfikować podając **publiczny adres portfela BSV z punktu 3.** na [platformie dowodowej](https://daiaui.teawithsand.com/) lub niezależnym [WhatsOnChain](https://test.whatsonchain.com/).
