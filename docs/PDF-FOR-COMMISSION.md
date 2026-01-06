@@ -13,9 +13,6 @@
 1. Dostęp do strony jest ograniczony do użytkowników posiadających dane logowania (podane powyżej).
 2. Demo działa w sieci **BSV Testnet**, a nie w sieci produkcyjnej (Mainnet). Oznacza to, że wszystkie transakcje, umowy i płatności są zapisywane w blockchainie BSV, ale z użyciem testowych monet, które nie mają wartości rynkowej.  
 3. System będzie niedostępny od 8:00 dnia 10.01 (sobota) do 8:00 dnia 11.01 (niedziela).
-4. Przy wyszukiwaniu po adresie portfela wyświetlane są wyłącznie transakcje **potwierdzone w blockchainie**, czyli takie, dla których istnieje pełna pewność zawarcia umowy między agentami.  
-   Ponieważ potwierdzenie transakcji w BSV może trwać kilkanaście minut, na potrzeby działania w czasie rzeczywistym (wjazd i wyjazd z parkingu) agenci akceptują również transakcje **niepotwierdzone (mempool)**.  
-   W interfejsie udostępniane są identyfikatory transakcji (TXID), które umożliwiają śledzenie ich statusu na platformie dowodowej także przed zatwierdzeniem w bloku.
 
 ## Samodzielne testowanie demo
 
@@ -78,7 +75,7 @@
         - aby zobaczyć transakcję na platformie dowodowej kliknij **"View on DAIA platform"**; możliwa jest też weryfikacja na niezależnym eksploratorze poprzez **"View on WhatsOnChain.com"**,
    - po jej pozytywnej weryfikacji samochód opuszcza parking.
 
-9. Po potwierdzeniu transakcji w blockchainie (po kilkunastu minutach) możesz wyświetlić wszystkie transakcje DAIA związane z portfelem, podając **publiczny adres portfela BSV z punktu 3** na:
+9. Transakcje DAIA związane z portfelem możesz wyświetlić podając **publiczny adres portfela BSV z punktu 3** na:
    - platformie dowodowej: https://daiaui.teawithsand.com/ (te same dane logowania co do demo),
    - lub w niezależnym eksploratorze: https://test.whatsonchain.com/.
 
