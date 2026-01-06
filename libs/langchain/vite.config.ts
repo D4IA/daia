@@ -1,13 +1,15 @@
 import { defineConfig } from "vite";
 import path from "path";
+import tsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
   plugins: [
+    tsconfigPaths(),
     dts({
-      include: ["src/**/*"],
       outDir: "dist",
-      rollupTypes: true,
+      include: ["src"],
+      exclude: ["**/*.test.ts", "**/*.spec.ts", "**/tests/**", "**/__tests__/**"],
     }),
   ],
   build: {
@@ -20,12 +22,10 @@ export default defineConfig({
     rollupOptions: {
       external: [
         "@langchain/core",
-        "@langchain/core/messages",
-        "@langchain/core/runnables",
-        "@langchain/core/language_models/chat_models",
-        "@d4ia/proto",
-        "@bsv/sdk",
-        "zod",
+        "@langchain/langgraph",
+        "@d4ia/core",
+        "immer",
+        "zod"
       ],
     },
   },

@@ -5,14 +5,24 @@ import styles from "./Footer.module.scss";
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
+
   const FooterLink: React.FC<{ href: string; children: React.ReactNode }> = ({
     href,
     children,
-  }) => (
-    <a href={href} className={styles.footerLink}>
-      {children}
-    </a>
-  );
+  }) => {
+    const isExternal = href.startsWith("http");
+
+    return (
+      <a
+        href={href}
+        className={styles.footerLink}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+      >
+        {children}
+      </a>
+    );
+  };
 
   const productLinks = t("footer.product_col.links", {
     returnObjects: true,
@@ -42,7 +52,7 @@ const Footer: React.FC = () => {
       return "/developers#sdk-features";
     }
     if (linkText === developersLinks[2]) {
-      return "/oops";
+      return "http://daiadocs.teawithsand.com";
     }
     return "#";
   };

@@ -1,61 +1,65 @@
 {
-  "name": "@d4ia/langchain",
-  "version": "0.0.1-pre-release",
-  "description": "LangChain adapters and chains for DAIA protocol",
-  "main": "./dist/langchain.cjs.js",
-  "module": "./dist/langchain.es.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/langchain.es.js",
-      "require": "./dist/langchain.cjs.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "vite build",
-    "dev": "vite build --watch",
-    "test": "vitest run",
-    "test-watch": "vitest",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\"",
-    "prepublishOnly": "pnpm run build"
-  },
-  "type": "module",
-  "keywords": [
-    "langchain",
-    "daia",
-    "blockchain",
-    "ai",
-    "llm"
-  ],
-  "author": "DAIA Team",
-  "license": "AGPL-3.0",
-  "publishConfig": {
-    "access": "public"
-  },
-  "devDependencies": {
-    "@types/node": "^24.8.1",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.3",
-    "vite": "^7.1.10",
-    "vite-plugin-dts": "^4.5.4",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "@bsv/sdk": "^1.9.0",
-    "@d4ia/proto": "workspace:^",
-    "@langchain/core": "^1.0.4",
-    "zod": "^4.1.12"
-  },
-  "imports": {
-    "#src/*": "./src/*",
-    "#types/*": "./types/*",
-    "#tests/*": "./tests/*"
-  }
+	"name": "@d4ia/langchain",
+	"version": "0.0.1",
+	"description": "LangChain hello world utilities",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./dist/langchain.es.js",
+			"require": "./dist/langchain.cjs.js"
+		}
+	},
+	"main": "./dist/langchain.cjs.js",
+	"module": "./dist/langchain.es.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite build --watch",
+		"test": "vitest run",
+		"test-watch": "vitest",
+		"format:fix": "prettier ./src --write",
+		"format:check": "prettier ./src --check",
+		"format:check:cached": "prettier ./src --check --cache",
+		"lint": "eslint ./src --max-warnings 0",
+		"lint:cached": "eslint ./src --max-warnings 0 --cache",
+		"lint:fix": "eslint ./src --fix",
+		"build:check": "tsc --noEmit",
+		"fix": "npm run format:fix && npm run lint:fix",
+		"pre-commit-check": "npm run build:check && npm run lint:cached && npm run format:check:cached",
+		"pre-push-check": "npm run build:check && npm run lint:cached && npm run format:check:cached && npm run test",
+		"prepublishOnly": "npm run build && npm run lint && npm run format:check && npm run test"
+	},
+	"author": "teawithsand",
+	"license": "AGPL-3.0-only",
+	"devDependencies": {
+		"@eslint/js": "^9.26.0",
+		"@types/node": "^24.8.1",
+		"@typescript-eslint/parser": "^8.32.0",
+		"eslint": "^9.26.0",
+		"eslint-config-prettier": "^10.0.1",
+		"prettier": "^3.5.3",
+		"prettier-plugin-organize-imports": "^4.1.0",
+		"rimraf": "~6.0.1",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.32.0",
+		"vitest": "3.2.4",
+		"zod": "~4.1.13",
+		"@vitest/coverage-v8": "~4.0.16",
+		"vite": "^6.4.1",
+		"vite-plugin-dts": "^4.3.0",
+		"vite-tsconfig-paths": "^5.1.4"
+	},
+	"dependencies": {
+		"@langchain/core": "~1.1.4",
+		"@langchain/langgraph": "~1.0.4",
+		"@d4ia/core": "workspace:*",
+		"immer": "~11.0.1"
+	},
+	"peerDependencies": {
+		"zod": "~4.1.13"
+	}
 }

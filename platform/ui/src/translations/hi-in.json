@@ -92,7 +92,7 @@
       "title": "डेवलपर्स",
       "links": ["डेवलपर्स के लिए", "विशेषताएं", "दस्तावेज़ीकरण"]
     },
-    "copyright": "© 2025 DAIA. सभी अधिकार सुरक्षित हैं"
+    "copyright": "© 2026 DAIA. सभी अधिकार सुरक्षित हैं"
   },
   "search_agreement": {
     "placeholder": "वॉलेट पता",
@@ -154,7 +154,7 @@
     "step2": {
       "number": 2,
       "title": "एजेंट को प्रारंभ करें",
-      "codeSnippet": "import { DaiaAgent } from '@daia/sdk'\nconst agent = new DaiaAgent({ id: 'AGENT-01', wallet: '0xabc...' })"
+      "codeSnippet": "import { DaiaAgent } from '@d4ia/sdk'\nconst agent = new DaiaAgent({ id: 'AGENT-01', wallet: '0xabc...' })"
     },
     "step3": {
       "number": 3,
@@ -262,7 +262,8 @@
     "card_title": "समझौता आवश्यकताएं",
     "label_type": "आवश्यकता का प्रकार",
     "label_pubkey": "प्रस्तावक सार्वजनिक कुंजी (Proposer Pubkey)",
-    "label_nonce": "ऑफ़रर नॉन्स (Offerer Nonce)"
+    "label_nonce": "ऑफ़रर नॉन्स (Offerer Nonce)",
+    "requirement_number": "आवश्यकता {{number}}"
   },
   "agreement_proofs": {
     "card_title": "समझौता प्रमाण",
@@ -272,6 +273,31 @@
     "label_digital_signature": "डिजिटल हस्ताक्षर",
     "tooltip_proof_type": "शामिल किए गए क्रिप्टोग्राफिक प्रमाण का प्रकार।",
     "tooltip_signee_nonce": "रीप्ले हमलों को रोकने के लिए उपयोग किया जाने वाला रैंडम नंबर।",
-    "tooltip_digital_signature": "क्रिप्टोग्राफिक हस्ताक्षर जो समझौते की स्वीकृति को प्रमाणित करता है।"
+    "tooltip_digital_signature": "क्रिप्टोग्राफिक हस्ताक्षर जो समझौते की स्वीकृति को प्रमाणित करता है।",
+    "proof_number": "प्रमाण {{number}}"
+  },
+  "pdf": {
+    "title": "Agreement Details Report",
+    "subtitle": "Secure agreement recording for AI agents on blockchain.",
+    "generated_at": "Generated at:",
+    "transaction_id": "Transaction ID:",
+    "description": "Agreement Description:",
+    "published_at": "Published at:",
+    "requirements": "Agreement Requirements",
+    "field": "Field",
+    "value": "Value",
+    "req_type": "Requirement Type:",
+    "pub_key": "Proposer Public Key (Pubkey):",
+    "offerer_nonce": "Offerer Nonce:",
+    "proofs": "Agreement Proofs",
+    "proof_type": "Proof Type:",
+    "signee_nonce": "Signee Nonce:",
+    "signature": "Digital Signature:",
+    "no_proofs": "Proofs not yet available.",
+    "footer": "© 2026 DAIA. All rights reserved.",
+    "requirement_number": "Requirement {{number}}",
+    "proof_number": "Proof {{number}}",
+    "requirement_label": "Requirement",
+    "proof_label": "Proof"
   }
 }

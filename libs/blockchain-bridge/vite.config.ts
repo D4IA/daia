@@ -8,19 +8,19 @@ export default defineConfig({
     tsconfigPaths(),
     dts({
       outDir: "dist",
-      include: ["src", "types"],
-      exclude: ["**/*.test.ts", "**/tests/**"],
+      include: ["src"],
+      exclude: ["**/*.test.ts", "**/*.spec.ts", "**/tests/**", "**/__tests__/**"],
     }),
   ],
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "D4iaBlockchainBridge",
-      fileName: (format) => `blockchain-bridge.${format}.js`,
-      formats: ["es", "cjs", "umd"],
+      name: "D4iaBlockchain",
+      fileName: (format) => `blockchain.${format}.js`,
+      formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: [],
+      external: ["@bsv/sdk", "zod"],
     },
   },
 });
