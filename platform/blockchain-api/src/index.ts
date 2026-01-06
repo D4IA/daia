@@ -1,7 +1,7 @@
 import "dotenv/config"; // MUST be first - loads .env before other imports
 import express from "express";
-import { daiaTransactionRouter } from "./routes/daiaTransaction.router";
-import "./services/db.service"; // Initialize database
+import { daiaTransactionRouter } from "./routes/daiaTransaction.router.js";
+import "./services/db.service.js"; // Initialize database
 
 const app = express();
 

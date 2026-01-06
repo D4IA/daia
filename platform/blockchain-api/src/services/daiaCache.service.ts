@@ -1,4 +1,4 @@
-import db from "./db.service";
+import db from "./db.service.js";
 
 export interface DaiaAgreementData {
 	offerContentSerialized: string;

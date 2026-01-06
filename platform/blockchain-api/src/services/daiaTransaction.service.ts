@@ -1,11 +1,11 @@
-import { parser, transactionFetcher } from "./transactionFetcher.service";
+import { parser, transactionFetcher } from "./transactionFetcher.service.js";
 import {
 	DaiaTransactionDataSchema,
 	DaiaTransactionDataType,
 	DaiaInnerOfferContentSchema,
 } from "@d4ia/core";
-import { daiaCacheService, CachedDaiaTransaction, DaiaAgreementData } from "./daiaCache.service";
-import { WHATSONCHAIN_API } from "../constants/externalApi.const";
+import { daiaCacheService, CachedDaiaTransaction, DaiaAgreementData } from "./daiaCache.service.js";
+import { WHATSONCHAIN_API } from "../constants/externalApi.const.js";
 import { chunkArray } from "@d4ia/blockchain-bridge";
 
 /**
