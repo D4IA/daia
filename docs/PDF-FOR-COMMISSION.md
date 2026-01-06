@@ -1,15 +1,14 @@
 # DAIA - Decentralize AI Agents
 
+## Dane logowania
+Znajdują się w pdf na na SharePoint.
+
 ## Linki
 - [Demo](https://daiademo.teawithsand.com/) - Demonstracja jednego z zastosowań biblioteki DAIA za pośrednictwem symulacji parkingu obsługiwanego przez agentów AI.
 - [Instrukcja do demo](https://daiademo.teawithsand.com/instructions.pdf) - Wskazówki jak krok po kroku przejść demo.
 - [Platforma dowodowa](https://daiaui.teawithsand.com/) - Landing page oraz strona, na której można sprawdzić transakcje na blockchain - umowy zawarte między agentami.
 - [Dokumentacja](https://daiadocs.teawithsand.com/) - Dokumentacja.
 - [Biblioteka](https://www.npmjs.com/settings/d4ia/packages) - paczki składające się na bibliotekę.
-
-## Dane logowania
-- Login: `Jeffrey`
-- Hasło: `Specified in PDF on sharepoint`
 
 ## Ograniczenia
 1. Dostęp do strony jest ograniczony do użytkowników posiadających dane logowania (podane powyżej).
