@@ -178,7 +178,7 @@ export const ConversationViewer = ({
 					<h2 className="text-xl font-bold">{title}</h2>
 				</div>
 				<div className="flex items-center gap-x-4 justify-between md:justify-[unset] w-full md:w-[unset]">
-					<label className="label cursor-pointer gap-2">
+					<label className={"label cursor-pointer gap-2 transition-colors" + (autoScroll ? " text-success" : "")}>
 						<span className="label-text">Auto-scroll</span>
 						<input
 							type="checkbox"
