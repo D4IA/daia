@@ -58,7 +58,7 @@ export class BsvTransactionFactory implements BlockchainTransactionFactory {
 			Object.keys(data.payments)
 				.map((k) => k.length)
 				.reduce((a, b) => a + b, 0);
-		const marginForFee = Math.min(1, Math.ceil((sizeEstimation / 1024) * 1.1));
+		const marginForFee = Math.max(1, Math.ceil((sizeEstimation / 1024) * 1.1));
 		const utxos = await this.utxoProvider.getUtxosWithTotal(totalPayments + marginForFee, true);
 
 		// Add inputs from UTXOs
