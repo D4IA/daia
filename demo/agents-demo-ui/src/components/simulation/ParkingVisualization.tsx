@@ -69,13 +69,13 @@ export const ParkingVisualization = ({
 							Control Panel
 						</h2>
 						<div className="flex flex-col gap-3">
-							<button className="btn btn-primary w-full shadow-sm" onClick={onConfigureNewCar}>
+							<button className="btn btn-primary w-full" onClick={onConfigureNewCar}>
 								<span className="text-lg">+</span> Configure New Car
 							</button>
-							<button className="btn btn-neutral w-full shadow-sm" onClick={onOpenEnterPicker}>
+							<button className="btn btn-secondary w-full" onClick={onOpenEnterPicker}>
 								🚗 Enter Parking
 							</button>
-							<button className="btn btn-outline w-full" onClick={onOpenGateSettings}>
+							<button className="btn btn-info w-full" onClick={onOpenGateSettings}>
 								⚙️ Gate Settings
 							</button>
 						</div>
@@ -181,7 +181,7 @@ export const ParkingVisualization = ({
 											key={car.licensePlate}
 											className={`group relative aspect-[4/3] rounded-xl border-2 transition-all duration-200 cursor-pointer overflow-hidden ${
 												selectedCar?.licensePlate === car.licensePlate
-													? "border-primary bg-primary/5 shadow-md scale-[1.02]"
+													? "border-primary bg-primary/5 shadow-md"
 													: "border-base-200 hover:border-primary/50 hover:shadow-lg bg-base-50"
 											}`}
 											onClick={() => handleCarClick(car)}
