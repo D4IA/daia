@@ -1,13 +1,14 @@
 # DAIA - Decentralize AI Agents
 
+## Dane logowania
+Znajdują się w pdf na na SharePoint.
+
 ## Linki
 - [Demo](https://daiademo.teawithsand.com/) - Demonstracja jednego z zastosowań biblioteki DAIA za pośrednictwem symulacji parkingu obsługiwanego przez agentów AI.
-- [Platforma Dowodowa](https://daiaui.teawithsand.com/) - Landing page oraz strona, na której można sprawdzić transakcje na blockchain - umowy zawarte między agentami.
+- [Instrukcja do demo](https://daiademo.teawithsand.com/instructions.pdf) - Wskazówki jak krok po kroku przejść demo.
+- [Platforma dowodowa](https://daiaui.teawithsand.com/) - Landing page oraz strona, na której można sprawdzić transakcje na blockchain - umowy zawarte między agentami.
 - [Dokumentacja](https://daiadocs.teawithsand.com/) - Dokumentacja.
-
-## Dane logowania
-- Login: `Jeffrey`
-- Hasło: `V1J'WmGqu5rQ.oKH`
+- [Biblioteka](https://www.npmjs.com/settings/d4ia/packages) - paczki składające się na bibliotekę.
 
 ## Ograniczenia
 1. Dostęp do strony jest ograniczony do użytkowników posiadających dane logowania (podane powyżej).
@@ -23,7 +24,7 @@
 3. Utwórz agenta samochodu:
    - wybierz **"Configure new car"**,
    - postępuj zgodnie z instrukcjami,
-   - w najprostszej wersji wybierz **predefiniowany klucz**. 
+   - w najprostszej wersji wybierz **predefiniowany klucz**.
 
    - Opcjonalnie:
         - otwórz w nowej karcie link do portfela na WhatsOnChain w celu podglądu niepotwierdzonych transakcji,
@@ -66,7 +67,7 @@
 
 8. Aby opuścić parking:
    - wybierz samochód,
-   - kliknij **"Leave parking"**.
+   - kliknij **"Checkout"**.
 
    Następnie:
    - agenci ponownie rozpoczynają rozmowę,
