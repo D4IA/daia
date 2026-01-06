@@ -1,3 +1,9 @@
+import { useContext } from "react"
+import { ParkingSimulationContext } from "../../context/ParkingSimulationContext"
+import { GateConfigForm } from "../forms/GateConfigForm"
+import { GateConfigFormData } from "../forms/types"
+import { PrivateKey } from "@d4ia/blockchain-bridge"
+
 export interface GateSettingsModalProps {
 	isOpen: boolean
 	onClose: () => void
@@ -15,11 +21,44 @@ export const GateSettingsModal = ({
 	isOpen,
 	onClose,
 }: GateSettingsModalProps) => {
+	const context = useContext(ParkingSimulationContext)
+
+	if (!context) {
+		throw new Error(
+			"GateSettingsModal must be used within ParkingSimulationContextProvider",
+		)
+	}
+
 	if (!isOpen) return null
+
+	const gateConfig = context.environment.getGateConfig()
+
+	const initialData: GateConfigFormData = {
+		privateKeyWif: gateConfig.privateKey.toWif(),
+		coveringPrompt: gateConfig.conversationPrompt,
+		offersPrompt: gateConfig.offerGeneratingPrompt,
+	}
+
+	const handleSubmit = (data: GateConfigFormData) => {
+		// Update the gate configuration
+		const newGateConfig = context.environment.getGateConfig()
+		newGateConfig.privateKey = PrivateKey.fromWif(data.privateKeyWif)
+		newGateConfig.conversationPrompt = data.coveringPrompt
+		newGateConfig.offerGeneratingPrompt = data.offersPrompt
+
+		// Update the gate's private key
+		const gate = context.environment.getGate()
+		gate.privateKey = PrivateKey.fromWif(data.privateKeyWif)
+
+		// Refresh display data
+		context.refreshDisplayData()
+
+		onClose()
+	}
 
 	return (
 		<div className="modal modal-open">
-			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8">
+			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8 overflow-y-auto">
 				<div className="flex justify-between items-center mb-6">
 					<h3 className="font-bold text-2xl">Gate Settings</h3>
 					<button
@@ -43,13 +82,12 @@ export const GateSettingsModal = ({
 					</button>
 				</div>
 
-				<div className="flex items-center justify-center h-full">
-					<div className="text-center">
-						<div className="text-6xl mb-4">🚧</div>
-						<h2 className="text-3xl font-bold">
-							Not Implemented Yet
-						</h2>
-					</div>
+				<div className="container mx-auto max-w-4xl">
+					<GateConfigForm
+						initialData={initialData}
+						onSubmit={handleSubmit}
+						submitButtonText="Save Settings"
+					/>
 				</div>
 			</div>
 			<div className="modal-backdrop bg-black/50" onClick={onClose}></div>

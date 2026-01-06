@@ -1,85 +1,82 @@
+import { useState, useEffect } from "react"
 import {
-	CarConfiguration,
 	CarGateSimulationEnvironmentConfig,
 } from "@d4ia/agents-demos"
 import { BsvNetwork, PrivateKey } from "@d4ia/blockchain-bridge"
-import { useContext, useEffect, useRef } from "react"
+import { PageRefreshGuard } from "./components/PageRefreshGuard"
 import { ParkingSimulation } from "./components/simulation/ParkingSimulation"
-import { ParkingSimulationContext } from "./context/ParkingSimulationContext"
 import { ParkingSimulationContextProvider } from "./context/simulation"
+import {
+	DEFAULT_GATE_CONVERSATION_PROMPT,
+	DEFAULT_GATE_OFFER_PROMPT,
+} from "./constants/prompts"
 
-const envConfig: CarGateSimulationEnvironmentConfig = {
-	openAIApiKey: import.meta.env.VITE_OPENAI_API_KEY || "",
-	network: BsvNetwork.MAIN,
-	gateConfig: {
-		privateKey: PrivateKey.fromRandom(),
-		conversationPrompt:
-			"You are a parking gate agent. Be professional and helpful.",
-		conversationModel: "gpt-4",
-		offerGeneratingPrompt: "Generate a parking offer with clear terms.",
-		offerGeneratingModel: "gpt-4",
-	},
-	maxTurns: 20,
-}
-
-const InitialCarsSetup = () => {
-	const context = useContext(ParkingSimulationContext)
-	const initializedRef = useRef(false)
-
-	useEffect(() => {
-		if (!context || initializedRef.current) return
-		initializedRef.current = true
-
-		const initialCars: CarConfiguration[] = [
-			{
-				licensePlate: "ABC-123",
-				privateKey: PrivateKey.fromRandom(),
-				negotiationPrompt:
-					"You are a car agent. Be polite and cooperative.",
-				negotiationModel: "gpt-4",
-				offerConsiderationPrompt: "Evaluate parking offers carefully.",
-				offerConsiderationModel: "gpt-4",
-			},
-			{
-				licensePlate: "XYZ-789",
-				privateKey: PrivateKey.fromRandom(),
-				negotiationPrompt:
-					"You are a car agent. Be polite and cooperative.",
-				negotiationModel: "gpt-4",
-				offerConsiderationPrompt: "Evaluate parking offers carefully.",
-				offerConsiderationModel: "gpt-4",
-			},
-			{
-				licensePlate: "DEF-456",
-				privateKey: PrivateKey.fromRandom(),
-				negotiationPrompt:
-					"You are a car agent. Be polite and cooperative.",
-				negotiationModel: "gpt-4",
-				offerConsiderationPrompt: "Evaluate parking offers carefully.",
-				offerConsiderationModel: "gpt-4",
-			},
-		]
-
-		initialCars.forEach((carConfig) => {
-			try {
-				context.environment.addCar(carConfig)
-			} catch {
-				// Car might already exist, ignore
-			}
-		})
-
-		context.refreshDisplayData()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-
-	return null
+interface RuntimeConfig {
+	OPENAI_API_KEY: string
 }
 
 export const App = () => {
+	const [config, setConfig] = useState<CarGateSimulationEnvironmentConfig | null>(null)
+	const [error, setError] = useState<string | null>(null)
+
+	useEffect(() => {
+		const fetchConfig = async () => {
+			try {
+				// Try to fetch runtime config from server
+				const response = await fetch('/api/config')
+				const runtimeConfig: RuntimeConfig = await response.json()
+				
+				const openAIApiKey = runtimeConfig.OPENAI_API_KEY || ""
+				
+				if (!openAIApiKey) {
+					setError("OPENAI_API_KEY is not configured")
+					return
+				}
+
+				const envConfig: CarGateSimulationEnvironmentConfig = {
+					openAIApiKey,
+					network: BsvNetwork.TEST,
+					gateConfig: {
+						privateKey: PrivateKey.fromRandom(),
+						conversationPrompt: DEFAULT_GATE_CONVERSATION_PROMPT,
+						conversationModel: "gpt-4o-mini",
+						offerGeneratingPrompt: DEFAULT_GATE_OFFER_PROMPT,
+						offerGeneratingModel: "gpt-4o-mini",
+					},
+					maxTurns: 20,
+				}
+				
+				setConfig(envConfig)
+			} catch (error) {
+				setError(`Failed to load configuration: ${error instanceof Error ? error.message : 'Unknown error'}`)
+			}
+		}
+
+		fetchConfig()
+	}, [])
+
+	if (error) {
+		return (
+			<div className="min-h-screen bg-base-200 flex items-center justify-center">
+				<div className="alert alert-error">
+					<span>{error}</span>
+				</div>
+			</div>
+		)
+	}
+
+	if (!config) {
+		return (
+			<div className="min-h-screen bg-base-200 flex items-center justify-center">
+				<div className="loading loading-spinner loading-lg"></div>
+			</div>
+		)
+	}
+
 	return (
 		<div className="min-h-screen bg-base-200">
-			<ParkingSimulationContextProvider initialConfig={envConfig}>
-				<InitialCarsSetup />
+			<PageRefreshGuard />
+			<ParkingSimulationContextProvider initialConfig={config}>
 				<ParkingSimulation />
 			</ParkingSimulationContextProvider>
 		</div>

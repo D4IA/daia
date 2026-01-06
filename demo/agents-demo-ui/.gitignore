@@ -25,3 +25,6 @@ dist-ssr
 .vercel
 
 /storybook-static
+
+# Runtime configuration
+/public/api/config

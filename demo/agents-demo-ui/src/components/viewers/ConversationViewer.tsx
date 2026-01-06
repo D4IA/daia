@@ -148,6 +148,40 @@ export const ConversationViewer = ({
 					</div>
 				)
 
+			case CarGateSimulationEventType.CAR_ERROR:
+				return (
+					<div key={index} className="flex justify-center my-4">
+						<div className="alert alert-error max-w-2xl">
+							<div className="flex items-start gap-2">
+								<span className="text-2xl">🚗❌</span>
+								<div className="flex-1">
+									<h3 className="font-bold">Car Error</h3>
+									<div className="text-sm mt-1 break-words">
+										{event.error}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				)
+
+			case CarGateSimulationEventType.GATE_ERROR:
+				return (
+					<div key={index} className="flex justify-center my-4">
+						<div className="alert alert-error max-w-2xl">
+							<div className="flex items-start gap-2">
+								<span className="text-2xl">🚪❌</span>
+								<div className="flex-1">
+									<h3 className="font-bold">Gate Error</h3>
+									<div className="text-sm mt-1 break-words">
+										{event.error}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				)
+
 			default:
 				return null
 		}

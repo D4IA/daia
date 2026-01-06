@@ -1,0 +1,7 @@
+export const PREDEFEINED_CAR_PRIVATE_KEYS_WIFS = [
+    "L3J14pSbbsAacPSFVZ7XLuKq8VJMJShsjBCV2zvj4BPynDgvkMfa",
+]
+
+export const PREDEFINED_GATE_PRIVATE_KEYS_WIFS = [
+    "L3R7s5miAc17mHFg4D5GmXvUDg5HzfTyfj41NjGrGTXyDgTava8e"
+]

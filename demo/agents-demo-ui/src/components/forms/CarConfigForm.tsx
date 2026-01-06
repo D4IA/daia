@@ -1,6 +1,11 @@
 import { PrivateKey } from "@d4ia/blockchain-bridge"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { CarConfigFormData } from "./types"
+import { PREDEFEINED_CAR_PRIVATE_KEYS_WIFS } from "../../predefines"
+import {
+	DEFAULT_CAR_NEGOTIATING_PROMPT,
+	DEFAULT_CAR_CONSIDERING_PROMPT,
+} from "../../constants/prompts"
 
 interface CarConfigFormProps {
 	initialData?: CarConfigFormData
@@ -20,13 +25,20 @@ export const CarConfigForm = ({
 		initialData?.privateKeyWif || "",
 	)
 	const [negotiatingPrompt, setNegotiatingPrompt] = useState(
-		initialData?.negotiatingPrompt || "",
+		initialData?.negotiatingPrompt || DEFAULT_CAR_NEGOTIATING_PROMPT,
 	)
 	const [consideringPrompt, setConsideringPrompt] = useState(
-		initialData?.consideringPrompt || "",
+		initialData?.consideringPrompt || DEFAULT_CAR_CONSIDERING_PROMPT,
 	)
 	const [privateKeyError, setPrivateKeyError] = useState("")
 	const [testnetAddress, setTestnetAddress] = useState("")
+
+	useEffect(() => {
+		if (initialData?.privateKeyWif) {
+			validatePrivateKey(initialData.privateKeyWif)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	const validatePrivateKey = (wif: string): boolean => {
 		if (!wif.trim()) {
@@ -52,6 +64,11 @@ export const CarConfigForm = ({
 	const generateNewKey = () => {
 		const newPrivateKey = PrivateKey.fromRandom()
 		const wif = newPrivateKey.toWif()
+		setPrivateKeyWif(wif)
+		validatePrivateKey(wif)
+	}
+
+	const loadPredefinedKey = (wif: string) => {
 		setPrivateKeyWif(wif)
 		validatePrivateKey(wif)
 	}
@@ -120,11 +137,11 @@ export const CarConfigForm = ({
 								Private Key (WIF Format)
 							</span>
 						</label>
-						<div className="join w-full">
+						<div className="flex gap-2 w-full">
 							<input
 								type="text"
 								placeholder="Enter private key in WIF format"
-								className={`input input-bordered join-item flex-1 ${privateKeyError ? "input-error" : ""}`}
+								className={`input input-bordered flex-1 ${privateKeyError ? "input-error" : ""}`}
 								value={privateKeyWif}
 								onChange={(e) =>
 									setPrivateKeyWif(e.target.value)
@@ -134,11 +151,45 @@ export const CarConfigForm = ({
 							/>
 							<button
 								type="button"
-								className="btn btn-secondary join-item mx-2"
+								className="btn btn-secondary"
 								onClick={generateNewKey}
 							>
-								🔑 Generate New
+								🔑 Generate
 							</button>
+							{PREDEFEINED_CAR_PRIVATE_KEYS_WIFS.length > 0 && (
+								<div className="dropdown dropdown-end">
+									<button
+										type="button"
+										tabIndex={0}
+										className="btn btn-primary"
+									>
+										📋 Predefined
+									</button>
+									<ul
+										tabIndex={0}
+										className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-64 mt-2"
+									>
+										{PREDEFEINED_CAR_PRIVATE_KEYS_WIFS.map(
+											(wif, index) => (
+												<li key={index}>
+													<button
+														type="button"
+														onClick={() =>
+															loadPredefinedKey(
+																wif,
+															)
+														}
+														className="text-xs font-mono"
+													>
+														Key #{index + 1}:{" "}
+														{wif.substring(0, 8)}...
+													</button>
+												</li>
+											),
+										)}
+									</ul>
+								</div>
+							)}
 						</div>
 						{privateKeyError && (
 							<label className="label">
@@ -161,6 +212,18 @@ export const CarConfigForm = ({
 										"Enter or generate a valid private key to see address"}
 								</code>
 							</div>
+							{testnetAddress && (
+								<div className="mt-2">
+									<a
+										href={`https://test.whatsonchain.com/address/${testnetAddress}`}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="link link-primary text-sm underline"
+									>
+										🔍 View on WhatsOnChain
+									</a>
+								</div>
+							)}
 						</div>
 
 						{/* Faucet info - always shown */}

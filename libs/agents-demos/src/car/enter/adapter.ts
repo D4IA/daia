@@ -59,9 +59,10 @@ export interface CarEnterAgentAdapter {
 	 * This is a pure function that does not manage state.
 	 *
 	 * @param offerText Natural language description of the offer
+	 * @param conversationHistory Array of previous messages in the conversation
 	 * @returns Decision (accept or reject with rationale)
 	 */
-	considerOffer(offerText: string): Promise<CarEnterAgentOfferDecision>;
+	considerOffer(offerText: string, conversationHistory: ReadonlyArray<Message>): Promise<CarEnterAgentOfferDecision>;
 
 	/**
 	 * Log a message

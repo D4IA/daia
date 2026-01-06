@@ -40,6 +40,8 @@ export enum CarGateSimulationEventType {
 	MAX_TURNS_REACHED = "MAX_TURNS_REACHED",
 	GATE_LOG = "GATE_LOG",
 	CAR_LOG = "CAR_LOG",
+	CAR_ERROR = "CAR_ERROR",
+	GATE_ERROR = "GATE_ERROR",
 }
 
 export type CarGateSimulationEvent =
@@ -68,6 +70,14 @@ export type CarGateSimulationEvent =
 	| {
 			type: CarGateSimulationEventType.CAR_LOG;
 			message: string;
+	  }
+	| {
+			type: CarGateSimulationEventType.CAR_ERROR;
+			error: string;
+	  }
+	| {
+			type: CarGateSimulationEventType.GATE_ERROR;
+			error: string;
 	  };
 
 export type CarGateSimulationSessionResult = {
@@ -265,11 +275,30 @@ export class CarGateSimulationSession {
 		let gateEnded = false;
 		let currentTurn = 0;
 
-		while (currentTurn < this.envConfig.maxTurns && !gateEnded) {
+		while (!gateEnded) {
 			currentTurn++;
 
+			// Check if max turns reached before processing
+			if (currentTurn > this.envConfig.maxTurns) {
+				onEvent({ type: CarGateSimulationEventType.MAX_TURNS_REACHED, turns: currentTurn - 1 });
+				break;
+			}
+
+			// Emit car's message to gate
 			onEvent({ type: CarGateSimulationEventType.CAR_TO_GATE_MESSAGE, message: carMessage });
-			const gateResponse = await agents.gate.processInput(carMessage);
+			
+			let gateResponse;
+			try {
+				gateResponse = await agents.gate.processInput(carMessage);
+			} catch (error) {
+				const errorMessage = error instanceof Error ? error.message : String(error);
+				console.error("[Session] Gate processing error:", errorMessage, error);
+				onEvent({
+					type: CarGateSimulationEventType.GATE_ERROR,
+					error: errorMessage,
+				});
+				break;
+			}
 
 			if (gateResponse.type === "end") {
 				gateEnded = true;
@@ -278,22 +307,35 @@ export class CarGateSimulationSession {
 			}
 
 			if (gateResponse.type === "message") {
+				// Emit gate's message to car
 				onEvent({
 					type: CarGateSimulationEventType.GATE_TO_CAR_MESSAGE,
 					message: gateResponse.content,
 				});
-				const carResponse = await agents.car.processInput(gateResponse.content);
+				
+				let carResponse;
+				try {
+					carResponse = await agents.car.processInput(gateResponse.content);
+				} catch (error) {
+					const errorMessage = error instanceof Error ? error.message : String(error);
+					console.error("[Session] Car processing error:", errorMessage, error);
+					onEvent({
+						type: CarGateSimulationEventType.CAR_ERROR,
+						error: errorMessage,
+					});
+					break;
+				}
 
 				if (carResponse.type === "message") {
 					carMessage = carResponse.content;
+					// Continue to next iteration to emit this message
+				} else if (carResponse.type === "end") {
+					onEvent({ type: CarGateSimulationEventType.SESSION_END, side: "car" });
+					break;
 				} else {
 					break;
 				}
 			}
-		}
-
-		if (currentTurn >= this.envConfig.maxTurns) {
-			onEvent({ type: CarGateSimulationEventType.MAX_TURNS_REACHED, turns: currentTurn });
 		}
 
 		return {
