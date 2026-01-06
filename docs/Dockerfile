@@ -16,7 +16,7 @@ RUN apk add --no-cache \
 ENV CGO_ENABLED=1
 ENV GOPATH=/go
 ENV PATH=$PATH:/go/bin
-RUN go install -tags extended,withdeploy github.com/gohugoio/hugo@latest && \
+RUN go install github.com/gohugoio/hugo@latest && \
     hugo version
 
 # Set working directory
