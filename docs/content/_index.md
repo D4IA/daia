@@ -1,5 +1,5 @@
 ---
-title: "DAIA Protocol"
+title: "DAIA"
 description: "Decentralized AI Agent Agreement Protocol"
 lead: "Build AI agents that negotiate and form cryptographically verifiable agreements on blockchain."
 date: 2023-09-07T16:33:54+02:00
