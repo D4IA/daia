@@ -144,27 +144,36 @@
 		]
 	},
 	"sdk_integration_steps": {
-		"title": "Szybka Integracja",
-		"subtitle": "Rozpocznij z JavaScript w kilka minut",
+		"title": "Przykład: Buduj-Podpisz-Weryfikuj",
+		"subtitle": "Ten przykład demonstruje proces budowania oferty, podpisywania jej w celu utworzenia porozumienia oraz weryfikacji tego porozumienia.",
+		"setup": {
+			"number": "#",
+			"title": "Konfiguracja",
+			"codeSnippet": "import {\n  DaiaOfferBuilder,\n  DefaultDaiaOfferSigner,\n  DefaultDaiaAgreementVerifier,\n  DefaultDaiaSignRequirementResolver,\n  DefaultDaiaPaymentRequirementResolver,\n  DaiaOfferSignResponseType,\n  DaiaAgreementVerificationResult,\n} from '@d4ia/core';\nimport {\n  PrivateKey,\n  BsvTransactionFactory,\n  BsvTransactionParser,\n  BsvNetwork,\n} from '@d4ia/blockchain';\n\n// Generate keys for both parties\nconst offererKey = PrivateKey.fromRandom();\nconst signeeKey = PrivateKey.fromRandom();\nconst network = BsvNetwork.TEST;"
+		},
 		"step1": {
 			"number": 1,
-			"title": "Instalacja SDK",
-			"codeSnippet": "npm install @daia/sdk"
+			"title": "Budowanie Oferty",
+			"description": "Oferent tworzy ofertę z określonymi wymaganiami:",
+			"codeSnippet": "const signeePublicKey = signeeKey.toPublicKey().toString();\nconst paymentAddress = offererKey.toPublicKey().toAddress('testnet').toString();\n\nconst offer = DaiaOfferBuilder.new()\n  .setOfferTypeIdentifier('parking-access')\n  .setNaturalLanguageContent('1-hour parking access for 1000 satoshis')\n  .addSelfSignedRequirement(offererKey)\n  .addSignRequirement(signeePublicKey)\n  .addSelfAuthenticatedPaymentRequirement(paymentAddress, 1000)\n  .build();"
 		},
 		"step2": {
 			"number": 2,
-			"title": "Inicjalizacja Agenta",
-			"codeSnippet": "import { DaiaAgent } from '@d4ia/sdk'\nconst agent = new DaiaAgent({ id: 'AGENT-01', wallet: '0xabc...' })"
+			"title": "Podpisywanie Oferty",
+			"description": "Sygnatariusz tworzy instancję podpisującą i podpisuje ofertę:",
+			"codeSnippet": "// Create transaction factory\nconst factory = new BsvTransactionFactory(signeeKey, network);\n\n// Create resolvers\nconst signResolver = new DefaultDaiaSignRequirementResolver(signeeKey);\nconst paymentResolver = new DefaultDaiaPaymentRequirementResolver(factory);\n\n// Create signer\nconst signer = new DefaultDaiaOfferSigner({\n  transactionFactory: factory,\n  signResolver,\n  paymentResolver,\n});\n\n// Sign the offer\nconst signResponse = await signer.signOffer({ offer });\n\nif (signResponse.type !== DaiaOfferSignResponseType.SUCCESS) {\n  throw new Error('Signing failed');\n}\n\nconst { agreement, transaction } = signResponse;\n\n// Publish to blockchain\nawait transaction.publish();\n\nconsole.log('Agreement published:', transaction.id);"
 		},
 		"step3": {
 			"number": 3,
-			"title": "Zapisz Propozycję Oferty na blockchainie",
-			"codeSnippet": "const proposeOfferId = await agent.recordProposeOffer({\n  content: \"\nProponuję ofertę:\n  • Czas trwania: 3 godziny\n  • Stawka bazowa: 6 PLN/h\n  • Zniżka na pojazd ekologiczny: -1 PLN/h\n  • Stawka końcowa: 5 PLN/h\n  • Całkowity koszt: 15 PLN\n\",\n  encryptKey: 'xyz' // lub undefined, aby wyświetlić dane bez szyfrowania\n});"
+			"title": "Weryfikacja Porozumienia",
+			"description": "Każdy może zweryfikować porozumienie bezpośrednio z blockchaina:",
+			"codeSnippet": "// Create parser and verifier\nconst parser = new BsvTransactionParser(network);\nconst verifier = new DefaultDaiaAgreementVerifier(parser);\n\n// Verify from transaction ID\nconst result = await verifier.getAgreementFromTransaction(transaction.id);\n\nif (!result.found) {\n  throw new Error('Agreement not found');\n}\n\nconst { agreement: verifiedAgreement, verification } = result;\n\nif (verification.result === DaiaAgreementVerificationResult.PASSED) {\n  console.log('Agreement is valid!');\n  console.log('Total payments:', verification.totalAgreementPayments);\n} else {\n  console.log('Verification failed:', verification.result);\n  if (verification.failedRequirementIds) {\n    console.log('Failed requirements:', verification.failedRequirementIds);\n  }\n}"
 		},
 		"step4": {
 			"number": 4,
-			"title": "Zapisz Akceptację Oferty na blockchainie używając innego agenta",
-			"codeSnippet": "await otherAgent.recordAcceptOffer({\n  proposeOfferId: proposeOfferId\n});"
+			"title": "Alternatywa: Bezpośrednia Weryfikacja",
+			"description": "Możesz również zweryfikować porozumienie bezpośrednio, bez pobierania go z blockchaina:",
+			"codeSnippet": "const verifyResponse = await verifier.verifyAgreement({\n  agreement,\n  transactionData: transaction.data,\n});\n\nif (verifyResponse.result === DaiaAgreementVerificationResult.PASSED) {\n  console.log('Agreement is valid');\n}"
 		}
 	},
 	"agreement_details_tooltips": {
