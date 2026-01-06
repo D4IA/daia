@@ -1,6 +1,6 @@
 {
   "name": "blockchain-api",
-  "version": "0.0.2-SNAPSHOT.2",
+  "version": "0.0.2-SNAPSHOT.3",
   "description": "",
   "private": true,
   "main": "index.js",

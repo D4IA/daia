@@ -45,7 +45,7 @@ export const ParkingVisualization = ({
 		if (hours > 0) parts.push(`${hours}h`);
 		if (minutes > 0 || parts.length === 0) parts.push(`${minutes}m`);
 
-		return parts.join(' ');
+		return parts.join(" ");
 	};
 
 	const handleCarClick = (car: CarConfig) => {
@@ -60,26 +60,30 @@ export const ParkingVisualization = ({
 	};
 
 	const parkedCars = useMemo(() => {
-		return context.environment.getAllCars().filter(car => car.memory.isParked);
-	}, [displayData.cars])
+		return context.environment.getAllCars().filter((car) => car.memory.isParked);
+	}, [displayData.cars]);
 
 	const selectedCarInfo = useMemo(() => {
 		if (!selectedCar) return null;
-		const car = context.environment.getAllCars().find(car => car.config.licensePlate === selectedCar.licensePlate);
+		const car = context.environment
+			.getAllCars()
+			.find((car) => car.config.licensePlate === selectedCar.licensePlate);
 		return car;
-	}, [selectedCar, displayData.cars])
+	}, [selectedCar, displayData.cars]);
 
 	useEffect(() => {
-		if(selectedCar){
-			const car = context.environment.getAllCars().find(car => car.config.licensePlate === selectedCar.licensePlate);
-			if(car){
+		if (selectedCar) {
+			const car = context.environment
+				.getAllCars()
+				.find((car) => car.config.licensePlate === selectedCar.licensePlate);
+			if (car) {
 				setSelectedCar({
 					...selectedCar,
 					parkedAt: new Date(car.memory.getParkAgreement()?.parkTime ?? selectedCar.parkedAt),
 				});
 			}
 		}
-	}, [displayData.cars])
+	}, [displayData.cars]);
 
 	return (
 		<div className="flex flex-col lg:flex-row gap-6 md:h-[calc(100vh-2rem)] p-4 bg-base-200">
@@ -168,13 +172,12 @@ export const ParkingVisualization = ({
 
 							<div className="flex justify-between items-center text-sm">
 								<span className="text-base-content/70">Duration</span>
-								<span className="font-bold font-mono">
-									{formatDuration(selectedCar.parkedAt)}
-								</span>
+								<span className="font-bold font-mono">{formatDuration(selectedCar.parkedAt)}</span>
 							</div>
 							<div className="flex justify-between items-center text-sm mb-4">
-								<span className="text-base-content italic">{selectedCarInfo?.memory.getParkAgreement()?.content}</span>
-									
+								<span className="text-base-content italic">
+									{selectedCarInfo?.memory.getParkAgreement()?.content}
+								</span>
 							</div>
 
 							<div className="grid grid-cols-2 gap-2">

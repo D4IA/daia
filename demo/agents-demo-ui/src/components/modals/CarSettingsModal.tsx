@@ -12,7 +12,7 @@ export interface CarSettings {
 }
 
 const formatLocalDateTime = (date: Date): string => {
-	const pad = (n: number) => n.toString().padStart(2, '0');
+	const pad = (n: number) => n.toString().padStart(2, "0");
 	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
@@ -55,7 +55,7 @@ export const CarSettingsModal = ({ isOpen, onClose, licensePlate }: CarSettingsM
 	const handleSave = () => {
 		const parkAgreement = car?.memory.getParkAgreement();
 
-		if(!parkAgreement || !car?.config.licensePlate) {
+		if (!parkAgreement || !car?.config.licensePlate) {
 			return;
 		}
 
@@ -106,7 +106,7 @@ export const CarSettingsModal = ({ isOpen, onClose, licensePlate }: CarSettingsM
 					</label>
 					<input
 						type="datetime-local"
-						className={`input input-bordered w-full ${error ? 'input-error' : ''}`}
+						className={`input input-bordered w-full ${error ? "input-error" : ""}`}
 						value={parkedAt}
 						max={formatLocalDateTime(new Date())}
 						onChange={(e) => handleDateChange(e.target.value)}
