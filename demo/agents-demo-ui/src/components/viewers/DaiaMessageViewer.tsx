@@ -102,12 +102,20 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 									{message.agreementReference}
 								</div>
 								<div className="flex flex-col gap-y-1 pt-1">
-									<a className="text-primary text-xs" target="_blank" href={`https://daiaui.teawithsand.com/agreement_details/${message.agreementReference}`}>
-									View on DAIA platform
-								</a>
-								<a className="text-secondary text-xs" target="_blank" href={`https://test.whatsonchain.com/tx/${message.agreementReference}`}>
-									View on WhatsOnChain.com
-								</a>
+									<a
+										className="text-primary text-xs"
+										target="_blank"
+										href={`https://daiaui.teawithsand.com/agreement_details/${message.agreementReference}`}
+									>
+										View on DAIA platform
+									</a>
+									<a
+										className="text-secondary text-xs"
+										target="_blank"
+										href={`https://test.whatsonchain.com/tx/${message.agreementReference}`}
+									>
+										View on WhatsOnChain.com
+									</a>
 								</div>
 							</div>
 							{innerContent?.naturalLanguageOfferContent && (
