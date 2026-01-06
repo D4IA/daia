@@ -61,7 +61,7 @@ export const ParkingVisualization = ({
 
 	const parkedCars = useMemo(() => {
 		return context.environment.getAllCars().filter((car) => car.memory.isParked);
-	}, [displayData.cars]);
+	}, [context.environment]);
 
 	const selectedCarInfo = useMemo(() => {
 		if (!selectedCar) return null;
@@ -69,7 +69,7 @@ export const ParkingVisualization = ({
 			.getAllCars()
 			.find((car) => car.config.licensePlate === selectedCar.licensePlate);
 		return car;
-	}, [selectedCar, displayData.cars]);
+	}, [selectedCar, context.environment]);
 
 	useEffect(() => {
 		if (selectedCar) {
@@ -83,7 +83,7 @@ export const ParkingVisualization = ({
 				});
 			}
 		}
-	}, [displayData.cars]);
+	}, [context.environment]);
 
 	return (
 		<div className="flex flex-col lg:flex-row gap-6 md:h-[calc(100vh-2rem)] p-4 bg-base-200">
