@@ -173,11 +173,11 @@ export const ConversationViewer = ({
 
 	return (
 		<div className="flex flex-col h-full">
-			<div className="navbar bg-base-300 rounded-t-xl">
+			<div className="navbar flex flex-col md:flex-row items-start shadow-md py-4 px-7">
 				<div className="flex-1">
-					<h2 className="text-xl font-bold ml-4">{title}</h2>
+					<h2 className="text-xl font-bold">{title}</h2>
 				</div>
-				<div className="flex-none gap-4">
+				<div className="flex items-center gap-x-4 justify-between md:justify-[unset] w-full md:w-[unset]">
 					<label className="label cursor-pointer gap-2">
 						<span className="label-text">Auto-scroll</span>
 						<input

@@ -98,7 +98,7 @@ export const GateConfigForm = ({
 
 	return (
 		<div className="card bg-base-100 shadow-2xl max-w-3xl mx-auto">
-			<div className="card-body p-8">
+			<div className="card-body p-2 md:p-8">
 				<h2 className="card-title text-3xl mb-6 text-primary">Gate Configuration</h2>
 				<form onSubmit={handleSubmit} className="space-y-6">
 					{/* Private Key Field */}
@@ -202,7 +202,7 @@ export const GateConfigForm = ({
 							required
 						/>
 						<label className="label">
-							<span className="label-text-alt">
+							<span className="label-text-alt text-wrap">
 								Prompt used for generating offers for entering the parking
 							</span>
 						</label>

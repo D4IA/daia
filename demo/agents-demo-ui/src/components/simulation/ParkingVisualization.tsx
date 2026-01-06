@@ -50,71 +50,106 @@ export const ParkingVisualization = ({
 	};
 
 	return (
-		<div className="flex gap-8 h-screen p-8">
-			{/* Left Panel - Controls */}
-			<div className="w-1/4 flex flex-col gap-4">
-				<div className="card bg-base-100 shadow-xl">
-					<div className="card-body">
-						<h2 className="card-title">Parking Control</h2>
-						<button className="btn btn-primary" onClick={onConfigureNewCar}>
-							+ Configure New Car
-						</button>
-						<button className="btn btn-accent" onClick={onOpenEnterPicker}>
-							🚗 Enter Parking
-						</button>
-						<button className="btn btn-secondary" onClick={onOpenGateSettings}>
-							⚙️ Gate Settings
-						</button>
-						<div className="divider"></div>
-						<div className="stats stats-vertical shadow">
-							<div className="stat">
-								<div className="stat-title">Total Cars</div>
-								<div className="stat-value">{displayData.totalCarsCount}</div>
+		<div className="flex flex-col lg:flex-row gap-6 md:h-[calc(100vh-2rem)] p-4 bg-base-200">
+			{/* Left Column - Controls & Stats */}
+			<div className="lg:w-80 flex flex-col gap-6 shrink-0">
+				{/* Stats Card */}
+				<div className="stats shadow bg-base-100 w-full">
+					<div className="stat place-items-center">
+						<div className="stat-title">Total Cars Parked</div>
+						<div className="stat-value text-primary">{displayData.totalCarsCount}</div>
+						<div className="stat-desc">Current occupancy</div>
+					</div>
+				</div>
+
+				{/* Controls Card */}
+				<div className="card bg-base-100 shadow-lg">
+					<div className="card-body gap-4">
+						<h2 className="card-title text-base-content/70 text-sm uppercase tracking-wider">
+							Control Panel
+						</h2>
+						<div className="flex flex-col gap-3">
+							<button className="btn btn-primary w-full shadow-sm" onClick={onConfigureNewCar}>
+								<span className="text-lg">+</span> Configure New Car
+							</button>
+							<button className="btn btn-neutral w-full shadow-sm" onClick={onOpenEnterPicker}>
+								🚗 Enter Parking
+							</button>
+							<button className="btn btn-outline w-full" onClick={onOpenGateSettings}>
+								⚙️ Gate Settings
+							</button>
+						</div>
+					</div>
+				</div>
+
+				{/* Gate Status Card */}
+				<div
+					className={`card shadow-lg transition-colors duration-500 ${
+						displayData.gateOpen ? "bg-success/10 border-success/20" : "bg-error/10 border-error/20"
+					} border`}
+				>
+					<div className="card-body items-center text-center py-6">
+						<div className="text-4xl mb-2 animate-bounce-slow">{displayData.gateOpen ? "🚧" : "🛑"}</div>
+						<div className="flex flex-col items-center">
+							<h3 className="font-bold text-lg uppercase tracking-widest">Main Gate</h3>
+							<div
+								className={`badge ${
+									displayData.gateOpen ? "badge-success text-white" : "badge-error text-white"
+								} badge-lg mt-2 font-bold shadow-sm`}
+							>
+								{displayData.gateOpen ? "OPEN" : "CLOSED"}
 							</div>
 						</div>
 					</div>
 				</div>
 
-				{/* Car Details Panel */}
+				{/* Selected Car Details (Mobile/Small Screens: show here, Desktop: could stick) */}
 				{selectedCar && (
-					<div className="card bg-base-100 shadow-xl">
-						<div className="card-body">
-							<h2 className="card-title">Car Details</h2>
-							<div className="space-y-2">
-								<p>
-									<strong>License Plate:</strong> {selectedCar.licensePlate}
-								</p>
-								<p>
-									<strong>Color:</strong>{" "}
-									<span
-										className="inline-block w-6 h-6 rounded border border-base-300"
-										style={{
-											backgroundColor: selectedCar.color,
-										}}
-									></span>
-								</p>
-								<p>
-									<strong>Parked At:</strong> {selectedCar.parkedAt.toLocaleTimeString()}
-								</p>
-								<p>
-									<strong>Duration:</strong>{" "}
-									<span className="badge badge-info">
-										{getParkedDurationMinutes(selectedCar.parkedAt)} minutes
-									</span>
-								</p>
+					<div className="card bg-base-100 shadow-xl border border-base-300 animate-in fade-in slide-in-from-left-4 duration-300">
+						<div className="card-body p-5">
+							<div className="flex justify-between items-start">
+								<h2 className="card-title text-sm uppercase text-base-content/60">Selected Vehicle</h2>
+								<button className="btn btn-ghost btn-xs btn-square" onClick={() => setSelectedCar(null)}>
+									✕
+								</button>
 							</div>
-							<div className="card-actions justify-end mt-4">
+
+							<div className="flex items-center gap-4 py-2">
+								<div
+									className="w-12 h-12 rounded-full shadow-inner flex items-center justify-center text-2xl bg-base-200"
+									style={{ border: `3px solid ${selectedCar.color}` }}
+								>
+									🚗
+								</div>
+								<div>
+									<div className="font-mono text-xl font-bold tracking-wider">
+										{selectedCar.licensePlate}
+									</div>
+									<div className="text-xs text-base-content/70">
+										Parked at{" "}
+										{selectedCar.parkedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+									</div>
+								</div>
+							</div>
+
+							<div className="divider my-1"></div>
+
+							<div className="flex justify-between items-center text-sm mb-4">
+								<span className="text-base-content/70">Duration</span>
+								<span className="font-bold font-mono">
+									{getParkedDurationMinutes(selectedCar.parkedAt)} min
+								</span>
+							</div>
+
+							<div className="grid grid-cols-2 gap-2">
 								<button
-									className="btn btn-info"
+									className="btn btn-info border-base-300"
 									onClick={() => onOpenCarSettings(selectedCar.licensePlate)}
 								>
-									⚙️ Car Settings
+									Settings
 								</button>
-								<button className="btn btn-warning" onClick={handleLeave}>
-									Leave Parking
-								</button>
-								<button className="btn btn-ghost" onClick={() => setSelectedCar(null)}>
-									Close
+								<button className="btn btn-secondary" onClick={handleLeave}>
+									Checkout
 								</button>
 							</div>
 						</div>
@@ -122,46 +157,74 @@ export const ParkingVisualization = ({
 				)}
 			</div>
 
-			{/* Center - Gate */}
-			<div className="w-1/6 flex flex-col items-center justify-center">
-				<div className="text-center">
-					<div className="text-6xl mb-4">{displayData.gateOpen ? "🚧" : "🚪"}</div>
-					<h3 className="text-xl font-bold">GATE</h3>
-					<div className={`badge ${displayData.gateOpen ? "badge-success" : "badge-error"} mt-2`}>
-						{displayData.gateOpen ? "OPEN" : "CLOSED"}
-					</div>
-				</div>
-			</div>
-
-			{/* Right Panel - Parking Area */}
-			<div className="flex-1 bg-base-100 rounded-xl shadow-xl p-6">
-				<h2 className="text-2xl font-bold mb-4">Parking Area</h2>
-				<div className="grid grid-cols-3 gap-4">
-					{displayData.cars.map((car) => (
-						<div
-							key={car.licensePlate}
-							className={`card bg-base-200 shadow cursor-pointer hover:shadow-2xl transition-all ${
-								selectedCar?.licensePlate === car.licensePlate ? "ring-4 ring-primary" : ""
-							}`}
-							onClick={() => handleCarClick(car)}
-						>
-							<div className="card-body p-4">
-								<div className="text-5xl text-center mb-2">🚗</div>
-								<h3 className="font-bold text-center text-sm">{car.licensePlate}</h3>
-								<div className="w-full h-4 rounded mt-2" style={{ backgroundColor: car.color }}></div>{" "}
-								<div className="text-xs text-center mt-2 text-base-content/70">
-									{getParkedDurationMinutes(car.parkedAt)} min
-								</div>{" "}
-							</div>
+			{/* Main Content - Parking Grid */}
+			<div className="flex-1 flex flex-col">
+				<div className="card bg-base-100 shadow-xl h-full border border-base-200">
+					<div className="card-body p-6 overflow-hidden flex flex-col">
+						<div className="flex justify-between items-center mb-6">
+							<h2 className="text-2xl font-bold flex items-center gap-2">
+								<span className="text-3xl">🅿️</span> Parking Area
+							</h2>
 						</div>
-					))}
-				</div>
-				{displayData.cars.length === 0 && (
-					<div className="text-center text-base-content/50 mt-20">
-						<div className="text-6xl mb-4">🅿️</div>
-						<p className="text-xl">No cars parked yet</p>
+
+						<div className="overflow-y-auto flex-1 pr-2">
+							{displayData.cars.length === 0 ? (
+								<div className="h-full flex flex-col items-center justify-center text-base-content/30 gap-4">
+									<div className="text-8xl opacity-20">🚙</div>
+									<p className="text-xl font-medium">Parking lot is empty</p>
+									<p className="text-sm">Configure a car or let one enter to start.</p>
+								</div>
+							) : (
+								<div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+									{displayData.cars.map((car) => (
+										<div
+											key={car.licensePlate}
+											className={`group relative aspect-[4/3] rounded-xl border-2 transition-all duration-200 cursor-pointer overflow-hidden ${
+												selectedCar?.licensePlate === car.licensePlate
+													? "border-primary bg-primary/5 shadow-md scale-[1.02]"
+													: "border-base-200 hover:border-primary/50 hover:shadow-lg bg-base-50"
+											}`}
+											onClick={() => handleCarClick(car)}
+										>
+											{/* Parking Spot ID/Number aesthetic */}
+											<div className="absolute top-2 left-2 text-[10px] font-mono text-base-content/30 font-bold">
+												SPOT-{car.licensePlate.slice(-3)}
+											</div>
+
+											<div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+												<div
+													className="text-5xl drop-shadow-sm transition-transform duration-300 group-hover:scale-110"
+													style={{ filter: `drop-shadow(0 4px 6px ${car.color}40)` }}
+												>
+													🚗
+												</div>
+												<div className="mt-3 font-mono font-bold text-sm bg-base-100 px-2 py-0.5 rounded shadow-sm border border-base-200">
+													{car.licensePlate}
+												</div>
+											</div>
+
+											{/* Bottom Info Bar */}
+											<div className="absolute bottom-0 inset-x-0 bg-base-100/90 backdrop-blur-sm p-2 flex justify-between items-center text-xs border-t border-base-200 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+												<span className="font-semibold text-base-content/70">
+													{getParkedDurationMinutes(car.parkedAt)}m
+												</span>
+												<div
+													className="w-3 h-3 rounded-full shadow-sm ring-1 ring-base-300"
+													style={{ backgroundColor: car.color }}
+												/>
+											</div>
+
+											{/* Selection Indicator */}
+											{selectedCar?.licensePlate === car.licensePlate && (
+												<div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+											)}
+										</div>
+									))}
+								</div>
+							)}
+						</div>
 					</div>
-				)}
+				</div>
 			</div>
 		</div>
 	);
