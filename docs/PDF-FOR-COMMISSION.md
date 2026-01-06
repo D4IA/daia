@@ -23,7 +23,7 @@
 3. Utwórz agenta samochodu:
    - wybierz **"Configure new car"**,
    - postępuj zgodnie z instrukcjami,
-   - w najprostszej wersji wybierz **predefiniowany klucz**. 
+   - w najprostszej wersji wybierz **predefiniowany klucz**.
 
    - Opcjonalnie:
         - otwórz w nowej karcie link do portfela na WhatsOnChain w celu podglądu niepotwierdzonych transakcji,
@@ -66,7 +66,7 @@
 
 8. Aby opuścić parking:
    - wybierz samochód,
-   - kliknij **"Leave parking"**.
+   - kliknij **"Checkout"**.
 
    Następnie:
    - agenci ponownie rozpoczynają rozmowę,
