@@ -12,7 +12,7 @@
 ## Ograniczenia
 1. Dostęp do strony jest ograniczony do użytkowników posiadających dane logowania (podane powyżej).
 2. Demo działa w sieci **BSV Testnet**, a nie w sieci produkcyjnej (Mainnet). Oznacza to, że wszystkie transakcje, umowy i płatności są zapisywane w blockchainie BSV, ale z użyciem testowych monet, które nie mają wartości rynkowej.  
-3. System będzie niedostępny od 8:00 dnia 10.01 (sobota) do 8:00 dnia 11.01 (niedziela).
+3. Ze względu na prace serwisowe system będzie niedostępny od 8:00 dnia 10.01 (sobota) do 8:00 dnia 11.01 (niedziela).
 
 ## Samodzielne testowanie demo
 
