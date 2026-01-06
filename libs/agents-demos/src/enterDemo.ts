@@ -54,7 +54,7 @@ CRITICAL RULES:
  *
  * To run the full demo successfully:
  * 1. Run: npm run genkeys (generates keys and saves to .env)
- * 2. Fund both addresses using: https://faucet.bsvblockchain.org/
+ * 2. Fund both addresses using: https://scrypt.io/faucet/ or https://witnessonchain.com/faucet/tbsv
  * 3. Wait ~10 seconds for funding transactions to be indexed
  * 4. Run the demo again
  * 5. If gate still rejects, increase the sleep time in car/graph.ts after transaction publish
@@ -86,7 +86,7 @@ export async function runEnterDemo(): Promise<void> {
 		console.log("  To use funded keys:");
 		console.log("    1. Run: npm run genkeys");
 		console.log("    2. Add keys to .env file");
-		console.log("    3. Fund addresses using: https://faucet.bsvblockchain.org/");
+		console.log("    3. Fund addresses using: https://scrypt.io/faucet/ or https://witnessonchain.com/faucet/tbsv");
 		console.log();
 		carPrivateKey = PrivateKey.fromRandom();
 		gatePrivateKey = PrivateKey.fromRandom();
