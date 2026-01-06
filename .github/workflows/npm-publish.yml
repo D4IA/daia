@@ -47,28 +47,46 @@ jobs:
         working-directory: ./libs/blockchain-bridge
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          if [[ $VERSION == *"SNAPSHOT"* ]]; then
-            pnpm publish --no-git-checks --access public --force --tag snapshot
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          
+          if npm view "$PACKAGE_NAME@$VERSION" version 2>/dev/null; then
+            echo "Version $VERSION already published, skipping"
           else
-            pnpm publish --no-git-checks --access public --force
+            if [[ $VERSION == *"SNAPSHOT"* ]]; then
+              pnpm publish --no-git-checks --access public --tag snapshot
+            else
+              pnpm publish --no-git-checks --access public
+            fi
           fi
 
       - name: Publish core
         working-directory: ./libs/core
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          if [[ $VERSION == *"SNAPSHOT"* ]]; then
-            pnpm publish --no-git-checks --access public --force --tag snapshot
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          
+          if npm view "$PACKAGE_NAME@$VERSION" version 2>/dev/null; then
+            echo "Version $VERSION already published, skipping"
           else
-            pnpm publish --no-git-checks --access public --force
+            if [[ $VERSION == *"SNAPSHOT"* ]]; then
+              pnpm publish --no-git-checks --access public --tag snapshot
+            else
+              pnpm publish --no-git-checks --access public
+            fi
           fi
 
       - name: Publish langchain
         working-directory: ./libs/langchain
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          if [[ $VERSION == *"SNAPSHOT"* ]]; then
-            pnpm publish --no-git-checks --access public --force --tag snapshot
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          
+          if npm view "$PACKAGE_NAME@$VERSION" version 2>/dev/null; then
+            echo "Version $VERSION already published, skipping"
           else
-            pnpm publish --no-git-checks --access public --force
+            if [[ $VERSION == *"SNAPSHOT"* ]]; then
+              pnpm publish --no-git-checks --access public --tag snapshot
+            else
+              pnpm publish --no-git-checks --access public
+            fi
           fi
