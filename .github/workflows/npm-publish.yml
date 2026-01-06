@@ -44,18 +44,36 @@ jobs:
 
       - name: Publish blockchain-bridge
         working-directory: ./libs/blockchain-bridge
-        run: pnpm publish --no-git-checks --access public --force
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ $VERSION == *"SNAPSHOT"* ]]; then
+            pnpm publish --no-git-checks --access public --force --tag snapshot
+          else
+            pnpm publish --no-git-checks --access public --force
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish core
         working-directory: ./libs/core
-        run: pnpm publish --no-git-checks --access public --force
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ $VERSION == *"SNAPSHOT"* ]]; then
+            pnpm publish --no-git-checks --access public --force --tag snapshot
+          else
+            pnpm publish --no-git-checks --access public --force
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish langchain
         working-directory: ./libs/langchain
-        run: pnpm publish --no-git-checks --access public --force
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ $VERSION == *"SNAPSHOT"* ]]; then
+            pnpm publish --no-git-checks --access public --force --tag snapshot
+          else
+            pnpm publish --no-git-checks --access public --force
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
