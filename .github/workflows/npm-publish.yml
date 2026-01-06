@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
     paths:
       - 'libs/blockchain-bridge/package.json'
       - 'libs/core/package.json'

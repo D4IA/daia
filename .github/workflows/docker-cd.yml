@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
     workflow_dispatch:
 
 jobs:
@@ -26,6 +27,14 @@ jobs:
       - name: Extract version from package.json
         run: echo "VERSION=$(jq -r .version platform/ui/package.json)" >> $GITHUB_ENV
 
+      - name: Determine tag suffix
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "TAG_SUFFIX=latest" >> $GITHUB_ENV
+          else
+            echo "TAG_SUFFIX=nightly" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -34,7 +43,7 @@ jobs:
           push: true
           tags: |
             teawithsand/daia-ui:${{ env.VERSION }}
-            teawithsand/daia-ui:latest
+            teawithsand/daia-ui:${{ env.TAG_SUFFIX }}
 
   build-and-push-api:
     name: Build and Push Blockchain API Docker Image
@@ -55,6 +64,14 @@ jobs:
       - name: Extract version from package.json
         run: echo "VERSION=$(jq -r .version platform/blockchain-api/package.json)" >> $GITHUB_ENV
 
+      - name: Determine tag suffix
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "TAG_SUFFIX=latest" >> $GITHUB_ENV
+          else
+            echo "TAG_SUFFIX=nightly" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -63,7 +80,7 @@ jobs:
           push: true
           tags: |
             teawithsand/daia-blockchain-api:${{ env.VERSION }}
-            teawithsand/daia-blockchain-api:latest
+            teawithsand/daia-blockchain-api:${{ env.TAG_SUFFIX }}
 
   build-and-push-demo-frontend:
     name: Build and Push Demo Frontend Docker Image
@@ -84,6 +101,14 @@ jobs:
       - name: Extract version from package.json
         run: echo "VERSION=$(jq -r .version demo/agents-demo-ui/package.json)" >> $GITHUB_ENV
 
+      - name: Determine tag suffix
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "TAG_SUFFIX=latest" >> $GITHUB_ENV
+          else
+            echo "TAG_SUFFIX=nightly" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -92,7 +117,7 @@ jobs:
           push: true
           tags: |
             teawithsand/daia-demo-frontend:${{ env.VERSION }}
-            teawithsand/daia-demo-frontend:latest
+            teawithsand/daia-demo-frontend:${{ env.TAG_SUFFIX }}
 
   build-and-push-docs:
     name: Build and Push Docs Docker Image
@@ -113,6 +138,14 @@ jobs:
       - name: Extract version from package.json
         run: echo "VERSION=$(jq -r .version docs/package.json)" >> $GITHUB_ENV
 
+      - name: Determine tag suffix
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "TAG_SUFFIX=latest" >> $GITHUB_ENV
+          else
+            echo "TAG_SUFFIX=nightly" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -121,4 +154,4 @@ jobs:
           push: true
           tags: |
             teawithsand/daia-docs:${{ env.VERSION }}
-            teawithsand/daia-docs:latest
+            teawithsand/daia-docs:${{ env.TAG_SUFFIX }}
