@@ -13,6 +13,7 @@ export interface CachedDaiaTransaction {
 	txId: string;
 	agreement: DaiaAgreementData;
 	timestamp: number;
+	confirmed?: boolean;
 }
 
 /**

@@ -66,6 +66,9 @@ export interface TransactionHashPage {
 	error: string;
 }
 
+export type UnconfirmedTransactionHashPage = TransactionHashPage & {
+	result: Array<{ tx_hash: string }>;
+};
 /**
  * Interface for fetching transactions from the blockchain.
  * Implementations should handle rate limiting and pagination internally.
@@ -96,6 +99,17 @@ export interface BlockchainTransactionFetcher {
 		address: string,
 		params?: { limit?: number; pageToken?: string },
 	): Promise<TransactionHashPage | null>;
+
+	/**
+	 * Fetches a page of unconfirmed transaction hashes for a given address.
+	 * @param address Wallet address
+	 * @param params Optional pagination parameters (limit, pageToken)
+	 * @returns Page of transaction hashes with optional next page token
+	 */
+	fetchUnconfirmedTransactionHashes(
+		address: string,
+		params?: { limit?: number; pageToken?: string },
+	): Promise<UnconfirmedTransactionHashPage | null>;
 
 	/**
 	 * Fetches details for multiple transactions by their IDs.
