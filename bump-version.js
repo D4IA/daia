@@ -3,15 +3,15 @@
 const fs = require('fs');
 
 const packageFiles = [
-  '/workspaces/jak-zdac-inz/package.json',
-  '/workspaces/jak-zdac-inz/demo/agents-demo-ui/package.json',
-  '/workspaces/jak-zdac-inz/docs/package.json',
-  '/workspaces/jak-zdac-inz/libs/agents-demos/package.json',
-  '/workspaces/jak-zdac-inz/libs/blockchain-bridge/package.json',
-  '/workspaces/jak-zdac-inz/libs/core/package.json',
-  '/workspaces/jak-zdac-inz/libs/langchain/package.json',
-  '/workspaces/jak-zdac-inz/platform/blockchain-api/package.json',
-  '/workspaces/jak-zdac-inz/platform/ui/package.json'
+  './package.json',
+  './demo/agents-demo-ui/package.json',
+  './docs/package.json',
+  './libs/agents-demos/package.json',
+  './libs/blockchain-bridge/package.json',
+  './libs/core/package.json',
+  './libs/langchain/package.json',
+  './platform/blockchain-api/package.json',
+  './platform/ui/package.json'
 ];
 
 const isMajor = process.argv.includes('--major');
