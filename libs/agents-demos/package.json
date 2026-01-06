@@ -1,6 +1,6 @@
 {
   "name": "@d4ia/agents-demos",
-  "version": "0.0.2",
+  "version": "0.0.2-SNAPSHOT.0",
   "description": "DAIA protocol utilities",
   "type": "module",
   "exports": {
