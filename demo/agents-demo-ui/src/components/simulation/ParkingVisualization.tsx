@@ -36,14 +36,12 @@ export const ParkingVisualization = ({
 	const formatDuration = (parkedAt: Date): string => {
 		const durationMs = currentTime.getTime() - parkedAt.getTime();
 		const totalMinutes = Math.floor(durationMs / (1000 * 60));
-		const days = Math.floor(totalMinutes / (60 * 24));
-		const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+		const hours = Math.floor(totalMinutes / 60);
 		const minutes = totalMinutes % 60;
 
 		const parts: string[] = [];
-		if (days > 0) parts.push(`${days}d`);
-		if (hours > 0) parts.push(`${hours}h`);
-		if (minutes > 0 || parts.length === 0) parts.push(`${minutes}m`);
+		if (hours > 0) parts.push(`${hours} hours`);
+		if (minutes > 0 || parts.length === 0) parts.push(`${minutes} minutes`);
 
 		return parts.join(" ");
 	};
@@ -61,7 +59,7 @@ export const ParkingVisualization = ({
 
 	const parkedCars = useMemo(() => {
 		return context.environment.getAllCars().filter((car) => car.memory.isParked);
-	}, [context.environment]);
+	}, [context]);
 
 	const selectedCarInfo = useMemo(() => {
 		if (!selectedCar) return null;
@@ -72,18 +70,20 @@ export const ParkingVisualization = ({
 	}, [selectedCar, context.environment]);
 
 	useEffect(() => {
-		if (selectedCar) {
+		setSelectedCar((prev) => {
+			if (!prev) return null;
 			const car = context.environment
 				.getAllCars()
-				.find((car) => car.config.licensePlate === selectedCar.licensePlate);
+				.find((c) => c.config.licensePlate === prev.licensePlate);
 			if (car) {
-				setSelectedCar({
-					...selectedCar,
-					parkedAt: new Date(car.memory.getParkAgreement()?.parkTime ?? selectedCar.parkedAt),
-				});
+				return {
+					...prev,
+					parkedAt: new Date(car.memory.getParkAgreement()?.parkTime ?? prev.parkedAt),
+				};
 			}
-		}
-	}, [context.environment]);
+			return prev;
+		});
+	}, [context]);
 
 	return (
 		<div className="flex flex-col lg:flex-row gap-6 md:h-[calc(100vh-2rem)] p-4 bg-base-200">
@@ -163,7 +163,13 @@ export const ParkingVisualization = ({
 									</div>
 									<div className="text-xs text-base-content/70">
 										Parked at{" "}
-										{selectedCar.parkedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+										{selectedCar.parkedAt.toLocaleTimeString([], {
+											hour: "2-digit",
+											minute: "2-digit",
+											day: "2-digit",
+											month: "2-digit",
+											year: "2-digit",
+										})}
 									</div>
 								</div>
 							</div>
