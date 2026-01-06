@@ -7,7 +7,7 @@
 
 ## Dane logowania
 - Login: `Jeffrey`
-- Hasło: `SerwerJestNaMojejTajnejWyspieUwU`
+- Hasło: `V1J'WmGqu5rQ.oKH`
 
 ## Ograniczenia
 1. Demo jest przeznaczone do uruchamiania na komputerze (desktop). Interfejs nie jest dostosowany do telefonów ani tabletów.
