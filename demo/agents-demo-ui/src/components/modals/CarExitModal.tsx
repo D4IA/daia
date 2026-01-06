@@ -138,7 +138,7 @@ export const CarExitModal = ({
 		<div className="modal modal-open">
 			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-0 flex flex-col">
 				{/* Header */}
-				<div className="flex justify-between items-center p-6 border-b border-base-300">
+				<div className="flex justify-between items-center py-4 px-2 md:px-6 border-b border-base-300">
 					<div>
 						<h3 className="font-bold text-2xl">Car Exit: {licensePlate}</h3>
 						<div className="flex items-center gap-4 mt-2">
