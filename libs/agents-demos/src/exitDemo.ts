@@ -57,7 +57,7 @@ CRITICAL RULES:
  *
  * To run the full demo successfully:
  * 1. Run: npm run genkeys (generates keys and saves to .env)
- * 2. Fund both addresses using: https://faucet.bsvblockchain.org/
+ * 2. Fund both addresses using: https://scrypt.io/faucet/ or https://witnessonchain.com/faucet/tbsv
  * 3. Wait ~10 seconds for funding transactions to be indexed
  * 4. Run the demo
  */
@@ -88,7 +88,9 @@ export async function runExitDemo(): Promise<void> {
 		console.log();
 		console.log("  To run this demo:");
 		console.log("    1. Run: npm run genkeys");
-		console.log("    2. Fund both addresses using: https://faucet.bsvblockchain.org/");
+		console.log(
+			"    2. Fund both addresses using: https://scrypt.io/faucet/ or https://witnessonchain.com/faucet/tbsv",
+		);
 		console.log("    3. Wait ~10 seconds for funding transactions to be indexed");
 		console.log("    4. Run: npm run demo:exit");
 		console.log();

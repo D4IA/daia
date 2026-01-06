@@ -173,7 +173,7 @@ export const ConversationViewer = ({
 
 	return (
 		<div className="flex flex-col h-full">
-			<div className="navbar flex flex-col md:flex-row items-start shadow-md py-4 px-7">
+			<div className="navbar flex flex-col md:flex-row items-start shadow-md py-4 px-2 md:px-6">
 				<div className="flex-1">
 					<h2 className="text-xl font-bold">{title}</h2>
 				</div>
