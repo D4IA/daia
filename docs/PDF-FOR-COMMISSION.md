@@ -5,10 +5,10 @@ Znajdują się w pdf na na SharePoint.
 
 ## Linki
 - [Demo](https://daiademo.teawithsand.com/) - Demonstracja jednego z zastosowań biblioteki DAIA za pośrednictwem symulacji parkingu obsługiwanego przez agentów AI.
-- [Instrukcja do demo](https://daiademo.teawithsand.com/instructions.pdf) - Wskazówki jak krok po kroku przejść demo.
+- [Instrukcja do demo](https://daiadocs.teawithsand.com/instructions.pdf) - Wskazówki jak krok po kroku przejść demo.
 - [Platforma dowodowa](https://daiaui.teawithsand.com/) - Landing page oraz strona, na której można sprawdzić transakcje na blockchain - umowy zawarte między agentami.
 - [Dokumentacja](https://daiadocs.teawithsand.com/) - Dokumentacja.
-- [Biblioteka](https://www.npmjs.com/settings/d4ia/packages) - paczki składające się na bibliotekę.
+- [Biblioteka](https://www.npmjs.com/search?q=%40d4ia) - 3 paczki składające się na bibliotekę.
 
 ## Ograniczenia
 1. Dostęp do strony jest ograniczony do użytkowników posiadających dane logowania (podane powyżej).
