@@ -22,7 +22,11 @@ const RequirementRow: React.FC<{
 			</span>
 		</div>
 
-		<div className={`${styles.requirementValue} ${isHash ? styles.hashValue : ""}`} title={value}>
+		<div
+			className={`${styles.requirementValue} ${isHash ? styles.hashValue : ""}`}
+			title={value}
+			style={isHash ? { wordBreak: "break-all", whiteSpace: "normal" } : {}}
+		>
 			{value}
 		</div>
 	</div>
@@ -51,6 +55,8 @@ const AgreementRequirements: React.FC<AgreementRequirementsProps> = ({
 				const pubKey = req?.pubKey || "N/A";
 				const offererNonce = req?.offererNonce || "N/A";
 
+				const isPaymentType = type.toLowerCase() === "payment";
+
 				return (
 					<div key={req.uuid || index} style={{ marginBottom: reqs.length > 1 ? "30px" : "0" }}>
 						{reqs.length > 1 && (
@@ -76,19 +82,23 @@ const AgreementRequirements: React.FC<AgreementRequirementsProps> = ({
 							tooltip={t("agreement_details_tooltips.req_type")}
 						/>
 
-						<RequirementRow
-							label={t("agreement_requirements.label_pubkey")}
-							value={pubKey}
-							isHash={true}
-							tooltip={t("agreement_details_tooltips.proposer_pubkey")}
-						/>
+						{!isPaymentType && (
+							<>
+								<RequirementRow
+									label={t("agreement_requirements.label_pubkey")}
+									value={pubKey}
+									isHash={true}
+									tooltip={t("agreement_details_tooltips.proposer_pubkey")}
+								/>
 
-						<RequirementRow
-							label={t("agreement_requirements.label_nonce")}
-							value={offererNonce}
-							isHash={true}
-							tooltip={t("agreement_details_tooltips.offerer_nonce")}
-						/>
+								<RequirementRow
+									label={t("agreement_requirements.label_nonce")}
+									value={offererNonce}
+									isHash={true}
+									tooltip={t("agreement_details_tooltips.offerer_nonce")}
+								/>
+							</>
+						)}
 					</div>
 				);
 			})}

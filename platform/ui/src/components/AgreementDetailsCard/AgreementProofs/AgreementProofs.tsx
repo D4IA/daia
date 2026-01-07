@@ -25,6 +25,12 @@ const ProofRow: React.FC<{
 		<div
 			className={`${styles.proofValue} ${isHash ? styles.hashValue : ""}`}
 			title={fullValue || value}
+			style={{
+				wordBreak: "break-all" as const,
+				whiteSpace: "normal" as const,
+				overflow: "visible" as const,
+				textOverflow: "clip" as const,
+			}}
 		>
 			{value}
 		</div>
@@ -44,11 +50,6 @@ const AgreementProofs: React.FC<AgreementProofsProps> = ({ proofsArray, proofs }
 		);
 	}
 
-	const formatShortHash = (hash: string, length: number = 20) => {
-		if (!hash || hash === "N/A" || hash.length <= length) return hash;
-		return `${hash.substring(0, 6)}...${hash.slice(-4)}`;
-	};
-
 	return (
 		<CardContainer icon="lock" title={t("agreement_proofs.card_title")}>
 			<div className={styles.cardContent}>
@@ -56,6 +57,8 @@ const AgreementProofs: React.FC<AgreementProofsProps> = ({ proofsArray, proofs }
 					const type = proof?.type || "N/A";
 					const signedNonce = proof?.signeeNonce || proof?.signedNonce || "N/A";
 					const signature = proof?.signature || "N/A";
+
+					const isPaymentType = type.toLowerCase() === "payment";
 
 					return (
 						<div key={proof.uuid || index} style={{ marginBottom: proofsData.length > 1 ? "30px" : "0" }}>
@@ -80,20 +83,24 @@ const AgreementProofs: React.FC<AgreementProofsProps> = ({ proofsArray, proofs }
 								tooltip={t("agreement_proofs.tooltip_proof_type")}
 							/>
 
-							<ProofRow
-								label={t("agreement_proofs.label_signee_nonce")}
-								value={signedNonce}
-								isHash={true}
-								tooltip={t("agreement_proofs.tooltip_signee_nonce")}
-							/>
+							{!isPaymentType && (
+								<>
+									<ProofRow
+										label={t("agreement_proofs.label_signee_nonce")}
+										value={signedNonce}
+										isHash={true}
+										tooltip={t("agreement_proofs.tooltip_signee_nonce")}
+									/>
 
-							<ProofRow
-								label={t("agreement_proofs.label_digital_signature")}
-								value={formatShortHash(signature, 60)}
-								fullValue={signature}
-								isHash={true}
-								tooltip={t("agreement_proofs.tooltip_digital_signature")}
-							/>
+									<ProofRow
+										label={t("agreement_proofs.label_digital_signature")}
+										value={signature}
+										fullValue={signature}
+										isHash={true}
+										tooltip={t("agreement_proofs.tooltip_digital_signature")}
+									/>
+								</>
+							)}
 						</div>
 					);
 				})}

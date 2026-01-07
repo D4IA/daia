@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import styles from "./AgreementListView.module.scss";
 import AgreementListItem from "../components/AgreementsListItem/AgreementsListItem";
 import AgreementsListSearchBar from "../components/AgreementsListSearchBar/AgreementsListSearchBar";
-import AgreementFilters from "../components/AgreementFilters/AgreementFilters";
 import NoAgreementsFound from "../components/NoAgreementsFound/NoAgreementsFound";
 
 interface AgreementsListViewProps {
@@ -38,6 +37,7 @@ interface ApiTransaction {
 interface ApiResponse {
 	address: string;
 	transactions: ApiTransaction[];
+	hasMore?: boolean;
 }
 
 const ITEMS_PER_PAGE = 8;
@@ -56,23 +56,30 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 	const [error, setError] = useState<string | null>(null);
 	const [validationError, setValidationError] = useState<string | null>(null);
 
-	const [txIdFilter, setTxIdFilter] = useState("");
-	const [dateFilter, setDateFilter] = useState("");
-
 	const [hasSearched, setHasSearched] = useState(!!query);
 
 	const [currentPage, setCurrentPage] = useState(1);
+	const [maxDiscoveredPage, setMaxDiscoveredPage] = useState(1);
+	const [hasNextPage, setHasNextPage] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
 
 	const fetchAgreementsFromApi = useCallback(
-		async (address: string) => {
+		async (address: string, page: number = 1) => {
 			setIsLoading(true);
 			setError(null);
-			setAgreements([]);
 			setValidationError(null);
 
 			try {
-				const response = await fetch(`${API_BASE_URL}/agreements/address/${address}`);
+				const offset = (page - 1) * ITEMS_PER_PAGE;
+
+				const params = new URLSearchParams({
+					limit: ITEMS_PER_PAGE.toString(),
+					offset: offset.toString(),
+				});
+
+				const fullUrl = `${API_BASE_URL}/agreements/address/${address}?${params.toString()}`;
+
+				const response = await fetch(fullUrl);
 
 				if (!response.ok) {
 					throw new Error(t("search_view.msg_api_error"));
@@ -82,20 +89,23 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 
 				const mappedAgreements: Agreement[] = data.transactions.flatMap((tx) => {
 					const currentTxId = (tx as any).TxId || tx.txId;
+					const isConfirmed = (tx as any).confirmed !== false;
 
 					if (tx.agreements && Array.isArray(tx.agreements)) {
 						return tx.agreements.map((agr, index) => ({
 							id: `${currentTxId}-${agr.vout || index}`,
 							txId: currentTxId,
 							title: agr.offerContent.naturalLanguageOfferContent,
-							date: new Date(tx.timestamp * 1000).toLocaleDateString(i18n.language, {
-								year: "numeric",
-								month: "short",
-								day: "numeric",
-								hour: "2-digit",
-								minute: "2-digit",
-							}),
-							status: "Published",
+							date: isConfirmed
+								? new Date(tx.timestamp * 1000).toLocaleDateString(i18n.language, {
+										year: "numeric",
+										month: "short",
+										day: "numeric",
+										hour: "2-digit",
+										minute: "2-digit",
+									})
+								: "N/A",
+							status: isConfirmed ? "Published" : "Verifying",
 						}));
 					}
 
@@ -111,14 +121,16 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 								id: currentTxId,
 								txId: currentTxId,
 								title: titleText,
-								date: new Date(tx.timestamp * 1000).toLocaleDateString(i18n.language, {
-									year: "numeric",
-									month: "short",
-									day: "numeric",
-									hour: "2-digit",
-									minute: "2-digit",
-								}),
-								status: "Published",
+								date: isConfirmed
+									? new Date(tx.timestamp * 1000).toLocaleDateString(i18n.language, {
+											year: "numeric",
+											month: "short",
+											day: "numeric",
+											hour: "2-digit",
+											minute: "2-digit",
+										})
+									: "N/A",
+								status: isConfirmed ? "Published" : "Verifying",
 							},
 						];
 					}
@@ -127,9 +139,16 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 				});
 
 				setAgreements(mappedAgreements);
+
+				const backendHasMore = data.hasMore ?? mappedAgreements.length === ITEMS_PER_PAGE;
+
+				setMaxDiscoveredPage((prev) => Math.max(prev, page));
+				setHasNextPage(backendHasMore);
 			} catch (err) {
 				console.error(err);
 				setError(t("search_view.msg_api_error"));
+				setAgreements([]);
+				setHasNextPage(false);
 			} finally {
 				setIsLoading(false);
 			}
@@ -146,45 +165,18 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 				navigate(`/list_of_agreements/${trimmedAddress}`);
 			}
 
-			setTxIdFilter("");
-			setDateFilter("");
+			setCurrentPage(1);
+			setMaxDiscoveredPage(1);
+			setHasNextPage(false);
 
 			setWalletAddress(trimmedAddress);
 			setHasSearched(true);
-			setCurrentPage(1);
 			onSearch(trimmedAddress);
 
-			fetchAgreementsFromApi(trimmedAddress);
+			fetchAgreementsFromApi(trimmedAddress, 1);
 		},
 		[navigate, onSearch, fetchAgreementsFromApi],
 	);
-
-	const filteredAgreements = agreements.filter((item) => {
-		const matchesTxId = txIdFilter
-			? item.txId.toLowerCase().includes(txIdFilter.toLowerCase())
-			: true;
-
-		let matchesDate = true;
-		if (dateFilter) {
-			try {
-				const itemDate = new Date(item.date);
-				const yyyy = itemDate.getFullYear();
-				const mm = String(itemDate.getMonth() + 1).padStart(2, "0");
-				const dd = String(itemDate.getDate()).padStart(2, "0");
-				const formattedItemDate = `${yyyy}-${mm}-${dd}`;
-
-				matchesDate = formattedItemDate === dateFilter;
-			} catch (_e) {
-				matchesDate = false;
-			}
-		}
-
-		return matchesTxId && matchesDate;
-	});
-
-	const totalPages = Math.ceil(filteredAgreements.length / ITEMS_PER_PAGE);
-	const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-	const currentAgreements = filteredAgreements.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
 	useEffect(() => {
 		const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -200,59 +192,65 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 		}
 	}, [query, handleSearchAction]);
 
-	useEffect(() => {
-		setCurrentPage(1);
-	}, [txIdFilter, dateFilter]);
-
 	const handlePageChange = (page: number) => {
-		if (page >= 1 && page <= totalPages) setCurrentPage(page);
+		if (page < 1 || isLoading) return;
+		if (page > maxDiscoveredPage + 1) return;
+		if (page === maxDiscoveredPage + 1 && !hasNextPage) return;
+
+		setCurrentPage(page);
+
+		fetchAgreementsFromApi(walletAddress, page);
+
+		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
 
 	const getPaginationRange = () => {
-		const delta = 2;
 		const range: (number | string)[] = [];
-		const pagesToShow = new Set<number>();
 
-		pagesToShow.add(1);
-		pagesToShow.add(totalPages);
-
-		for (let i = currentPage - delta; i <= currentPage + delta; i++) {
-			if (i >= 1 && i <= totalPages) {
-				pagesToShow.add(i);
-			}
-		}
-
-		const sortedPages = Array.from(pagesToShow).sort((a, b) => a - b);
-		for (let i = 0; i < sortedPages.length; i++) {
-			const page = sortedPages[i];
-			range.push(page);
-			if (i < sortedPages.length - 1 && sortedPages[i + 1] > page + 1) {
+		if (currentPage > 2) {
+			range.push(1);
+			if (currentPage > 3) {
 				range.push("...");
 			}
 		}
+
+		if (currentPage > 1) {
+			range.push(currentPage - 1);
+		}
+
+		range.push(currentPage);
+
+		if (currentPage < maxDiscoveredPage) {
+			range.push(currentPage + 1);
+		} else if (hasNextPage) {
+			range.push(currentPage + 1);
+		}
+
 		return range;
 	};
 
 	const Pagination = () => {
-		if (totalPages <= 1 || currentAgreements.length === 0) return null;
 		const pageRange = getPaginationRange();
+
+		if (pageRange.length <= 1) return null;
 
 		if (isMobile) {
 			return (
 				<div className={styles.paginationWrapper}>
 					<button
 						onClick={() => handlePageChange(currentPage - 1)}
-						disabled={currentPage === 1}
+						disabled={currentPage === 1 || isLoading}
 						className={styles.paginationArrow}
 					>
 						&lt;
 					</button>
 					<span className={styles.currentPageMobile}>
-						{currentPage} / {totalPages}
+						{currentPage}{" "}
+						{hasNextPage || currentPage < maxDiscoveredPage ? `/ ${maxDiscoveredPage}+` : ""}
 					</span>
 					<button
 						onClick={() => handlePageChange(currentPage + 1)}
-						disabled={currentPage === totalPages}
+						disabled={(currentPage === maxDiscoveredPage && !hasNextPage) || isLoading}
 						className={styles.paginationArrow}
 					>
 						&gt;
@@ -265,7 +263,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 			<div className={styles.paginationWrapper}>
 				<button
 					onClick={() => handlePageChange(currentPage - 1)}
-					disabled={currentPage === 1}
+					disabled={currentPage === 1 || isLoading}
 					className={styles.paginationArrow}
 				>
 					&lt;
@@ -279,6 +277,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 						<button
 							key={page}
 							onClick={() => handlePageChange(page as number)}
+							disabled={isLoading}
 							className={`${styles.pageButton} ${page === currentPage ? styles.pageButtonActive : ""}`}
 						>
 							{page}
@@ -287,7 +286,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 				)}
 				<button
 					onClick={() => handlePageChange(currentPage + 1)}
-					disabled={currentPage === totalPages}
+					disabled={(currentPage === maxDiscoveredPage && !hasNextPage) || isLoading}
 					className={styles.paginationArrow}
 				>
 					&gt;
@@ -318,7 +317,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 	};
 
 	const renderContent = () => {
-		if (isLoading) {
+		if (isLoading && currentPage === 1) {
 			return (
 				<div style={{ textAlign: "center", padding: "20px" }}>{t("search_view.msg_loading")}</div>
 			);
@@ -343,7 +342,7 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 			);
 		}
 
-		if (hasSearched && agreements.length === 0) {
+		if (hasSearched && agreements.length === 0 && currentPage === 1) {
 			return <NoAgreementsFound />;
 		}
 
@@ -356,32 +355,10 @@ const AgreementsListView: React.FC<AgreementsListViewProps> = ({ onSearch }) => 
 		}
 
 		if (agreements.length > 0) {
-			const filterBar = (
-				<AgreementFilters
-					txIdFilter={txIdFilter}
-					dateFilter={dateFilter}
-					onTxIdChange={setTxIdFilter}
-					onDateChange={setDateFilter}
-				/>
-			);
-
-			if (filteredAgreements.length === 0 && (txIdFilter || dateFilter)) {
-				return (
-					<>
-						{filterBar}
-						<div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
-							{t("search_view.msg_no_filter_match")}
-						</div>
-					</>
-				);
-			}
-
 			return (
 				<>
-					{filterBar}
-
 					<div className={styles.agreementsList}>
-						{currentAgreements.map((item) => (
+						{agreements.map((item) => (
 							<AgreementListItem
 								key={item.id}
 								title={item.title}
