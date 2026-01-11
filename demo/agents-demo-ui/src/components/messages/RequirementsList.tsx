@@ -39,7 +39,7 @@ export const RequirementsList = ({
 					if (req.type === "sign" && req.pubKey) {
 						const label = partyLabels[req.pubKey] || shortenPubKey(req.pubKey);
 						return (
-							<li key={id} className="flex items-center gap-2 text-xs">
+							<li key={id} className="flex items-center gap-2 text-xs justify-between border-b-2 border-b-base-300 pb-2">
 								
 								<span className="font-semibold">Sign by {label}</span>
 								{isSigned ? (
@@ -53,9 +53,9 @@ export const RequirementsList = ({
 
 					if (req.type === "payment" && req.amount !== undefined) {
 						return (
-							<li key={id} className="flex items-center gap-2 text-xs">
+							<li key={id} className="flex items-center gap-2 text-xs justify-between border-b-2 border-b-base-300 pb-2">
 								
-								<span className="font-semibold">Payment of {req.amount} satoshis</span>
+								<span className="font-semibold">Payment of {req.amount} satoshis on<br/>GATE wallet address</span>
 								<span className="badge badge-soft badge-warning badge-sm">Waiting for payment</span>
 							</li>
 						);

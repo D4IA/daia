@@ -99,7 +99,7 @@ export const ConversationViewer = ({
 			case CarGateSimulationEventType.GATE_LOG:
 				return (
 					<div key={index} className="flex justify-start my-2">
-						<div className="badge badge-ghost badge-sm">
+						<div className="badge badge-ghost badge">
 							<span className="mr-1">🚪</span>
 							{event.message}
 						</div>
@@ -109,7 +109,7 @@ export const ConversationViewer = ({
 			case CarGateSimulationEventType.CAR_LOG:
 				return (
 					<div key={index} className="flex justify-end my-2">
-						<div className="badge badge-ghost badge-sm">
+						<div className="badge badge-ghost badge">
 							<span className="mr-1">🚗</span>
 							{event.message}
 						</div>

@@ -1,12 +1,15 @@
 import { DaiaMessage, DaiaMessageType } from "@d4ia/core";
 import { OfferAccepted } from "../messages/OfferAccepted";
 import { RequirementsList } from "../messages/RequirementsList";
+import { PublicKey } from "@d4ia/blockchain-bridge";
+
 
 interface DaiaMessageViewerProps {
 	message: DaiaMessage;
 }
 
 export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
+
 	switch (message.type) {
 		case DaiaMessageType.DAIA_HELLO:
 			return (
@@ -18,9 +21,13 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 					<div className="divider my-1"></div>
 					<div className="text-sm space-y-1">
 						<div>
-							<span className="font-semibold opacity-80">Public Key:</span>
-							<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all">
+							<span className="font-semibold opacity-80">Public Key</span>
+							<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all mb-2">
 								{message.publicKey}
+							</div>
+							<span className="font-semibold opacity-80">Wallet Address</span>
+							<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all">
+								{PublicKey.fromString(message.publicKey).toAddress("testnet")}
 							</div>
 						</div>
 					</div>
