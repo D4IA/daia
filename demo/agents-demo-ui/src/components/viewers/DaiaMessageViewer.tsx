@@ -1,5 +1,6 @@
 import { DaiaMessage, DaiaMessageType } from "@d4ia/core";
 import { OfferAccepted } from "../messages/OfferAccepted";
+import { RequirementsList } from "../messages/RequirementsList";
 
 interface DaiaMessageViewerProps {
 	message: DaiaMessage;
@@ -50,31 +51,28 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 								</div>
 							</div>
 						)}
-						{innerContent?.requirements && Object.keys(innerContent.requirements).length > 0 && (
-							<div>
-								<span className="font-semibold opacity-80">Requirements:</span>
-								<ul className="list-disc list-inside bg-base-100 p-2 rounded mt-1 space-y-1">
-									{Object.entries(innerContent.requirements).map(([id, req]: [string, unknown]) => {
-										const requirement = req as {
-											type: string;
-											party?: string;
-											amount?: number;
-										};
-										return (
-											<li key={id} className="text-xs">
-												<span className="font-semibold">{requirement.type}</span>
-												{requirement.type === "sign" && requirement.party && (
-													<span className="ml-2">by {requirement.party}</span>
-												)}
-												{requirement.type === "payment" && requirement.amount && (
-													<span className="ml-2">{requirement.amount} satoshis</span>
-												)}
-											</li>
-										);
-									})}
-								</ul>
-							</div>
-						)}
+						{innerContent?.requirements && Object.keys(innerContent.requirements).length > 0 && (() => {
+							// Build party labels: first sign requirement is GATE, second is CAR
+							const signRequirements = Object.values(innerContent.requirements).filter(
+								(r: unknown) => (r as { type: string }).type === "sign"
+							) as { pubKey?: string }[];
+							
+							const partyLabels: Record<string, string> = {};
+							if (signRequirements[0]?.pubKey) {
+								partyLabels[signRequirements[0].pubKey] = "GATE";
+							}
+							if (signRequirements[1]?.pubKey) {
+								partyLabels[signRequirements[1].pubKey] = "CAR";
+							}
+
+							return (
+								<RequirementsList
+									requirements={innerContent.requirements}
+									signatures={message.content.signatures}
+									partyLabels={partyLabels}
+								/>
+							);
+						})()}
 					</div>
 				</div>
 			);
