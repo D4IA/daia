@@ -3,6 +3,7 @@ interface Requirement {
 	pubKey?: string;
 	amount?: number;
 	to?: string;
+	relatedTx?: string;
 }
 
 interface RequirementsListProps {
@@ -18,6 +19,11 @@ interface RequirementsListProps {
 const shortenPubKey = (pubKey: string): string => {
 	if (pubKey.length <= 12) return pubKey;
 	return `${pubKey.slice(0, 6)}...${pubKey.slice(-6)}`;
+};
+
+const shortenTxId = (txId: string): string => {
+	if (txId.length <= 16) return txId;
+	return `${txId.slice(0, 8)}...${txId.slice(-8)}`;
 };
 
 export const RequirementsList = ({
@@ -53,10 +59,24 @@ export const RequirementsList = ({
 
 					if (req.type === "payment" && req.amount !== undefined) {
 						return (
-							<li key={id} className="flex items-center gap-2 text-xs justify-between border-b-2 border-b-base-300 pb-2">
-								
-								<span className="font-semibold">Payment of {req.amount} satoshis on<br/>GATE wallet address</span>
-								<span className="badge badge-soft badge-warning badge-sm">Waiting for payment</span>
+							<li key={id} className="flex flex-col gap-1 text-xs border-b-2 border-b-base-300 pb-2">
+								<div className="flex items-center justify-between">
+									<span className="font-semibold">Payment of {req.amount} satoshis</span>
+									<span className="badge badge-soft badge-warning badge-sm">Waiting for payment</span>
+								</div>
+								{req.relatedTx && (
+									<div className="text-xs opacity-70">
+										Based on entry agreement:{" "}
+										<a
+											href={`https://daiaui.teawithsand.com/agreement_details/${req.relatedTx}`}
+											target="_blank"
+											rel="noopener noreferrer"
+											className="link link-primary"
+										>
+											{shortenTxId(req.relatedTx)}
+										</a>
+									</div>
+								)}
 							</li>
 						);
 					}

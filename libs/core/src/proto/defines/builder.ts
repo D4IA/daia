@@ -73,11 +73,13 @@ export class DaiaOfferBuilder {
 		amount: number,
 		authType: DaiaPaymentRequirementAuthType = DaiaPaymentRequirementAuthType.SELF_AUTHENTICATED,
 		paymentNonce?: string,
+		relatedTx?: string,
 	): DaiaOfferBuilder => {
 		const paymentRequirement: DaiaOfferRequirement = {
 			type: DaiaRequirementType.PAYMENT,
 			to,
 			amount,
+			...(relatedTx && { relatedTx }),
 			auth:
 				authType === DaiaPaymentRequirementAuthType.SELF_AUTHENTICATED
 					? { type: DaiaPaymentRequirementAuthType.SELF_AUTHENTICATED }
@@ -93,8 +95,9 @@ export class DaiaOfferBuilder {
 	public readonly addSelfAuthenticatedPaymentRequirement = (
 		to: string,
 		amount: number,
+		relatedTx?: string,
 	): DaiaOfferBuilder => {
-		return this.addPaymentRequirement(to, amount, DaiaPaymentRequirementAuthType.SELF_AUTHENTICATED);
+		return this.addPaymentRequirement(to, amount, DaiaPaymentRequirementAuthType.SELF_AUTHENTICATED, undefined, relatedTx);
 	};
 
 	public readonly addRemotePaymentRequirement = (
