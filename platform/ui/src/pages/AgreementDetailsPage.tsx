@@ -130,6 +130,7 @@ const AgreementDetailsPage: React.FC = () => {
 						proofs: proofsArray,
 					})
 				}
+				confirmed={txDetails?.confirmed}
 			/>
 
 			<div

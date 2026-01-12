@@ -2,6 +2,9 @@ import React from "react";
 import styles from "./AgreementHeader.module.scss";
 import { FaFilePdf } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import TransactionStatusBadge from "../TransactionStatusBadge/TransactionStatusBadge";
+import {BLOCKCHAIN_TRANSACTION_STATUSES} from "../TransactionStatusBadge/types"
+
 
 interface BreadcrumbItem {
 	label: string;
@@ -14,6 +17,7 @@ interface AgreementHeaderProps {
 	subTitle: string;
 	createdDate: string;
 	onGenerateReport: () => void;
+	confirmed?: string;
 }
 
 const AgreementHeader: React.FC<AgreementHeaderProps> = ({
@@ -22,8 +26,12 @@ const AgreementHeader: React.FC<AgreementHeaderProps> = ({
 	subTitle,
 	createdDate,
 	onGenerateReport,
+	confirmed
 }) => {
 	const { t } = useTranslation();
+
+	const status = confirmed ? BLOCKCHAIN_TRANSACTION_STATUSES.PUBLISHED : BLOCKCHAIN_TRANSACTION_STATUSES.PUBLISHING;
+
 	return (
 		<div className={styles.headerWrapper}>
 			<div className={styles.breadcrumbs}>
@@ -47,6 +55,7 @@ const AgreementHeader: React.FC<AgreementHeaderProps> = ({
 			<div className={styles.titles}>
 				<h1 className={styles.mainTitle}>{mainTitle}</h1>
 				<h2 className={styles.subTitle}>{subTitle}</h2>
+				<TransactionStatusBadge status={status} />
 				<p className={styles.createdDate}>{createdDate}</p>
 			</div>
 		</div>
