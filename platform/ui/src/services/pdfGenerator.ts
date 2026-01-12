@@ -103,9 +103,9 @@ export const generateAgreementPDF = (data: PDFData) => {
 
 		let key = "";
 		if (type === "payment") {
-			key = "payment_agreement_summary.text_main";
+			key = "payment_agreement_summary.text_pdf";
 		} else if (type === "signed") {
-			key = "signed_agreement_summary.text_main";
+			key = "signed_agreement_summary.text_pdf";
 		}
 
 		if (key) {
