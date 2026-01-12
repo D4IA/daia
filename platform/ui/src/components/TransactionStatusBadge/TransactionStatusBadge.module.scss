@@ -1,0 +1,74 @@
+@use "../../styles/tailwind-vars" as tv;
+
+.statusBadge {
+	display: inline-flex;
+	align-items: center;
+	border-radius: 9999px;
+	padding: 0.25rem 0.6rem;
+	font-size: 0.8rem;
+	font-weight: tv.$font-regular;
+	white-space: nowrap;
+	column-gap: 4px;
+
+	@media (max-width: 640px) {
+		display: none;
+	}
+}
+
+.statusIconImage {
+	width: 0.75rem;
+	height: 0.75rem;
+	margin-right: 0.25rem;
+}
+
+.mobileStatusText {
+	display: none;
+	font-size: 0.8rem;
+	margin-top: 0.2rem;
+
+	@media (max-width: 640px) {
+		display: block;
+	}
+}
+
+.badgeSuccess {
+	background-color: #e6ffed;
+	color: #38a169;
+	.statusIconImage {
+		filter: invert(30%) sepia(80%) saturate(1500%) hue-rotate(80deg);
+	}
+}
+.badgeFailed {
+	background-color: #ffeaea;
+	color: #e53e3e;
+	.statusIconImage {
+		filter: invert(20%) sepia(80%) saturate(4000%) hue-rotate(340deg);
+	}
+}
+.badgeVerifying {
+	background-color: #e6f0ff;
+	color: #4c7cff;
+}
+
+.textSuccess {
+	color: #38a169;
+}
+.textFailed {
+	color: #e53e3e;
+}
+.textVerifying {
+	color: #4c7cff;
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.spin {
+	animation: spin 1s linear infinite;
+}

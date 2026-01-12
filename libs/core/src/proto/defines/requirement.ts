@@ -41,6 +41,12 @@ export const DaiaRequirementPaymentSchema = z.object({
 	amount: z.number(),
 
 	/**
+	 * Optional reference to a related transaction.
+	 * Used to link this payment to a previous agreement (e.g., exit payment referencing entry agreement).
+	 */
+	relatedTx: z.string().optional(),
+
+	/**
 	 * Defines how payment should be authenticated.
 	 */
 	auth: z.discriminatedUnion("type", [

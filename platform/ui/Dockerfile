@@ -3,8 +3,11 @@ FROM node:22-alpine AS builder
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache python3 make g++
+
 # Enable pnpm
-RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+RUN corepack enable
+ENV COREPACK_ENABLE_STRICT=0
 
 # Copy entire monorepo (required for workspace builds)
 COPY . .

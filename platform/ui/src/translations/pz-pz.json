@@ -308,5 +308,23 @@
 		"proof_number": "Dowod {{number}}",
 		"requirement_label": "Wymog",
 		"proof_label": "Dowod"
+	},
+	"payment_agreement_summary": {
+		"title": "Wihajster ze sztamy",
+		"text_main": "Sztama z opisem <5>{{description}}</5> została klepnięta na podstawie <0>{{relatedTxId}}</0> między wiarą <6>{{participantX}}</6> a <7>{{participantY}}</7>.<br /><1>{{signersStatus}}</1> sztame i uczestnik <2>{{participant}}</2> <3/>, gdzie sypnął <4>{{amount}} Satoshi</4>",
+		"text_pdf": "Sztama z opisem <5>{{description}}</5> zostala klepnieta na podstawie <0>{{relatedTxId}}</0> miedzy wiara <6>{{participantX}}</6> a <7>{{participantY}}</7>.<br /><1>{{signersStatus}}</1> sztame i uczestnik <2>{{participant}}</2> <3/>, gdzie sypnal <4>{{amount}} Satoshi</4>",
+		"status_signed": "OBAJ MACHNELI PODPIS",
+		"status_pending": "CZEKAMY AZ SIE PODPISZA",
+		"context_self": "zabulił w ramach tyj sztamy",
+		"context_remote": "zabulił za sztame <0>{{txId}}</0>"
+	},
+	"signed_agreement_summary": {
+		"title": "Wihajster ze sztamy",
+		"text_main": "Sztama między wiarą <2>{{participantX}}</2> a <3>{{participantY}}</3> o co tu chodzi <1>{{description}}</1><br /><0>{{signersStatus}}</0> sztame",
+		"text_pdf": "Sztama miedzy wiara <2>{{participantX}}</2> a <3>{{participantY}}</3> o co tu chodzi <1>{{description}}</1><br /><0>{{signersStatus}}</0> sztame",
+		"status_signed": "OBAJ MACHNELI PODPIS",
+		"status_pending": "CZEKAMY AZ SIE PODPISZA",
+		"context_self": "zabulił w ramach tyj sztamy",
+		"context_remote": "zabulił za sztame <0>{{txId}}</0>"
 	}
 }

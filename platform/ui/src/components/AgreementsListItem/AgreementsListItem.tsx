@@ -1,10 +1,10 @@
 import React from "react";
 import styles from "./AgreementsListItem.module.scss";
-import { useTranslation } from "react-i18next";
-
-import CheckIcon from "../../assets/check.svg";
-import CloseIcon from "../../assets/close.svg";
-import WaitingIcon from "../../assets/waiting.svg";
+import TransactionStatusBadge from "../TransactionStatusBadge/TransactionStatusBadge";
+import {
+	BLOCKCHAIN_TRANSACTION_STATUSES,
+	type TransactionStatus,
+} from "../TransactionStatusBadge/types";
 
 type AgreementStatus = "Published" | "Failed" | "Verifying";
 
@@ -17,42 +17,17 @@ interface AgreementListItemProps {
 }
 
 const AgreementListItem: React.FC<AgreementListItemProps> = ({ date, status, txId, onClick }) => {
-	const { t } = useTranslation();
-
-	const getStatusInfo = (currentStatus: AgreementStatus) => {
-		switch (currentStatus) {
+	const mapStatus = (status: AgreementStatus): TransactionStatus => {
+		switch (status) {
 			case "Published":
-				return {
-					icon: CheckIcon,
-					text: t("agreement_list.status_published"),
-					badgeClass: styles.badgeSuccess,
-					colorClass: styles.textSuccess,
-				};
+				return BLOCKCHAIN_TRANSACTION_STATUSES.PUBLISHED;
 			case "Failed":
-				return {
-					icon: CloseIcon,
-					text: t("agreement_list.status_failed"),
-					badgeClass: styles.badgeFailed,
-					colorClass: styles.textFailed,
-				};
+				return BLOCKCHAIN_TRANSACTION_STATUSES.FAILED;
 			case "Verifying":
-				return {
-					icon: WaitingIcon,
-					text: t("agreement_list.status_verifying"),
-					badgeClass: styles.badgeVerifying,
-					colorClass: styles.textVerifying,
-				};
 			default:
-				return {
-					icon: WaitingIcon,
-					text: t("agreement_list.status_unknown"),
-					badgeClass: styles.badgeDefault,
-					colorClass: styles.textDefault,
-				};
+				return BLOCKCHAIN_TRANSACTION_STATUSES.PUBLISHING;
 		}
 	};
-
-	const statusInfo = getStatusInfo(status);
 
 	return (
 		<div className={styles.itemContainer} onClick={onClick}>
@@ -62,12 +37,8 @@ const AgreementListItem: React.FC<AgreementListItemProps> = ({ date, status, txI
 						{txId}
 					</span>
 
-					<span className={`${styles.statusBadge} ${statusInfo.badgeClass}`}>
-						<img src={statusInfo.icon} alt={status} className={styles.statusIconImage} />
-						<span className={styles.statusText}>{statusInfo.text}</span>
-					</span>
+					<TransactionStatusBadge status={mapStatus(status)} />
 				</div>
-				<div className={`${styles.mobileStatusText} ${statusInfo.colorClass}`}>{statusInfo.text}</div>
 
 				<div className={styles.metaDataWrapper}>
 					<div className={styles.dateText}>{date}</div>

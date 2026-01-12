@@ -44,7 +44,8 @@ export enum CarGateSimulationEventType {
 	GATE_ERROR = "GATE_ERROR",
 }
 
-export type CarGateSimulationEvent =
+// Base event data - used when creating events internally
+export type CarGateSimulationEventData =
 	| {
 			type: CarGateSimulationEventType.GATE_ACTION;
 			action: "let-in" | "let-out" | "reject";
@@ -79,6 +80,11 @@ export type CarGateSimulationEvent =
 			type: CarGateSimulationEventType.GATE_ERROR;
 			error: string;
 	  };
+
+// Full event with timestamp - used for storing and displaying events
+export type CarGateSimulationEvent = CarGateSimulationEventData & {
+	timestamp: Date;
+};
 
 export type CarGateSimulationSessionResult = {
 	carMemory: CarAgentMemory;
@@ -123,7 +129,7 @@ export class CarGateSimulationSession {
 	};
 
 	public readonly setupAgents = (
-		onEvent: (event: CarGateSimulationEvent) => void,
+		onEvent: (event: CarGateSimulationEventData) => void,
 	): EnterAgents | ExitAgents => {
 		const sessionType = this.detectSessionType();
 		const transactionParser = new BsvTransactionParser(this.envConfig.network);
@@ -265,7 +271,8 @@ export class CarGateSimulationSession {
 	public readonly run = async (
 		input: CarGateSimulationInput,
 	): Promise<CarGateSimulationSessionResult> => {
-		const onEvent = (event: CarGateSimulationEvent) => {
+		const onEvent = (eventInput: CarGateSimulationEventData) => {
+			const event: CarGateSimulationEvent = { ...eventInput, timestamp: new Date() };
 			this.messageHistory.push(event);
 			input.onNewMessage(event);
 		};

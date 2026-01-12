@@ -45,7 +45,7 @@ export const ConversationViewer = ({
 					<div key={index} className="chat chat-start">
 						<div className="chat-header">
 							🚪 Gate
-							<time className="text-xs opacity-50 ml-2">{new Date().toLocaleTimeString()}</time>
+							<time className="text-xs opacity-50 ml-2">{event.timestamp.toLocaleTimeString()}</time>
 						</div>
 						<div className="chat-bubble chat-bubble-primary">
 							{daiaMessage ? <DaiaMessageViewer message={daiaMessage} /> : event.message}
@@ -60,7 +60,7 @@ export const ConversationViewer = ({
 					<div key={index} className="chat chat-end">
 						<div className="chat-header">
 							🚗 Car
-							<time className="text-xs opacity-50 ml-2">{new Date().toLocaleTimeString()}</time>
+							<time className="text-xs opacity-50 ml-2">{event.timestamp.toLocaleTimeString()}</time>
 						</div>
 						<div className="chat-bubble chat-bubble-secondary">
 							{daiaMessage ? <DaiaMessageViewer message={daiaMessage} /> : event.message}
@@ -99,7 +99,7 @@ export const ConversationViewer = ({
 			case CarGateSimulationEventType.GATE_LOG:
 				return (
 					<div key={index} className="flex justify-start my-2">
-						<div className="badge badge-ghost badge-sm">
+						<div className="badge badge-ghost badge">
 							<span className="mr-1">🚪</span>
 							{event.message}
 						</div>
@@ -109,7 +109,7 @@ export const ConversationViewer = ({
 			case CarGateSimulationEventType.CAR_LOG:
 				return (
 					<div key={index} className="flex justify-end my-2">
-						<div className="badge badge-ghost badge-sm">
+						<div className="badge badge-ghost badge">
 							<span className="mr-1">🚗</span>
 							{event.message}
 						</div>
