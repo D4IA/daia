@@ -20,7 +20,7 @@ const SatoshisInUSD: React.FC<{ amount: number }> = ({ amount }) => {
 				const data = await response.json();
 				const rate = Number.parseFloat(data.rate);
 				const bsvAmount = amount / 100000000;
-				const usd = (bsvAmount * rate).toFixed(6);
+				const usd = (bsvAmount * rate).toFixed(9);
 				setFeeInUSD(`$${usd}`);
 				console.log(feeInUSD)
 			} catch (e) {
@@ -31,7 +31,7 @@ const SatoshisInUSD: React.FC<{ amount: number }> = ({ amount }) => {
 		fetchPrice();
 	}, [amount]);
 
-	return <span>({feeInUSD})</span>;
+	return <span className={styles.usdValue}>({feeInUSD})</span>;
 };
 
 const PaymentContext: React.FC<{
@@ -93,7 +93,6 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 						signersStatus,
 						participant: `${participantY.substring(0, 8)}...`,
 						amount: paymentAmount,
-						usd: "", // Passed as empty string since component handles it
 					}}
 					components={[
 						<Link

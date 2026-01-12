@@ -10,11 +10,11 @@ const AgreementSummary: React.FC<AgreementSummaryProps> = ({ txDetails }) => {
 
 	if (!txDetails || !txDetails.agreement) return null;
 
-	const hasPayment = Object.values(txDetails.agreement.requirements || {}).some(
-		(req) => req.type === "payment",
+	const hasPaymentRelatedTx = Object.values(txDetails.agreement.requirements || {}).some(
+		(req) => req.type === "payment" && req.relatedTx,
 	);
 
-	if (hasPayment) {
+	if (hasPaymentRelatedTx) {
 		return <PaymentAgreementSummary txDetails={txDetails} />;
 	}
 
