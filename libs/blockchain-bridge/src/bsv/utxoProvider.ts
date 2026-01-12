@@ -13,7 +13,7 @@ export interface UTXO {
  */
 export interface UtxoProvider {
 	getUtxos(): Promise<UTXO[]>;
-	getUtxosWithTotal(requiredAmount: number): Promise<UTXO[]>;
+	getUtxosWithTotal(requiredAmount: number, optimistic?: boolean): Promise<UTXO[]>;
 	getSourceTransaction(txid: string): Promise<Transaction>;
 }
 
@@ -59,7 +59,7 @@ export class WhatsOnChainUtxoProvider implements UtxoProvider {
 		}));
 	}
 
-	async getUtxosWithTotal(requiredAmount: number): Promise<UTXO[]> {
+	async getUtxosWithTotal(requiredAmount: number, optimistic = false): Promise<UTXO[]> {
 		const allUtxos = await this.getUtxos();
 
 		// Sort by amount descending to optimize UTXO selection
@@ -77,7 +77,7 @@ export class WhatsOnChainUtxoProvider implements UtxoProvider {
 			}
 		}
 
-		if (totalAmount < requiredAmount) {
+		if (!optimistic && totalAmount < requiredAmount) {
 			throw new Error(`Insufficient funds. Required: ${requiredAmount}, Available: ${totalAmount}`);
 		}
 
