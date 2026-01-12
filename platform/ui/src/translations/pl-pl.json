@@ -319,7 +319,7 @@
 	},
 	"signed_agreement_summary": {
 		"title": "Podsumowanie Porozumienia",
-		"text_main": "Porozumienie pomiędzy uczestnikami <2>{{participantX}}</2> i <3>{{participantY}}</3> z opisem <1>{{description}}</1><0>{{signersStatus}}</0> porozumienie",
+		"text_main": "Porozumienie pomiędzy uczestnikami <2>{{participantX}}</2> i <3>{{participantY}}</3> z opisem <1>{{description}}</1><br /><0>{{signersStatus}}</0> porozumienie",
 		"status_signed": "OBAJ UCZESTNICY PODPISALI",
 		"status_pending": "OCZEKIWANIE NA PODPISY",
 		"context_self": "dokonał płatności w ramach tego porozumienia",

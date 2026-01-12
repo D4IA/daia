@@ -316,7 +316,7 @@
 	},
 	"signed_agreement_summary": {
 		"title": "Agreement Summary",
-		"text_main": "Agreement between participants <2>{{participantX}}</2> and <3>{{participantY}}</3> with description <1>{{description}}</1><0>{{signersStatus}}</0> the agreement",
+		"text_main": "Agreement between participants <2>{{participantX}}</2> and <3>{{participantY}}</3> with description <1>{{description}}</1><br /><0>{{signersStatus}}</0> the agreement",
 		"status_signed": "BOTH PARTICIPANTS SIGNED",
 		"status_pending": "SIGNATURES PENDING",
 		"context_self": "made a payment within this agreement",

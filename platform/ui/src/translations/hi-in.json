@@ -319,7 +319,7 @@
 	},
 	"signed_agreement_summary": {
 		"title": "समझौता सारांश",
-		"text_main": "प्रतिभागियों <2>{{participantX}}</2> और <3>{{participantY}}</3> के बीच समझौता जिसका विवरण <1>{{description}}</1> है <0>{{signersStatus}}</0>",
+		"text_main": "प्रतिभागियों <2>{{participantX}}</2> और <3>{{participantY}}</3> के बीच समझौता जिसका विवरण <1>{{description}}</1> है <br /><0>{{signersStatus}}</0>",
 		"status_signed": "दोनों प्रतिभागियों ने हस्ताक्षर किए",
 		"status_pending": "हस्ताक्षर लंबित",
 		"context_self": "इस समझौते के भीतर भुगतान किया",

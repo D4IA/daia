@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import AgreementHeader from "../components/AgreementHeader/AgreementHeader";
 import AgreementDetailsContainer from "../components/AgreementDetailsContainer/AgreementDetailsContainer";
 import AgreementSummary from "../components/AgreementDetailsCard/AgreementSummary/AgreementSummary";
+import { PublicKey } from "@bsv/sdk";
 
 const API_BASE_URL = "/api";
 
@@ -121,15 +122,40 @@ const AgreementDetailsPage: React.FC = () => {
 				mainTitle={`${t("details_view.title_tx_id")} ${txId}`}
 				subTitle=""
 				createdDate={`${t("details_view.label_published_at")} ${dateStr}`}
-				onGenerateReport={() =>
+				onGenerateReport={() => {
+					const agreement = txDetails?.agreement || {};
+					const paymentReq = Object.values(agreement.requirements || {}).find(
+						(req: any) => req.type === "payment"
+					) as any;
+					const participantsAddresses = Object.values(agreement.requirements || {})
+						.filter((p: any) => p.type === "sign")
+						.map((p: any) => PublicKey.fromString(p.pubKey).toAddress("test").toString());
+					
+					const signersCount = Object.values(agreement.proofs || {}).filter(
+						(p: any) => p.type === "sign"
+					).length;
+
+					let summaryType: "payment" | "signed" | "unknown" = "unknown";
+					if (paymentReq) summaryType = "payment";
+					else if (signersCount === 2) summaryType = "signed";
+
+					const signersStatus = signersCount > 0 ? t("payment_agreement_summary.status_signed") : t("payment_agreement_summary.status_pending");
+
 					generateAgreementPDF({
 						txId: txId || "",
 						description: offerContent,
 						publishedDate: dateStr,
 						requirements: requirementsArray,
 						proofs: proofsArray,
-					})
-				}
+						summaryData: {
+							type: summaryType,
+							participants: participantsAddresses,
+							amount: paymentReq?.amount,
+							relatedTxId: paymentReq?.relatedTx,
+							signersStatus,
+						}
+					});
+				}}
 				confirmed={txDetails?.confirmed}
 			/>
 
