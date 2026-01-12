@@ -309,9 +309,17 @@
 		"requirement_label": "Wymog",
 		"proof_label": "Dowod"
 	},
-	"agreement_summary": {
+	"payment_agreement_summary": {
 		"title": "Podsumowanie Porozumienia",
-		"text_main": "Porozumienie <0>{{relatedTxId}}</0> <5>{{description}}</5> Status: <1>{{signersStatus}}</1>. Płatność: Uczestnik <2>{{participant}}</2> <3/> wysłał <4>{{amount}} Satoshi</4>",
+		"text_main": "Porozumienie z opisem <5>{{description}}</5> zostało stworzone na podstawie porozumienia <0>{{relatedTxId}}</0> pomiędzy uczestnikami <6>{{participantX}}</6> i <7>{{participantY}}</7>.<br /><1>{{signersStatus}}</1> porozumienie i uczestnik <2>{{participant}}</2> <3/>, gdzie wysłał <4>{{amount}} Satoshi</4>",
+		"status_signed": "OBAJ UCZESTNICY PODPISALI",
+		"status_pending": "OCZEKIWANIE NA PODPISY",
+		"context_self": "dokonał płatności w ramach tego porozumienia",
+		"context_remote": "zapłacił za porozumienie <0>{{txId}}</0>"
+	},
+	"signed_agreement_summary": {
+		"title": "Podsumowanie Porozumienia",
+		"text_main": "Porozumienie pomiędzy uczestnikami <2>{{participantX}}</2> i <3>{{participantY}}</3> z opisem <1>{{description}}</1><0>{{signersStatus}}</0> porozumienie",
 		"status_signed": "OBAJ UCZESTNICY PODPISALI",
 		"status_pending": "OCZEKIWANIE NA PODPISY",
 		"context_self": "dokonał płatności w ramach tego porozumienia",

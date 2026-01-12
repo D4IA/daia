@@ -5,9 +5,13 @@ import { FaFileContract } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-
+import {PublicKey} from "@bsv/sdk"
 interface PaymentAgreementSummaryProps {
 	txDetails: DaiaTransaction;
+}
+
+const addressToShortenAddress = (address: string) => {
+	return `${address.substring(0, 4)}...${address.substring(address.length - 4)}`;
 }
 
 const SatoshisInUSD: React.FC<{ amount: number }> = ({ amount }) => {
@@ -41,13 +45,13 @@ const PaymentContext: React.FC<{
 	const { t } = useTranslation();
 
 	if (authType === "self") {
-		return <span>{t("agreement_summary.context_self")}</span>;
+		return <span>{t("payment_agreement_summary.context_self")}</span>;
 	}
 
 	return (
 		<span>
 			<Trans
-				i18nKey="agreement_summary.context_remote"
+				i18nKey="payment_agreement_summary.context_remote"
 				values={{ txId: `${txId.substring(0, 8)}...` }}
 				components={[
 					<Link to={`/agreement_details/${txId}`} className={styles.highlight} key="link" />,
@@ -66,11 +70,11 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 
 	const description = agreement.naturalLanguageOfferContent || "No description";
 	const paymentAmount = paymentReq?.amount || 0;
-	// Mock conversion rate: 100,000,000 sats = 1 BSV = $50 (approx) -> 1 sat = $0.0000005
+	const participantsAddresses = Object.values(agreement.requirements).filter((p) => p.type === "sign").map((p) => PublicKey.fromString(p.pubKey).toAddress("test"))
 
+	const [participantX, participantY] = participantsAddresses;
 
 	const relatedTxId = paymentReq?.relatedTx || "Unknown";
-	const participantY = paymentReq?.to || "Unknown";
 	// Assuming the first signature is from the other participant if available, or just use a placeholder logic
 	const signers = Object.values(agreement.proofs || {}).filter(
 		(p: any) => p.type === "sign",
@@ -78,23 +82,25 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 
 	const authType = paymentReq?.auth?.type || "remote";
 	const signersStatus =
-		signers > 0 ? t("agreement_summary.status_signed") : t("agreement_summary.status_pending");
+		signers > 0 ? t("payment_agreement_summary.status_signed") : t("payment_agreement_summary.status_pending");
 
 	return (
 		<div className={styles.summaryContainer}>
 			<div className={styles.title}>
 				<FaFileContract />
-				{t("agreement_summary.title")}
+				{t("payment_agreement_summary.title")}
 			</div>
 			<div className={styles.content}>
 				<Trans
-					i18nKey="agreement_summary.text_main"
+					i18nKey="payment_agreement_summary.text_main"
 					values={{
 						relatedTxId: `${relatedTxId.substring(0, 8)}...`,
 						signersStatus,
-						participant: `${participantY.substring(0, 8)}...`,
+						participant: addressToShortenAddress(participantY),
 						amount: paymentAmount,
 						description: description,
+						participantX,
+						participantY,
 					}}
 					components={[
 						<Link
@@ -112,7 +118,22 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 						/>,
 						<PaymentContext authType={authType} txId={txDetails.txId} key="context" />,
 						<span className={styles.payment} key="amount" />,
-						<span className={styles.description} key="description" />
+						<span className={styles.description} key="description" />,
+						<a
+							href={`https://test.whatsonchain.com/address/${participantX}`}
+							target="_blank"
+							rel="noreferrer"
+							className={styles.highlight}
+							key="participantLink"
+						/>,
+						<a
+							href={`https://test.whatsonchain.com/address/${participantY}`}
+							target="_blank"
+							rel="noreferrer"
+							className={styles.highlight}
+							key="participantLink"
+						/>,
+						<br />
 					]}
 				/>
 				<SatoshisInUSD amount={paymentAmount} key="usd" />

@@ -306,9 +306,17 @@
 		"requirement_label": "Requirement",
 		"proof_label": "Proof"
 	},
-	"agreement_summary": {
+	"payment_agreement_summary": {
 		"title": "Agreement Summary",
-		"text_main": "Agreement <0>{{relatedTxId}}</0> <5>{{description}}</5> Status: <1>{{signersStatus}}</1>. Payment: Participant <2>{{participant}}</2> <3/> sent <4>{{amount}} Satoshis</4>",
+		"text_main": "Agreement with description <5>{{description}}</5> was created based on agreement <0>{{relatedTxId}}</0> between participants <6>{{participantX}}</6> and <7>{{participantY}}</7>.<br /><1>{{signersStatus}}</1> the agreement and participant <2>{{participant}}</2> <3/>, where he sent <4>{{amount}} Satoshis</4>",
+		"status_signed": "BOTH PARTICIPANTS SIGNED",
+		"status_pending": "SIGNATURES PENDING",
+		"context_self": "made a payment within this agreement",
+		"context_remote": "paid for the agreement <0>{{txId}}</0>"
+	},
+	"signed_agreement_summary": {
+		"title": "Agreement Summary",
+		"text_main": "Agreement between participants <2>{{participantX}}</2> and <3>{{participantY}}</3> with description <1>{{description}}</1><0>{{signersStatus}}</0> the agreement",
 		"status_signed": "BOTH PARTICIPANTS SIGNED",
 		"status_pending": "SIGNATURES PENDING",
 		"context_self": "made a payment within this agreement",
