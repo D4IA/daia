@@ -45,8 +45,10 @@ export const RequirementsList = ({
 					if (req.type === "sign" && req.pubKey) {
 						const label = partyLabels[req.pubKey] || shortenPubKey(req.pubKey);
 						return (
-							<li key={id} className="flex items-center gap-2 text-xs justify-between border-b-2 border-b-base-300 pb-2">
-								
+							<li
+								key={id}
+								className="flex items-center gap-2 text-xs justify-between border-b-2 border-b-base-300 pb-2"
+							>
 								<span className="font-semibold">Sign by {label}</span>
 								{isSigned ? (
 									<span className="badge badge-soft badge-success badge-sm">Signed</span>

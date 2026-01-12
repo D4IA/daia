@@ -4,4 +4,5 @@ export const BLOCKCHAIN_TRANSACTION_STATUSES = {
 	FAILED: "failed",
 } as const;
 
-export type TransactionStatus = (typeof BLOCKCHAIN_TRANSACTION_STATUSES)[keyof typeof BLOCKCHAIN_TRANSACTION_STATUSES];
+export type TransactionStatus =
+	(typeof BLOCKCHAIN_TRANSACTION_STATUSES)[keyof typeof BLOCKCHAIN_TRANSACTION_STATUSES];

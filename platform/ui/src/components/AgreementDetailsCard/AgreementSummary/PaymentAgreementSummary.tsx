@@ -5,14 +5,14 @@ import { FaFileContract } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import {PublicKey} from "@bsv/sdk"
+import { PublicKey } from "@bsv/sdk";
 interface PaymentAgreementSummaryProps {
 	txDetails: DaiaTransaction;
 }
 
 const addressToShortenAddress = (address: string) => {
 	return `${address.substring(0, 4)}...${address.substring(address.length - 4)}`;
-}
+};
 
 const SatoshisInUSD: React.FC<{ amount: number }> = ({ amount }) => {
 	const [feeInUSD, setFeeInUSD] = useState("Loading...");
@@ -26,7 +26,7 @@ const SatoshisInUSD: React.FC<{ amount: number }> = ({ amount }) => {
 				const bsvAmount = amount / 100000000;
 				const usd = (bsvAmount * rate).toFixed(9);
 				setFeeInUSD(`$${usd}`);
-				console.log(feeInUSD)
+				console.log(feeInUSD);
 			} catch (e) {
 				console.error("Failed to fetch BSV price", e);
 				setFeeInUSD("Error");
@@ -70,19 +70,21 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 
 	const description = agreement.naturalLanguageOfferContent || "No description";
 	const paymentAmount = paymentReq?.amount || 0;
-	const participantsAddresses = Object.values(agreement.requirements).filter((p) => p.type === "sign").map((p) => PublicKey.fromString(p.pubKey).toAddress("test"))
+	const participantsAddresses = Object.values(agreement.requirements)
+		.filter((p) => p.type === "sign")
+		.map((p) => PublicKey.fromString(p.pubKey).toAddress("test"));
 
 	const [participantX, participantY] = participantsAddresses;
 
 	const relatedTxId = paymentReq?.relatedTx || "Unknown";
 	// Assuming the first signature is from the other participant if available, or just use a placeholder logic
-	const signers = Object.values(agreement.proofs || {}).filter(
-		(p: any) => p.type === "sign",
-	).length;
+	const signers = Object.values(agreement.proofs || {}).filter((p: any) => p.type === "sign").length;
 
 	const authType = paymentReq?.auth?.type || "remote";
 	const signersStatus =
-		signers > 0 ? t("payment_agreement_summary.status_signed") : t("payment_agreement_summary.status_pending");
+		signers > 0
+			? t("payment_agreement_summary.status_signed")
+			: t("payment_agreement_summary.status_pending");
 
 	return (
 		<div className={styles.summaryContainer}>
@@ -133,7 +135,7 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 							className={styles.highlight}
 							key="participantLink"
 						/>,
-						<br />
+						<br />,
 					]}
 				/>
 				<SatoshisInUSD amount={paymentAmount} key="usd" />

@@ -3,13 +3,11 @@ import { OfferAccepted } from "../messages/OfferAccepted";
 import { RequirementsList } from "../messages/RequirementsList";
 import { PublicKey } from "@d4ia/blockchain-bridge";
 
-
 interface DaiaMessageViewerProps {
 	message: DaiaMessage;
 }
 
 export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
-
 	switch (message.type) {
 		case DaiaMessageType.DAIA_HELLO:
 			return (
@@ -58,28 +56,30 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 								</div>
 							</div>
 						)}
-						{innerContent?.requirements && Object.keys(innerContent.requirements).length > 0 && (() => {
-							// Build party labels: first sign requirement is GATE, second is CAR
-							const signRequirements = Object.values(innerContent.requirements).filter(
-								(r: unknown) => (r as { type: string }).type === "sign"
-							) as { pubKey?: string }[];
-							
-							const partyLabels: Record<string, string> = {};
-							if (signRequirements[0]?.pubKey) {
-								partyLabels[signRequirements[0].pubKey] = "GATE";
-							}
-							if (signRequirements[1]?.pubKey) {
-								partyLabels[signRequirements[1].pubKey] = "CAR";
-							}
+						{innerContent?.requirements &&
+							Object.keys(innerContent.requirements).length > 0 &&
+							(() => {
+								// Build party labels: first sign requirement is GATE, second is CAR
+								const signRequirements = Object.values(innerContent.requirements).filter(
+									(r: unknown) => (r as { type: string }).type === "sign",
+								) as { pubKey?: string }[];
 
-							return (
-								<RequirementsList
-									requirements={innerContent.requirements}
-									signatures={message.content.signatures}
-									partyLabels={partyLabels}
-								/>
-							);
-						})()}
+								const partyLabels: Record<string, string> = {};
+								if (signRequirements[0]?.pubKey) {
+									partyLabels[signRequirements[0].pubKey] = "GATE";
+								}
+								if (signRequirements[1]?.pubKey) {
+									partyLabels[signRequirements[1].pubKey] = "CAR";
+								}
+
+								return (
+									<RequirementsList
+										requirements={innerContent.requirements}
+										signatures={message.content.signatures}
+										partyLabels={partyLabels}
+									/>
+								);
+							})()}
 					</div>
 				</div>
 			);
@@ -88,10 +88,7 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 		case DaiaMessageType.OFFER_RESPONSE:
 			if (message.result === "accept") {
 				return (
-					<OfferAccepted
-						agreementReference={message.agreementReference}
-						agreement={message.agreement}
-					/>
+					<OfferAccepted agreementReference={message.agreementReference} agreement={message.agreement} />
 				);
 			} else {
 				return (

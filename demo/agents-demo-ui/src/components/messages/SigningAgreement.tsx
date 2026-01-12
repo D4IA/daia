@@ -7,11 +7,11 @@ interface SigningAgreementProps {
 export const SigningAgreement = ({ agreement }: SigningAgreementProps) => {
 	// Try to extract signer public key from proofs (sign type proofs)
 	let signerInfo = "private key";
-	
+
 	try {
 		const innerContent = JSON.parse(agreement.offerContent.inner);
 		const requirements = innerContent?.requirements || {};
-		
+
 		// Find first sign requirement with pubKey
 		for (const [, req] of Object.entries(requirements)) {
 			const requirement = req as { type: string; pubKey?: string };
@@ -34,9 +34,7 @@ export const SigningAgreement = ({ agreement }: SigningAgreementProps) => {
 			</div>
 			<div className="divider my-1"></div>
 			<div className="text-sm">
-				<div className="bg-base-100 p-2 rounded">
-					Signed the agreement using {signerInfo}
-				</div>
+				<div className="bg-base-100 p-2 rounded">Signed the agreement using {signerInfo}</div>
 			</div>
 		</div>
 	);

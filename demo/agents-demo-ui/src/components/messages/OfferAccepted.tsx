@@ -13,7 +13,6 @@ export const OfferAccepted = ({ agreementReference, agreement }: OfferAcceptedPr
 		innerContent = null;
 	}
 
-
 	return (
 		<div className="bg-base-300 rounded-lg p-4 space-y-2 text-base-content">
 			<div className="flex items-center gap-2">

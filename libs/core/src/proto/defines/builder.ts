@@ -97,7 +97,13 @@ export class DaiaOfferBuilder {
 		amount: number,
 		relatedTx?: string,
 	): DaiaOfferBuilder => {
-		return this.addPaymentRequirement(to, amount, DaiaPaymentRequirementAuthType.SELF_AUTHENTICATED, undefined, relatedTx);
+		return this.addPaymentRequirement(
+			to,
+			amount,
+			DaiaPaymentRequirementAuthType.SELF_AUTHENTICATED,
+			undefined,
+			relatedTx,
+		);
 	};
 
 	public readonly addRemotePaymentRequirement = (

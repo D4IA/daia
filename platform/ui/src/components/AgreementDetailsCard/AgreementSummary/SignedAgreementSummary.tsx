@@ -19,18 +19,19 @@ const SignedAgreementSummary: React.FC<SignedAgreementSummary> = ({ txDetails })
 	const description = agreement.naturalLanguageOfferContent || "No description";
 	const paymentAmount = paymentReq?.amount || 0;
 
-
 	// Assuming the first signature is from the other participant if available, or just use a placeholder logic
-	const signers = Object.values(agreement.proofs || {}).filter(
-		(p: any) => p.type === "sign",
-	).length;
+	const signers = Object.values(agreement.proofs || {}).filter((p: any) => p.type === "sign").length;
 
-	const participantsAddresses = Object.values(agreement.requirements).filter((p) => p.type === "sign").map((p) => PublicKey.fromString(p.pubKey).toAddress("test"))
-	
-		const [participantX, participantY] = participantsAddresses;
+	const participantsAddresses = Object.values(agreement.requirements)
+		.filter((p) => p.type === "sign")
+		.map((p) => PublicKey.fromString(p.pubKey).toAddress("test"));
+
+	const [participantX, participantY] = participantsAddresses;
 
 	const signersStatus =
-		signers > 0 ? t("signed_agreement_summary.status_signed") : t("signed_agreement_summary.status_pending");
+		signers > 0
+			? t("signed_agreement_summary.status_signed")
+			: t("signed_agreement_summary.status_pending");
 
 	return (
 		<div className={styles.summaryContainer}>
@@ -46,7 +47,7 @@ const SignedAgreementSummary: React.FC<SignedAgreementSummary> = ({ txDetails })
 						amount: paymentAmount,
 						description: description,
 						participantX,
-						participantY
+						participantY,
 					}}
 					components={[
 						<span className={styles.action} key="status" />,
@@ -64,7 +65,7 @@ const SignedAgreementSummary: React.FC<SignedAgreementSummary> = ({ txDetails })
 							rel="noreferrer"
 							className={styles.highlight}
 							key="participantLink"
-						/>
+						/>,
 					]}
 				/>
 			</div>

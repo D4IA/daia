@@ -1,7 +1,10 @@
 import React from "react";
 import styles from "./AgreementsListItem.module.scss";
 import TransactionStatusBadge from "../TransactionStatusBadge/TransactionStatusBadge";
-import { BLOCKCHAIN_TRANSACTION_STATUSES, type TransactionStatus } from "../TransactionStatusBadge/types";
+import {
+	BLOCKCHAIN_TRANSACTION_STATUSES,
+	type TransactionStatus,
+} from "../TransactionStatusBadge/types";
 
 type AgreementStatus = "Published" | "Failed" | "Verifying";
 
@@ -14,7 +17,6 @@ interface AgreementListItemProps {
 }
 
 const AgreementListItem: React.FC<AgreementListItemProps> = ({ date, status, txId, onClick }) => {
-
 	const mapStatus = (status: AgreementStatus): TransactionStatus => {
 		switch (status) {
 			case "Published":
@@ -51,4 +53,3 @@ const AgreementListItem: React.FC<AgreementListItemProps> = ({ date, status, txI
 };
 
 export default AgreementListItem;
-

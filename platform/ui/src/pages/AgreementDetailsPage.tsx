@@ -125,21 +125,24 @@ const AgreementDetailsPage: React.FC = () => {
 				onGenerateReport={() => {
 					const agreement = txDetails?.agreement || {};
 					const paymentReq = Object.values(agreement.requirements || {}).find(
-						(req: any) => req.type === "payment"
+						(req: any) => req.type === "payment",
 					) as any;
 					const participantsAddresses = Object.values(agreement.requirements || {})
 						.filter((p: any) => p.type === "sign")
 						.map((p: any) => PublicKey.fromString(p.pubKey).toAddress("test").toString());
-					
+
 					const signersCount = Object.values(agreement.proofs || {}).filter(
-						(p: any) => p.type === "sign"
+						(p: any) => p.type === "sign",
 					).length;
 
 					let summaryType: "payment" | "signed" | "unknown" = "unknown";
 					if (paymentReq) summaryType = "payment";
 					else if (signersCount === 2) summaryType = "signed";
 
-					const signersStatus = signersCount > 0 ? t("payment_agreement_summary.status_signed") : t("payment_agreement_summary.status_pending");
+					const signersStatus =
+						signersCount > 0
+							? t("payment_agreement_summary.status_signed")
+							: t("payment_agreement_summary.status_pending");
 
 					generateAgreementPDF({
 						txId: txId || "",
@@ -153,7 +156,7 @@ const AgreementDetailsPage: React.FC = () => {
 							amount: paymentReq?.amount,
 							relatedTxId: paymentReq?.relatedTx,
 							signersStatus,
-						}
+						},
 					});
 				}}
 				confirmed={txDetails?.confirmed}

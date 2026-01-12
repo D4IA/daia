@@ -1,108 +1,110 @@
 .summaryContainer {
-  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  position: relative;
-  overflow: hidden;
+	background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	padding: 24px;
+	margin-bottom: 24px;
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.05),
+		0 2px 4px -1px rgba(0, 0, 0, 0.03);
+	position: relative;
+	overflow: hidden;
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(to bottom, #8b5cf6, #3b82f6);
-  }
+	&::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 4px;
+		height: 100%;
+		background: linear-gradient(to bottom, #8b5cf6, #3b82f6);
+	}
 }
 
 .title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #1f2937;
+	margin-bottom: 12px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 
-  svg {
-    color: #8b5cf6;
-  }
+	svg {
+		color: #8b5cf6;
+	}
 }
 
 .content {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #4b5563;
-  text-align: left;
+	font-size: 1rem;
+	line-height: 1.6;
+	color: #4b5563;
+	text-align: left;
 }
 
 .highlight {
-  font-weight: 600;
-  color: #111827;
-  background-color: #f3f4f6;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 0.9em;
-  border: 1px solid #e5e7eb;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: inline-block; /* Helps with border/padding on inline elements */
+	font-weight: 600;
+	color: #111827;
+	background-color: #f3f4f6;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-family: monospace;
+	font-size: 0.9em;
+	border: 1px solid #e5e7eb;
+	transition: all 0.2s ease;
+	text-decoration: none;
+	display: inline-block; /* Helps with border/padding on inline elements */
 
-  &:is(a) {
-    cursor: pointer;
-    color: #4f46e5; /* Indigo */
-    background-color: #eef2ff;
-    border-color: #c7d2fe;
+	&:is(a) {
+		cursor: pointer;
+		color: #4f46e5; /* Indigo */
+		background-color: #eef2ff;
+		border-color: #c7d2fe;
 
-    &:hover {
-      background-color: #e0e7ff;
-      color: #4338ca;
-      border-color: #a5b4fc;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
+		&:hover {
+			background-color: #e0e7ff;
+			color: #4338ca;
+			border-color: #a5b4fc;
+			transform: translateY(-1px);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+		}
 
-    &:active {
-      transform: translateY(0);
-    }
-  }
+		&:active {
+			transform: translateY(0);
+		}
+	}
 }
 
 .action {
-  font-weight: 700;
-  color: #059669; /* Green for success/signed */
-  text-transform: uppercase;
-  font-size: 0.9em;
-  letter-spacing: 0.025em;
+	font-weight: 700;
+	color: #059669; /* Green for success/signed */
+	text-transform: uppercase;
+	font-size: 0.9em;
+	letter-spacing: 0.025em;
 }
 
 .payment {
-  font-weight: 600;
-  color: #8b5cf6; /* Purple for payment */
+	font-weight: 600;
+	color: #8b5cf6; /* Purple for payment */
 }
 
 .usdValue {
-  color: #6b7280;
-  font-size: 0.9em;
-  margin-left: 4px;
+	color: #6b7280;
+	font-size: 0.9em;
+	margin-left: 4px;
 }
 
 .description {
-  display: block;
-  margin: 12px 0 16px 0;
-  padding: 8px 16px;
-  border-left: 3px solid #cbd5e1; /* Slate-300 */
-  background-color: #f8fafc; /* Slate-50 */
-  color: #475569; /* Slate-600 */
-  font-size: 0.85em;
-  font-style: italic;
-  line-height: 1.5;
-  border-radius: 0 4px 4px 0;
-  width: fit-content;
-  max-width: 100%;
+	display: block;
+	margin: 12px 0 16px 0;
+	padding: 8px 16px;
+	border-left: 3px solid #cbd5e1; /* Slate-300 */
+	background-color: #f8fafc; /* Slate-50 */
+	color: #475569; /* Slate-600 */
+	font-size: 0.85em;
+	font-style: italic;
+	line-height: 1.5;
+	border-radius: 0 4px 4px 0;
+	width: fit-content;
+	max-width: 100%;
 }

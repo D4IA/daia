@@ -118,7 +118,7 @@ export const generateAgreementPDF = (data: PDFData) => {
 			// Split by tags: <n>content</n>
 			// Regex captures: [pre-text, tag-number, content, post-text...]
 			const parts = rawText.split(/<(\d+)>(.*?)<\/\1>/g);
-			
+
 			const lineHeight = 6; // Reduced slightly to make paragraph gaps more obvious relative to line height
 			const maxWidth = pageWidth - 40;
 			let currentLine: any[] = [];
@@ -136,11 +136,11 @@ export const generateAgreementPDF = (data: PDFData) => {
 				text = text.replace("{{signersStatus}}", signersStatus || "");
 				text = text.replace("{{participant}}", participantY || "Unknown");
 				text = text.replace("{{amount}}", amount?.toString() || "");
-				
+
 				// Split into words to handle wrapping
 				const words = text.split(/(\s+)/); // keep whitespace
 
-				words.forEach(word => {
+				words.forEach((word) => {
 					// Handle manual line breaks
 					if (word.includes("\n")) {
 						const splitByNewLine = word.split("\n");
@@ -163,16 +163,16 @@ export const generateAgreementPDF = (data: PDFData) => {
 				// We need to temporarily set font to check width accurately
 				// Assuming standard font for width check (approximate if bold changes width significantly, usually does)
 				// We will stick to one font family for simplicity, just change weight/color
-				doc.setFont(undefined as any, isBoldPart ? "bold" : "normal"); 
+				doc.setFont(undefined as any, isBoldPart ? "bold" : "normal");
 				let wordWidth = doc.getTextWidth(word);
 
 				// Robust fix for space width
 				// Check if word is whitespace only
 				if (/^\s+$/.test(word)) {
-                    // If getTextWidth gives 0 or very small, enforce a minimum
-                    if (wordWidth < 0.1) {
-                         wordWidth = doc.getTextWidth("i") * word.length;
-                    }
+					// If getTextWidth gives 0 or very small, enforce a minimum
+					if (wordWidth < 0.1) {
+						wordWidth = doc.getTextWidth("i") * word.length;
+					}
 				}
 
 				if (currentLineWidth + wordWidth > maxWidth) {
@@ -180,8 +180,8 @@ export const generateAgreementPDF = (data: PDFData) => {
 					currentLine = [];
 					currentLineWidth = 0;
 					// Trim leading space if new line - only if it's a single space
-                    // If it's a bunch of spaces, we might want to keep some, but standard wrap behavior trims
-					if (/^\s+$/.test(word)) return; 
+					// If it's a bunch of spaces, we might want to keep some, but standard wrap behavior trims
+					if (/^\s+$/.test(word)) return;
 				}
 
 				currentLine.push({ text: word, isBold: isBoldPart, isStatus: isStatus, width: wordWidth });
@@ -192,7 +192,7 @@ export const generateAgreementPDF = (data: PDFData) => {
 
 			const printLine = (lineSegments: any[]) => {
 				let x = 20;
-				lineSegments.forEach(seg => {
+				lineSegments.forEach((seg) => {
 					doc.setFont(undefined as any, seg.isBold ? "bold" : "normal");
 					if (seg.isStatus) {
 						doc.setTextColor(0, 160, 0); // Green for status
@@ -205,7 +205,7 @@ export const generateAgreementPDF = (data: PDFData) => {
 					x += seg.width;
 				});
 				yPosition += lineHeight;
-				
+
 				// Check page break
 				if (yPosition > pageHeight - 40) {
 					doc.addPage();
@@ -219,7 +219,7 @@ export const generateAgreementPDF = (data: PDFData) => {
 				// Even indices are normal text, Odd indices are tag numbers (ignored), Odd+1 are content inside tag
 				// wait, split output:
 				// "pre", "1", "content", "post", "2", "content" ...
-				
+
 				// if i % 3 === 0 -> Normal text
 				// if i % 3 === 1 -> Tag Number (skip)
 				// if i % 3 === 2 -> Bold Content
@@ -238,7 +238,6 @@ export const generateAgreementPDF = (data: PDFData) => {
 			}
 
 			yPosition += 10;
-
 		} else {
 			// Fallback
 			doc.setFontSize(10);
@@ -247,19 +246,18 @@ export const generateAgreementPDF = (data: PDFData) => {
 			doc.text(descLines, 20, yPosition);
 			yPosition += descLines.length * 5 + 15;
 		}
-
 	} else {
 		// Legacy behavior
 		doc.setFontSize(12);
 		doc.setTextColor(0, 0, 0);
 		doc.text(t("pdf.description"), 20, yPosition);
-	
+
 		yPosition += 6;
 		doc.setFontSize(10);
 		doc.setTextColor(60, 60, 60);
 		const descLines = doc.splitTextToSize(data.description, pageWidth - 40);
 		doc.text(descLines, 20, yPosition);
-	
+
 		yPosition += descLines.length * 5 + 15;
 	}
 
