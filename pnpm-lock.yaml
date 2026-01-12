@@ -510,6 +510,9 @@ importers:
 
   platform/ui:
     dependencies:
+      '@bsv/sdk':
+        specifier: ^1.10.1
+        version: 1.10.1
       '@canvas-fonts/arial':
         specifier: ^1.0.4
         version: 1.0.4
@@ -1214,6 +1217,9 @@ packages:
   '@bcoe/v8-coverage@1.0.2':
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
+
+  '@bsv/sdk@1.10.1':
+    resolution: {integrity: sha512-YhlkVvUZkYaSRSgpDOfCXUn8Tua4adWb8D2LIB63LjBe5kZXdRLWORWdTg5/fwE8fF4V9obSlxIeNSO9dTIzYg==}
 
   '@bsv/sdk@1.9.29':
     resolution: {integrity: sha512-hPB2YQKBky3vpGhGVDdu/Iui19dhmhubIirWskZcppUBpeVYN9HwiS26PK30/avSwRyyzxM43gDcqsNBOL/5Ww==}
@@ -6789,6 +6795,8 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
 
   '@bcoe/v8-coverage@1.0.2': {}
+
+  '@bsv/sdk@1.10.1': {}
 
   '@bsv/sdk@1.9.29': {}
 
