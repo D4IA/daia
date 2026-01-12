@@ -311,7 +311,7 @@
 	},
 	"agreement_summary": {
 		"title": "Wihajster ze sztamy",
-		"text_main": "Na bazie sztamy <0>{{relatedTxId}}</0> wiara sie zgadala ze <1>{{signersStatus}}</1> Sztame, a ten tu <2>{{participant}}</2> <3/> bejmami <4>{{amount}} Satoshi</4>",
+		"text_main": "Sztama <0>{{relatedTxId}}</0> <5>{{description}}</5> Stan: <1>{{signersStatus}}</1>. Bejmy: Uczestnik <2>{{participant}}</2> <3/> sypnął <4>{{amount}} Satoshi</4>",
 		"status_signed": "OBAJ MACHNELI PODPIS",
 		"status_pending": "CZEKAMY AZ SIE PODPISZA",
 		"context_self": "zabulił w ramach tyj sztamy",

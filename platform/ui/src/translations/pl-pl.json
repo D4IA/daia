@@ -311,7 +311,7 @@
 	},
 	"agreement_summary": {
 		"title": "Podsumowanie Porozumienia",
-		"text_main": "Na podstawie porozumienia <0>{{relatedTxId}}</0> z opisem użytkownicy uzgodnili, że <1>{{signersStatus}}</1> Porozumienie, a Uczestnik <2>{{participant}}</2> <3/> kwotą <4>{{amount}}&nbsp;Satoshi</4>",
+		"text_main": "Porozumienie <0>{{relatedTxId}}</0> <5>{{description}}</5> Status: <1>{{signersStatus}}</1>. Płatność: Uczestnik <2>{{participant}}</2> <3/> wysłał <4>{{amount}}&nbsp;Satoshi</4>",
 		"status_signed": "OBAJ UCZESTNICY PODPISALI",
 		"status_pending": "OCZEKIWANIE NA PODPISY",
 		"context_self": "dokonał płatności w ramach tego porozumienia",

@@ -64,6 +64,7 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 		(req) => req.type === "payment",
 	) as any;
 
+	const description = agreement.naturalLanguageOfferContent || "No description";
 	const paymentAmount = paymentReq?.amount || 0;
 	// Mock conversion rate: 100,000,000 sats = 1 BSV = $50 (approx) -> 1 sat = $0.0000005
 
@@ -93,6 +94,7 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 						signersStatus,
 						participant: `${participantY.substring(0, 8)}...`,
 						amount: paymentAmount,
+						description: description,
 					}}
 					components={[
 						<Link
@@ -109,7 +111,8 @@ const PaymentAgreementSummary: React.FC<PaymentAgreementSummaryProps> = ({ txDet
 							key="participantLink"
 						/>,
 						<PaymentContext authType={authType} txId={txDetails.txId} key="context" />,
-						<span className={styles.payment} key="amount" />
+						<span className={styles.payment} key="amount" />,
+						<span className={styles.description} key="description" />
 					]}
 				/>
 				<SatoshisInUSD amount={paymentAmount} key="usd" />

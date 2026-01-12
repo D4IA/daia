@@ -91,3 +91,18 @@
   font-size: 0.9em;
   margin-left: 4px;
 }
+
+.description {
+  display: block;
+  margin: 12px 0 16px 0;
+  padding: 8px 16px;
+  border-left: 3px solid #cbd5e1; /* Slate-300 */
+  background-color: #f8fafc; /* Slate-50 */
+  color: #475569; /* Slate-600 */
+  font-size: 0.85em;
+  font-style: italic;
+  line-height: 1.5;
+  border-radius: 0 4px 4px 0;
+  width: fit-content;
+  max-width: 100%;
+}
