@@ -308,5 +308,13 @@
 		"proof_number": "Proof {{number}}",
 		"requirement_label": "Requirement",
 		"proof_label": "Proof"
+	},
+	"agreement_summary": {
+		"title": "समझौता सारांश",
+		"text_main": "समझौते <0>{{relatedTxId}}</0> के विवरण के आधार पर उपयोगकर्ताओं ने सहमति व्यक्त की कि <1>{{signersStatus}}</1> समझौता, और प्रतिभागी <2>{{participant}}</2> <3/> भुगतान राशि <4>{{amount}} सातोशी</4> <5>({{usd}})</5> के साथ",
+		"status_signed": "दोनों प्रतिभागियों ने हस्ताक्षर किए",
+		"status_pending": "हस्ताक्षर लंबित",
+		"context_self": "इस समझौते के भीतर भुगतान किया",
+		"context_remote": "समझौते के लिए भुगतान किया <0>{{txId}}</0>"
 	}
 }

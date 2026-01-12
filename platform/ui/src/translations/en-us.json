@@ -305,5 +305,13 @@
 		"proof_number": "Proof {{number}}",
 		"requirement_label": "Requirement",
 		"proof_label": "Proof"
+	},
+	"agreement_summary": {
+		"title": "Agreement Summary",
+		"text_main": "Basing on the agreement <0>{{relatedTxId}}</0> with agreement description users agreed that <1>{{signersStatus}}</1> the Agreement and Participant <2>{{participant}}</2> <3/> with amount of <4>{{amount}} Satoshis</4> <5>({{usd}})</5>",
+		"status_signed": "BOTH PARTICIPANTS SIGNED",
+		"status_pending": "SIGNATURES PENDING",
+		"context_self": "made a payment within this agreement",
+		"context_remote": "paid for the agreement <0>{{txId}}</0>"
 	}
 }

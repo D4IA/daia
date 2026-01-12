@@ -4,6 +4,7 @@ import { generateAgreementPDF } from "../services/pdfGenerator";
 import { useTranslation } from "react-i18next";
 import AgreementHeader from "../components/AgreementHeader/AgreementHeader";
 import AgreementDetailsContainer from "../components/AgreementDetailsContainer/AgreementDetailsContainer";
+import AgreementSummary from "../components/AgreementDetailsCard/AgreementSummary/AgreementSummary";
 
 const API_BASE_URL = "/api";
 
@@ -15,6 +16,7 @@ const AgreementDetailsPage: React.FC = () => {
 	const walletAddress = (location.state as any)?.walletAddress || null;
 
 	const [offerContent, setOfferContent] = useState("");
+	const [txDetails, setTxDetails] = useState<any>(null);
 	const [requirementsArray, setRequirementsArray] = useState<any[]>([]);
 	const [proofsArray, setProofsArray] = useState<any[]>([]);
 	const [timestamp, setTimestamp] = useState<number>(0);
@@ -62,6 +64,8 @@ const AgreementDetailsPage: React.FC = () => {
 					...(proof as object),
 				}));
 				setProofsArray(allProofs);
+
+				setTxDetails(data);
 
 				setTimestamp(data.timestamp || 0);
 			} catch (err: any) {
@@ -136,6 +140,7 @@ const AgreementDetailsPage: React.FC = () => {
 					marginBottom: "30px",
 				}}
 			>
+				<AgreementSummary txDetails={txDetails} />
 				<p
 					style={{
 						fontSize: "1.2rem",
