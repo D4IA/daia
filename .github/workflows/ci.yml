@@ -2,6 +2,9 @@ name: CI
 
 on:
   pull_request:
+  push:
+    - master
+    - develop
 
 jobs:
   build:
