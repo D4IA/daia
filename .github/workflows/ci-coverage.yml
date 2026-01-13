@@ -26,7 +26,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm Install
+        run: pnpm install
 
       - name: Test coverage core
         run: cd libs/core && pnpm run test:coverage
