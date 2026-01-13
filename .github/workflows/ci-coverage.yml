@@ -37,5 +37,5 @@ jobs:
       - name: Test coverage blockchain-bridge
         run: cd libs/blockchain-bridge && pnpm run test:coverage
 
-      - name: Test coverage core
+      - name: Test coverage langchain
         run: cd libs/langchain && pnpm run test:coverage
