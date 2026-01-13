@@ -19,6 +19,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
+    "test:coverage": "vitest run --coverage",
     "test": "vitest run",
     "test-watch": "vitest",
     "format:fix": "prettier ./src --write",
@@ -42,6 +43,8 @@
     "@eslint/js": "^9.26.0",
     "@types/node": "^24.8.1",
     "@typescript-eslint/parser": "^8.32.0",
+    "@vitest/coverage-istanbul": "~3.2.4",
+    "@vitest/coverage-v8": "~4.0.16",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.0.1",
     "prettier": "^3.5.3",
@@ -49,17 +52,16 @@
     "rimraf": "~6.0.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.0",
-    "vitest": "3.2.4",
-    "zod": "~4.1.13",
-    "@vitest/coverage-v8": "~4.0.16",
     "vite": "^6.4.1",
     "vite-plugin-dts": "^4.3.0",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "3.2.4",
+    "zod": "~4.1.13"
   },
   "dependencies": {
+    "@d4ia/core": "workspace:*",
     "@langchain/core": "~1.1.4",
     "@langchain/langgraph": "~1.0.4",
-    "@d4ia/core": "workspace:*",
     "immer": "~11.0.1"
   },
   "peerDependencies": {
