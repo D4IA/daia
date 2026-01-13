@@ -37,6 +37,12 @@ export const ConversationViewer = ({
 		return null;
 	};
 
+	const formatTimestamp = (timestamp?: Date | string) => {
+		if (!timestamp) return "";
+		const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+		return date.toLocaleTimeString();
+	};
+
 	const renderEvent = (event: CarGateSimulationEvent, index: number) => {
 		switch (event.type) {
 			case CarGateSimulationEventType.GATE_TO_CAR_MESSAGE: {
@@ -45,7 +51,7 @@ export const ConversationViewer = ({
 					<div key={index} className="chat chat-start">
 						<div className="chat-header">
 							🚪 Gate
-							<time className="text-xs opacity-50 ml-2">{event.timestamp.toLocaleTimeString()}</time>
+							<time className="text-xs opacity-50 ml-2">{formatTimestamp(event.timestamp)}</time>
 						</div>
 						<div className="chat-bubble chat-bubble-primary">
 							{daiaMessage ? <DaiaMessageViewer message={daiaMessage} /> : event.message}
@@ -60,7 +66,7 @@ export const ConversationViewer = ({
 					<div key={index} className="chat chat-end">
 						<div className="chat-header">
 							🚗 Car
-							<time className="text-xs opacity-50 ml-2">{event.timestamp.toLocaleTimeString()}</time>
+							<time className="text-xs opacity-50 ml-2">{formatTimestamp(event.timestamp)}</time>
 						</div>
 						<div className="chat-bubble chat-bubble-secondary">
 							{daiaMessage ? <DaiaMessageViewer message={daiaMessage} /> : event.message}
