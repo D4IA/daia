@@ -22,6 +22,7 @@
     "dev": "vite build --watch",
     "test": "vitest run",
     "test-watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "format:fix": "prettier ./src --write",
     "format:check": "prettier ./src --check",
     "format:check:cached": "prettier ./src --check --cache",
