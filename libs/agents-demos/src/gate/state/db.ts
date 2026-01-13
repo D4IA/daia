@@ -57,6 +57,21 @@ export class GateAgentCarsDB {
 		return true;
 	};
 
+	public readonly update = (id: string, updates: Partial<GateAgentCarData>): boolean => {
+		const data = this.carsById.get(id);
+		if (!data) return false;
+		this.carsById.set(id, { ...data, ...updates });
+		return true;
+	};
+
+	public readonly updateByPlate = (
+		licensePlate: string,
+		updates: Partial<GateAgentCarData>,
+	): boolean => {
+		const id = this.licenseIndex.get(licensePlate);
+		return id ? this.update(id, updates) : false;
+	};
+
 	public readonly all = (): WithId<GateAgentCarData>[] =>
 		Array.from(this.carsById.entries()).map(([id, data]) => ({ id, data }));
 

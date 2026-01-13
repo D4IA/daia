@@ -6,8 +6,9 @@ WORKDIR /usr/src/app
 # Install build dependencies for native modules (better-sqlite3)
 RUN apk add --no-cache python3 make g++
 
-# Enable pnpm
-RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+# Enable corepack and prepare pnpm
+RUN corepack enable
+ENV COREPACK_ENABLE_STRICT=0
 
 # Copy entire monorepo (required for workspace builds)
 COPY . .
@@ -17,9 +18,6 @@ RUN pnpm install --frozen-lockfile
 
 # Build all packages using turbo
 RUN pnpm run build
-
-# Install production dependencies for the blockchain-api package
-RUN cd platform/blockchain-api && pnpm install --prod --frozen-lockfile
 
 # Set working directory to the blockchain-api package
 WORKDIR /usr/src/app/platform/blockchain-api

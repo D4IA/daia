@@ -45,11 +45,13 @@ export class WhatsOnChainEndpoints {
 		return `${this.baseUrl}/txs/hex`;
 	}
 
-	getConfirmedTransactionsByAddress(
+	getTransactionsByAddress(
 		address: string,
 		params?: { limit?: number; pageToken?: string },
+		confirmed?: boolean,
 	): string {
-		const url = new URL(`${this.baseUrl}/address/${address}/confirmed/history`);
+		const confirmedOrNotString = confirmed ? "confirmed" : "unconfirmed";
+		const url = new URL(`${this.baseUrl}/address/${address}/${confirmedOrNotString}/history`);
 		if (params?.limit) {
 			url.searchParams.set("limit", params.limit.toString());
 		}
@@ -57,5 +59,19 @@ export class WhatsOnChainEndpoints {
 			url.searchParams.set("token", params.pageToken);
 		}
 		return url.toString();
+	}
+
+	getConfirmedTransactionsByAddress(
+		address: string,
+		params?: { limit?: number; pageToken?: string },
+	): string {
+		return this.getTransactionsByAddress(address, params, true);
+	}
+
+	getUnconfirmedTransactionsByAddress(
+		address: string,
+		params?: { limit?: number; pageToken?: string },
+	): string {
+		return this.getTransactionsByAddress(address, params, false);
 	}
 }

@@ -31,6 +31,7 @@ const SDKIntegrationSteps: React.FC = () => {
 	const { t } = useTranslation();
 
 	const steps: Step[] = [
+		t("sdk_integration_steps.setup", { returnObjects: true }),
 		t("sdk_integration_steps.step1", { returnObjects: true }),
 		t("sdk_integration_steps.step2", { returnObjects: true }),
 		t("sdk_integration_steps.step3", { returnObjects: true }),

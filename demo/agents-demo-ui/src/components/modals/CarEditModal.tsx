@@ -67,7 +67,7 @@ export const CarEditModal = ({ isOpen, onClose, licensePlate }: CarEditModalProp
 
 	return (
 		<div className="modal modal-open">
-			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-8 overflow-y-auto">
+			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-0 md:p-8 overflow-y-auto">
 				<div className="flex justify-between items-center mb-6">
 					<h3 className="font-bold text-2xl">Edit Car Configuration</h3>
 					<button className="btn btn-circle btn-ghost" onClick={onClose}>

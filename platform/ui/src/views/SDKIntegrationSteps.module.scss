@@ -8,7 +8,9 @@
 .contentWrapper {
 	max-width: tv.$max-w-1000px;
 	margin: 0 auto;
-
+	:global(code) {
+		font-size: 18px;
+	}
 	display: flex;
 	flex-direction: column;
 	gap: tv.$spacing-6;

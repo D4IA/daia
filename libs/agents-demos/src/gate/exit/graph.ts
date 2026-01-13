@@ -239,7 +239,11 @@ export function createGateExitAgentGraph(adapter: GateAgentExitAdapter) {
 				.setOfferTypeIdentifier(EXIT_OFFER_TYPE_IDENTIFIER)
 				.addSelfSignedRequirement(adapter.getPrivateKey())
 				.addSignRequirement(remotePublicKey)
-				.addSelfAuthenticatedPaymentRequirement(gateAddress, paymentAmount)
+				.addSelfAuthenticatedPaymentRequirement(
+					gateAddress,
+					paymentAmount,
+					carData.parkingTransactionId,
+				)
 				.build();
 
 			// Update state to send the offer

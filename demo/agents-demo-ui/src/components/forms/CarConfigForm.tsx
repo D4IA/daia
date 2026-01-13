@@ -100,7 +100,7 @@ export const CarConfigForm = ({ initialData, onSubmit, submitButtonText }: CarCo
 
 	return (
 		<div className="card bg-base-100 shadow-2xl max-w-3xl mx-auto">
-			<div className="card-body p-8">
+			<div className="card-body p-2 md:p-8">
 				<h2 className="card-title text-3xl mb-6 text-primary">Car Configuration</h2>
 				<form onSubmit={handleSubmit} className="space-y-6">
 					{/* License Plate Field */}
@@ -208,7 +208,16 @@ export const CarConfigForm = ({ initialData, onSubmit, submitButtonText }: CarCo
 								<p>
 									Visit the{" "}
 									<a
-										href="https://faucet.bsvblockchain.org/"
+										href="https://scrypt.io/faucet/"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="link link-primary underline"
+									>
+										Scrypt Faucet
+									</a>{" "}
+									or{" "}
+									<a
+										href="https://witnessonchain.com/faucet/tbsv"
 										target="_blank"
 										rel="noopener noreferrer"
 										className="link link-primary underline"

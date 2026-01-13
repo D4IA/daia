@@ -111,7 +111,7 @@ export const CarSessionModal = ({ isOpen, onClose, licensePlate }: CarSessionMod
 		<div className="modal modal-open">
 			<div className="modal-box w-screen h-screen max-w-none max-h-none rounded-none p-0 flex flex-col">
 				{/* Header */}
-				<div className="flex justify-between items-center p-6 border-b border-base-300">
+				<div className="flex justify-between items-center px-2 py-4 md:px-6 border-b border-base-300">
 					<div>
 						<h3 className="font-bold text-2xl">Car Session: {licensePlate}</h3>
 						<div className="flex items-center gap-4 mt-2">

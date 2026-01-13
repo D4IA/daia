@@ -37,6 +37,12 @@ export const ConversationViewer = ({
 		return null;
 	};
 
+	const formatTimestamp = (timestamp?: Date | string) => {
+		if (!timestamp) return "";
+		const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+		return date.toLocaleTimeString();
+	};
+
 	const renderEvent = (event: CarGateSimulationEvent, index: number) => {
 		switch (event.type) {
 			case CarGateSimulationEventType.GATE_TO_CAR_MESSAGE: {
@@ -45,7 +51,7 @@ export const ConversationViewer = ({
 					<div key={index} className="chat chat-start">
 						<div className="chat-header">
 							🚪 Gate
-							<time className="text-xs opacity-50 ml-2">{new Date().toLocaleTimeString()}</time>
+							<time className="text-xs opacity-50 ml-2">{formatTimestamp(event.timestamp)}</time>
 						</div>
 						<div className="chat-bubble chat-bubble-primary">
 							{daiaMessage ? <DaiaMessageViewer message={daiaMessage} /> : event.message}
@@ -60,7 +66,7 @@ export const ConversationViewer = ({
 					<div key={index} className="chat chat-end">
 						<div className="chat-header">
 							🚗 Car
-							<time className="text-xs opacity-50 ml-2">{new Date().toLocaleTimeString()}</time>
+							<time className="text-xs opacity-50 ml-2">{formatTimestamp(event.timestamp)}</time>
 						</div>
 						<div className="chat-bubble chat-bubble-secondary">
 							{daiaMessage ? <DaiaMessageViewer message={daiaMessage} /> : event.message}
@@ -99,7 +105,7 @@ export const ConversationViewer = ({
 			case CarGateSimulationEventType.GATE_LOG:
 				return (
 					<div key={index} className="flex justify-start my-2">
-						<div className="badge badge-ghost badge-sm">
+						<div className="badge badge-ghost badge">
 							<span className="mr-1">🚪</span>
 							{event.message}
 						</div>
@@ -109,7 +115,7 @@ export const ConversationViewer = ({
 			case CarGateSimulationEventType.CAR_LOG:
 				return (
 					<div key={index} className="flex justify-end my-2">
-						<div className="badge badge-ghost badge-sm">
+						<div className="badge badge-ghost badge">
 							<span className="mr-1">🚗</span>
 							{event.message}
 						</div>
@@ -173,12 +179,16 @@ export const ConversationViewer = ({
 
 	return (
 		<div className="flex flex-col h-full">
-			<div className="navbar bg-base-300 rounded-t-xl">
+			<div className="navbar flex flex-col md:flex-row items-start shadow-md py-4 px-2 md:px-6">
 				<div className="flex-1">
-					<h2 className="text-xl font-bold ml-4">{title}</h2>
+					<h2 className="text-xl font-bold">{title}</h2>
 				</div>
-				<div className="flex-none gap-4">
-					<label className="label cursor-pointer gap-2">
+				<div className="flex items-center gap-x-4 justify-between md:justify-[unset] w-full md:w-[unset]">
+					<label
+						className={
+							"label cursor-pointer gap-2 transition-colors" + (autoScroll ? " text-success" : "")
+						}
+					>
 						<span className="label-text">Auto-scroll</span>
 						<input
 							type="checkbox"

@@ -144,27 +144,36 @@
 		]
 	},
 	"sdk_integration_steps": {
-		"title": "Migiem wklepuj",
-		"subtitle": "Zacznij z JavaScriptem w kilka minut",
+		"title": "Przykład: Zmontuj-Poddziergaj-Sprawdź",
+		"subtitle": "Tu Ci pokażemy, jak naszykować ofertę, drapnąć na niej autograf, żeby wyszło porozumienie, i na koniec sprawdzić, czy nikt Cię w bambuko nie robi.",
+		"setup": {
+			"number": "#",
+			"title": "Naszykowanie klamotów",
+			"codeSnippet": "import {\n  DaiaOfferBuilder,\n  DefaultDaiaOfferSigner,\n  DefaultDaiaAgreementVerifier,\n  DefaultDaiaSignRequirementResolver,\n  DefaultDaiaPaymentRequirementResolver,\n  DaiaOfferSignResponseType,\n  DaiaAgreementVerificationResult,\n} from '@d4ia/core';\nimport {\n  PrivateKey,\n  BsvTransactionFactory,\n  BsvTransactionParser,\n  BsvNetwork,\n} from '@d4ia/blockchain';\n\n// Generate keys for both parties\nconst offererKey = PrivateKey.fromRandom();\nconst signeeKey = PrivateKey.fromRandom();\nconst network = BsvNetwork.TEST;"
+		},
 		"step1": {
 			"number": 1,
-			"title": "Wgraj SDK",
-			"codeSnippet": "npm install @daia/sdk"
+			"title": "Montowanie Oferty",
+			"description": "Oferent szykuje ofertę i wypisuje, co mu tam potrzeba:",
+			"codeSnippet": "const signeePublicKey = signeeKey.toPublicKey().toString();\nconst paymentAddress = offererKey.toPublicKey().toAddress('testnet').toString();\n\nconst offer = DaiaOfferBuilder.new()\n  .setOfferTypeIdentifier('parking-access')\n  .setNaturalLanguageContent('1-hour parking access for 1000 satoshis')\n  .addSelfSignedRequirement(offererKey)\n  .addSignRequirement(signeePublicKey)\n  .addSelfAuthenticatedPaymentRequirement(paymentAddress, 1000)\n  .build();"
 		},
 		"step2": {
 			"number": 2,
-			"title": "Odpal Ajenta",
-			"codeSnippet": "import { DaiaAgent } from '@d4ia/sdk'\nconst agent = new DaiaAgent({ id: 'AJENT-01', wallet: '0xabc...' })"
+			"title": "Dzierganie Podpisu",
+			"description": "Ten, co podpisuje, bierze pisak i maże po ofercie, aż miło:",
+			"codeSnippet": "// Create transaction factory\nconst factory = new BsvTransactionFactory(signeeKey, network);\n\n// Create resolvers\nconst signResolver = new DefaultDaiaSignRequirementResolver(signeeKey);\nconst paymentResolver = new DefaultDaiaPaymentRequirementResolver(factory);\n\n// Create signer\nconst signer = new DefaultDaiaOfferSigner({\n  transactionFactory: factory,\n  signResolver,\n  paymentResolver,\n});\n\n// Sign the offer\nconst signResponse = await signer.signOffer({ offer });\n\nif (signResponse.type !== DaiaOfferSignResponseType.SUCCESS) {\n  throw new Error('Signing failed');\n}\n\nconst { agreement, transaction } = signResponse;\n\n// Publish to blockchain\nawait transaction.publish();\n\nconsole.log('Agreement published:', transaction.id);"
 		},
 		"step3": {
 			"number": 3,
-			"title": "Zaszrajbuj Propo na blokklajnie",
-			"codeSnippet": "const proposeOfferId = await agent.recordProposeOffer({\n  content: \"\nProponuję: \n  • Czas: 3 godz\n  • Bazowa stawka: 6 zł/h\n  • Zniżka na ajnfach pynkel: -1 zł/h\n  • Końcowa stawka: 5 zł/h\n  • Aż za wszystko: 15 zł\n\",\n  encryptKey: 'xyz' // albo undefined, coby było klarowne\n});"
+			"title": "Sprawdzanie, czy Gra",
+			"description": "Każdy fyrtel może obadać na blockchainie, czy to porozumienie jest akuratne:",
+			"codeSnippet": "// Create parser and verifier\nconst parser = new BsvTransactionParser(network);\nconst verifier = new DefaultDaiaAgreementVerifier(parser);\n\n// Verify from transaction ID\nconst result = await verifier.getAgreementFromTransaction(transaction.id);\n\nif (!result.found) {\n  throw new Error('Agreement not found');\n}\n\nconst { agreement: verifiedAgreement, verification } = result;\n\nif (verification.result === DaiaAgreementVerificationResult.PASSED) {\n  console.log('Agreement is valid!');\n  console.log('Total payments:', verification.totalAgreementPayments);\n} else {\n  console.log('Verification failed:', verification.result);\n  if (verification.failedRequirementIds) {\n    console.log('Failed requirements:', verification.failedRequirementIds);\n  }\n}"
 		},
 		"step4": {
 			"number": 4,
-			"title": "Zaszrajbuj 'Git' na blokklajnie drugim ajentem",
-			"codeSnippet": "await otherAgent.recordAcceptOffer({\n  proposeOfferId: proposeOfferId\n});"
+			"title": "Inna Droga: Sprawdzanie od ręki",
+			"description": "Możesz też obadać sprawę od razu, bez latania po blockchainach:",
+			"codeSnippet": "const verifyResponse = await verifier.verifyAgreement({\n  agreement,\n  transactionData: transaction.data,\n});\n\nif (verifyResponse.result === DaiaAgreementVerificationResult.PASSED) {\n  console.log('Agreement is valid');\n}"
 		}
 	},
 	"agreement_details_tooltips": {
@@ -299,5 +308,23 @@
 		"proof_number": "Dowod {{number}}",
 		"requirement_label": "Wymog",
 		"proof_label": "Dowod"
+	},
+	"payment_agreement_summary": {
+		"title": "Wihajster ze sztamy",
+		"text_main": "Sztama z opisem <5>{{description}}</5> została klepnięta na podstawie <0>{{relatedTxId}}</0> między wiarą <6>{{participantX}}</6> a <7>{{participantY}}</7>.<br /><1>{{signersStatus}}</1> sztame i uczestnik <2>{{participant}}</2> <3/>, gdzie sypnął <4>{{amount}} Satoshi</4>",
+		"text_pdf": "Sztama z opisem <5>{{description}}</5> zostala klepnieta na podstawie <0>{{relatedTxId}}</0> miedzy wiara <6>{{participantX}}</6> a <7>{{participantY}}</7>.<br /><1>{{signersStatus}}</1> sztame i uczestnik <2>{{participant}}</2> <3/>, gdzie sypnal <4>{{amount}} Satoshi</4>",
+		"status_signed": "OBAJ MACHNELI PODPIS",
+		"status_pending": "CZEKAMY AZ SIE PODPISZA",
+		"context_self": "zabulił w ramach tyj sztamy",
+		"context_remote": "zabulił za sztame <0>{{txId}}</0>"
+	},
+	"signed_agreement_summary": {
+		"title": "Wihajster ze sztamy",
+		"text_main": "Sztama między wiarą <2>{{participantX}}</2> a <3>{{participantY}}</3> o co tu chodzi <1>{{description}}</1><br /><0>{{signersStatus}}</0> sztame",
+		"text_pdf": "Sztama miedzy wiara <2>{{participantX}}</2> a <3>{{participantY}}</3> o co tu chodzi <1>{{description}}</1><br /><0>{{signersStatus}}</0> sztame",
+		"status_signed": "OBAJ MACHNELI PODPIS",
+		"status_pending": "CZEKAMY AZ SIE PODPISZA",
+		"context_self": "zabulił w ramach tyj sztamy",
+		"context_remote": "zabulił za sztame <0>{{txId}}</0>"
 	}
 }

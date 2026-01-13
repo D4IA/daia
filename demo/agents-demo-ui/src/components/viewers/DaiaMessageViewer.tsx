@@ -1,4 +1,7 @@
 import { DaiaMessage, DaiaMessageType } from "@d4ia/core";
+import { OfferAccepted } from "../messages/OfferAccepted";
+import { RequirementsList } from "../messages/RequirementsList";
+import { PublicKey } from "@d4ia/blockchain-bridge";
 
 interface DaiaMessageViewerProps {
 	message: DaiaMessage;
@@ -16,9 +19,13 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 					<div className="divider my-1"></div>
 					<div className="text-sm space-y-1">
 						<div>
-							<span className="font-semibold opacity-80">Public Key:</span>
-							<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all">
+							<span className="font-semibold opacity-80">Public Key</span>
+							<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all mb-2">
 								{message.publicKey}
+							</div>
+							<span className="font-semibold opacity-80">Wallet Address</span>
+							<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all">
+								{PublicKey.fromString(message.publicKey).toAddress("testnet")}
 							</div>
 						</div>
 					</div>
@@ -49,31 +56,30 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 								</div>
 							</div>
 						)}
-						{innerContent?.requirements && Object.keys(innerContent.requirements).length > 0 && (
-							<div>
-								<span className="font-semibold opacity-80">Requirements:</span>
-								<ul className="list-disc list-inside bg-base-100 p-2 rounded mt-1 space-y-1">
-									{Object.entries(innerContent.requirements).map(([id, req]: [string, unknown]) => {
-										const requirement = req as {
-											type: string;
-											party?: string;
-											amount?: number;
-										};
-										return (
-											<li key={id} className="text-xs">
-												<span className="font-semibold">{requirement.type}</span>
-												{requirement.type === "sign" && requirement.party && (
-													<span className="ml-2">by {requirement.party}</span>
-												)}
-												{requirement.type === "payment" && requirement.amount && (
-													<span className="ml-2">{requirement.amount} satoshis</span>
-												)}
-											</li>
-										);
-									})}
-								</ul>
-							</div>
-						)}
+						{innerContent?.requirements &&
+							Object.keys(innerContent.requirements).length > 0 &&
+							(() => {
+								// Build party labels: first sign requirement is GATE, second is CAR
+								const signRequirements = Object.values(innerContent.requirements).filter(
+									(r: unknown) => (r as { type: string }).type === "sign",
+								) as { pubKey?: string }[];
+
+								const partyLabels: Record<string, string> = {};
+								if (signRequirements[0]?.pubKey) {
+									partyLabels[signRequirements[0].pubKey] = "GATE";
+								}
+								if (signRequirements[1]?.pubKey) {
+									partyLabels[signRequirements[1].pubKey] = "CAR";
+								}
+
+								return (
+									<RequirementsList
+										requirements={innerContent.requirements}
+										signatures={message.content.signatures}
+										partyLabels={partyLabels}
+									/>
+								);
+							})()}
 					</div>
 				</div>
 			);
@@ -81,45 +87,8 @@ export const DaiaMessageViewer = ({ message }: DaiaMessageViewerProps) => {
 
 		case DaiaMessageType.OFFER_RESPONSE:
 			if (message.result === "accept") {
-				let innerContent;
-				try {
-					innerContent = JSON.parse(message.agreement.offerContent.inner);
-				} catch {
-					innerContent = null;
-				}
-
 				return (
-					<div className="bg-base-300 rounded-lg p-4 space-y-2 text-base-content">
-						<div className="flex items-center gap-2">
-							<span className="text-2xl">✅</span>
-							<span className="font-bold text-lg text-success">Offer Accepted</span>
-						</div>
-						<div className="divider my-1"></div>
-						<div className="text-sm space-y-2">
-							<div>
-								<span className="font-semibold opacity-80">Agreement Reference:</span>
-								<div className="font-mono text-xs bg-base-100 p-2 rounded mt-1 break-all">
-									{message.agreementReference}
-								</div>
-							</div>
-							{innerContent?.naturalLanguageOfferContent && (
-								<div>
-									<span className="font-semibold opacity-80">Agreement:</span>
-									<div className="bg-base-100 p-2 rounded mt-1 whitespace-pre-wrap">
-										{innerContent.naturalLanguageOfferContent}
-									</div>
-								</div>
-							)}
-							{message.agreement.proofs && Object.keys(message.agreement.proofs).length > 0 && (
-								<div>
-									<span className="font-semibold opacity-80">Proofs:</span>
-									<div className="bg-base-100 p-2 rounded mt-1 text-xs">
-										{Object.keys(message.agreement.proofs).length} proof(s) provided
-									</div>
-								</div>
-							)}
-						</div>
-					</div>
+					<OfferAccepted agreementReference={message.agreementReference} agreement={message.agreement} />
 				);
 			} else {
 				return (

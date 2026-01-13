@@ -144,27 +144,36 @@
 		]
 	},
 	"sdk_integration_steps": {
-		"title": "Quick Integration",
-		"subtitle": "Get started with JavaScript in minutes",
+		"title": "Build-Sign-Verify Example",
+		"subtitle": "This example demonstrates building an offer, signing it to create an agreement, and verifying the agreement.",
+		"setup": {
+			"number": "#",
+			"title": "Setup",
+			"codeSnippet": "import {\n  DaiaOfferBuilder,\n  DefaultDaiaOfferSigner,\n  DefaultDaiaAgreementVerifier,\n  DefaultDaiaSignRequirementResolver,\n  DefaultDaiaPaymentRequirementResolver,\n  DaiaOfferSignResponseType,\n  DaiaAgreementVerificationResult,\n} from '@d4ia/core';\nimport {\n  PrivateKey,\n  BsvTransactionFactory,\n  BsvTransactionParser,\n  BsvNetwork,\n} from '@d4ia/blockchain';\n\n// Generate keys for both parties\nconst offererKey = PrivateKey.fromRandom();\nconst signeeKey = PrivateKey.fromRandom();\nconst network = BsvNetwork.TEST;"
+		},
 		"step1": {
 			"number": 1,
-			"title": "Install SDK",
-			"codeSnippet": "npm install @daia/sdk"
+			"title": "Build the Offer",
+			"description": "The offerer creates an offer with requirements:",
+			"codeSnippet": "const signeePublicKey = signeeKey.toPublicKey().toString();\nconst paymentAddress = offererKey.toPublicKey().toAddress('testnet').toString();\n\nconst offer = DaiaOfferBuilder.new()\n  .setOfferTypeIdentifier('parking-access')\n  .setNaturalLanguageContent('1-hour parking access for 1000 satoshis')\n  .addSelfSignedRequirement(offererKey)\n  .addSignRequirement(signeePublicKey)\n  .addSelfAuthenticatedPaymentRequirement(paymentAddress, 1000)\n  .build();"
 		},
 		"step2": {
 			"number": 2,
-			"title": "Initialize Agent",
-			"codeSnippet": "import { DaiaAgent } from '@d4ia/sdk'\nconst agent = new DaiaAgent({ id: 'AGENT-01', wallet: '0xabc...' })"
+			"title": "Sign the Offer",
+			"description": "The signer creates a signer instance and signs the offer:",
+			"codeSnippet": "// Create transaction factory\nconst factory = new BsvTransactionFactory(signeeKey, network);\n\n// Create resolvers\nconst signResolver = new DefaultDaiaSignRequirementResolver(signeeKey);\nconst paymentResolver = new DefaultDaiaPaymentRequirementResolver(factory);\n\n// Create signer\nconst signer = new DefaultDaiaOfferSigner({\n  transactionFactory: factory,\n  signResolver,\n  paymentResolver,\n});\n\n// Sign the offer\nconst signResponse = await signer.signOffer({ offer });\n\nif (signResponse.type !== DaiaOfferSignResponseType.SUCCESS) {\n  throw new Error('Signing failed');\n}\n\nconst { agreement, transaction } = signResponse;\n\n// Publish to blockchain\nawait transaction.publish();\n\nconsole.log('Agreement published:', transaction.id);"
 		},
 		"step3": {
 			"number": 3,
-			"title": "Save Propose Offer on blockchain",
-			"codeSnippet": "const proposeOfferId = await agent.recordProposeOffer({\n  content: \"\nProposing an offer:\n  • Duration: 3 hours\n  • Base rate: 6 PLN/h\n  • Eco vehicle discount: -1 PLN/h\n  • Final rate: 5 PLN/h\n  • Total cost: 15 PLN\n\",\n  encryptKey: 'xyz' // or undefined to display data without being encrypted\n});"
+			"title": "Verify the Agreement",
+			"description": "Anyone can verify the agreement from the blockchain:",
+			"codeSnippet": "// Create parser and verifier\nconst parser = new BsvTransactionParser(network);\nconst verifier = new DefaultDaiaAgreementVerifier(parser);\n\n// Verify from transaction ID\nconst result = await verifier.getAgreementFromTransaction(transaction.id);\n\nif (!result.found) {\n  throw new Error('Agreement not found');\n}\n\nconst { agreement: verifiedAgreement, verification } = result;\n\nif (verification.result === DaiaAgreementVerificationResult.PASSED) {\n  console.log('Agreement is valid!');\n  console.log('Total payments:', verification.totalAgreementPayments);\n} else {\n  console.log('Verification failed:', verification.result);\n  if (verification.failedRequirementIds) {\n    console.log('Failed requirements:', verification.failedRequirementIds);\n  }\n}"
 		},
 		"step4": {
 			"number": 4,
-			"title": "Save Accept Offer on blockchain using other agent",
-			"codeSnippet": "await otherAgent.recordAcceptOffer({\n  proposeOfferId: proposeOfferId\n});"
+			"title": "Alternative: Direct Verification",
+			"description": "You can also verify an agreement directly without fetching from blockchain:",
+			"codeSnippet": "const verifyResponse = await verifier.verifyAgreement({\n  agreement,\n  transactionData: transaction.data,\n});\n\nif (verifyResponse.result === DaiaAgreementVerificationResult.PASSED) {\n  console.log('Agreement is valid');\n}"
 		}
 	},
 	"agreement_details_tooltips": {
@@ -296,5 +305,23 @@
 		"proof_number": "Proof {{number}}",
 		"requirement_label": "Requirement",
 		"proof_label": "Proof"
+	},
+	"payment_agreement_summary": {
+		"title": "Agreement Summary",
+		"text_main": "Agreement with description <5>{{description}}</5> was created based on agreement <0>{{relatedTxId}}</0> between participants <6>{{participantX}}</6> and <7>{{participantY}}</7>.<br /><1>{{signersStatus}}</1> the agreement and participant <2>{{participant}}</2> <3/>, where he sent <4>{{amount}} Satoshis</4>",
+		"text_pdf": "Agreement with description <5>{{description}}</5> was created based on agreement <0>{{relatedTxId}}</0> between participants <6>{{participantX}}</6> and <7>{{participantY}}</7>.<br /><1>{{signersStatus}}</1> the agreement and participant <2>{{participant}}</2> <3/>, where he sent <4>{{amount}} Satoshis</4>",
+		"status_signed": "BOTH PARTICIPANTS SIGNED",
+		"status_pending": "SIGNATURES PENDING",
+		"context_self": "made a payment within this agreement",
+		"context_remote": "paid for the agreement <0>{{txId}}</0>"
+	},
+	"signed_agreement_summary": {
+		"title": "Agreement Summary",
+		"text_main": "Agreement between participants <2>{{participantX}}</2> and <3>{{participantY}}</3> with description <1>{{description}}</1><br /><0>{{signersStatus}}</0> the agreement",
+		"text_pdf": "Agreement between participants <2>{{participantX}}</2> and <3>{{participantY}}</3> with description <1>{{description}}</1><br /><0>{{signersStatus}}</0> the agreement",
+		"status_signed": "BOTH PARTICIPANTS SIGNED",
+		"status_pending": "SIGNATURES PENDING",
+		"context_self": "made a payment within this agreement",
+		"context_remote": "paid for the agreement <0>{{txId}}</0>"
 	}
 }

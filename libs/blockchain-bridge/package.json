@@ -1,6 +1,6 @@
 {
   "name": "@d4ia/blockchain-bridge",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "DAIA protocol utilities",
   "type": "module",
   "exports": {
@@ -22,6 +22,7 @@
     "dev": "vite build --watch",
     "test": "vitest run",
     "test-watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "format:fix": "prettier ./src --write",
     "format:check": "prettier ./src --check",
     "format:check:cached": "prettier ./src --check --cache",

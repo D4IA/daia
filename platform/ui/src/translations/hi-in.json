@@ -144,27 +144,36 @@
 		]
 	},
 	"sdk_integration_steps": {
-		"title": "त्वरित एकीकरण",
-		"subtitle": "मिनटों में जावास्क्रिप्ट के साथ शुरू करें (Minaṭōṁ mēṁ jāvāskripṭ kē sāth śurū karēṁ)",
+		"title": "उदाहरण: बनाएँ-हस्ताक्षर करें-सत्यापित करें",
+		"subtitle": "यह उदाहरण एक ऑफ़र बनाने, समझौता करने के लिए उस पर हस्ताक्षर करने और समझौते को सत्यापित करने का प्रदर्शन करता है।",
+		"setup": {
+			"number": "#",
+			"title": "सेटअप",
+			"codeSnippet": "import {\n  DaiaOfferBuilder,\n  DefaultDaiaOfferSigner,\n  DefaultDaiaAgreementVerifier,\n  DefaultDaiaSignRequirementResolver,\n  DefaultDaiaPaymentRequirementResolver,\n  DaiaOfferSignResponseType,\n  DaiaAgreementVerificationResult,\n} from '@d4ia/core';\nimport {\n  PrivateKey,\n  BsvTransactionFactory,\n  BsvTransactionParser,\n  BsvNetwork,\n} from '@d4ia/blockchain';\n\n// Generate keys for both parties\nconst offererKey = PrivateKey.fromRandom();\nconst signeeKey = PrivateKey.fromRandom();\nconst network = BsvNetwork.TEST;"
+		},
 		"step1": {
 			"number": 1,
-			"title": "एसडीके स्थापित करें",
-			"codeSnippet": "npm install @daia/sdk"
+			"title": "ऑफ़र बनाएँ",
+			"description": "ऑफ़रर आवश्यकताओं के साथ एक ऑफ़र बनाता है:",
+			"codeSnippet": "const signeePublicKey = signeeKey.toPublicKey().toString();\nconst paymentAddress = offererKey.toPublicKey().toAddress('testnet').toString();\n\nconst offer = DaiaOfferBuilder.new()\n  .setOfferTypeIdentifier('parking-access')\n  .setNaturalLanguageContent('1-hour parking access for 1000 satoshis')\n  .addSelfSignedRequirement(offererKey)\n  .addSignRequirement(signeePublicKey)\n  .addSelfAuthenticatedPaymentRequirement(paymentAddress, 1000)\n  .build();"
 		},
 		"step2": {
 			"number": 2,
-			"title": "एजेंट को प्रारंभ करें",
-			"codeSnippet": "import { DaiaAgent } from '@d4ia/sdk'\nconst agent = new DaiaAgent({ id: 'AGENT-01', wallet: '0xabc...' })"
+			"title": "ऑफ़र पर हस्ताक्षर करें",
+			"description": "हस्ताक्षरकर्ता एक हस्ताक्षरकर्ता इंस्टेंस बनाता है और ऑफ़र पर हस्ताक्षर करता है:",
+			"codeSnippet": "// Create transaction factory\nconst factory = new BsvTransactionFactory(signeeKey, network);\n\n// Create resolvers\nconst signResolver = new DefaultDaiaSignRequirementResolver(signeeKey);\nconst paymentResolver = new DefaultDaiaPaymentRequirementResolver(factory);\n\n// Create signer\nconst signer = new DefaultDaiaOfferSigner({\n  transactionFactory: factory,\n  signResolver,\n  paymentResolver,\n});\n\n// Sign the offer\nconst signResponse = await signer.signOffer({ offer });\n\nif (signResponse.type !== DaiaOfferSignResponseType.SUCCESS) {\n  throw new Error('Signing failed');\n}\n\nconst { agreement, transaction } = signResponse;\n\n// Publish to blockchain\nawait transaction.publish();\n\nconsole.log('Agreement published:', transaction.id);"
 		},
 		"step3": {
 			"number": 3,
-			"title": "ब्लॉकचेन पर प्रस्ताव को सहेजें",
-			"codeSnippet": "const proposeOfferId = await agent.recordProposeOffer({\n  content: \"\nProposing an offer:\n  • Duration: 3 hours\n  • Base rate: 6 PLN/h\n  • Eco vehicle discount: -1 PLN/h\n  • Final rate: 5 PLN/h\n  • Total cost: 15 PLN\n\",\n  encryptKey: 'xyz' // or undefined to display data without being encrypted\n});"
+			"title": "समझौते को सत्यापित करें",
+			"description": "कोई भी ब्लॉकचेन से समझौते को सत्यापित कर सकता है:",
+			"codeSnippet": "// Create parser and verifier\nconst parser = new BsvTransactionParser(network);\nconst verifier = new DefaultDaiaAgreementVerifier(parser);\n\n// Verify from transaction ID\nconst result = await verifier.getAgreementFromTransaction(transaction.id);\n\nif (!result.found) {\n  throw new Error('Agreement not found');\n}\n\nconst { agreement: verifiedAgreement, verification } = result;\n\nif (verification.result === DaiaAgreementVerificationResult.PASSED) {\n  console.log('Agreement is valid!');\n  console.log('Total payments:', verification.totalAgreementPayments);\n} else {\n  console.log('Verification failed:', verification.result);\n  if (verification.failedRequirementIds) {\n    console.log('Failed requirements:', verification.failedRequirementIds);\n  }\n}"
 		},
 		"step4": {
 			"number": 4,
-			"title": "दूसरे एजेंट का उपयोग करके प्रस्ताव स्वीकार करें",
-			"codeSnippet": "await otherAgent.recordAcceptOffer({\n  proposeOfferId: proposeOfferId\n});"
+			"title": "विकल्प: प्रत्यक्ष सत्यापन",
+			"description": "आप ब्लॉकचेन से डेटा प्राप्त किए बिना सीधे समझौते को सत्यापित भी कर सकते हैं:",
+			"codeSnippet": "const verifyResponse = await verifier.verifyAgreement({\n  agreement,\n  transactionData: transaction.data,\n});\n\nif (verifyResponse.result === DaiaAgreementVerificationResult.PASSED) {\n  console.log('Agreement is valid');\n}"
 		}
 	},
 	"agreement_details_tooltips": {
@@ -299,5 +308,23 @@
 		"proof_number": "Proof {{number}}",
 		"requirement_label": "Requirement",
 		"proof_label": "Proof"
+	},
+	"payment_agreement_summary": {
+		"title": "समझौता सारांश",
+		"text_main": "विवरण <5>{{description}}</5> वाला समझौता समझौते <0>{{relatedTxId}}</0> के आधार पर प्रतिभागियों <6>{{participantX}}</6> और <7>{{participantY}}</7> के बीच बनाया गया था। <1>{{signersStatus}}</1> समझौता और प्रतिभागी <2>{{participant}}</2> <3/>, जहां उन्होंने <4>{{amount}} सातोशी</4> भेजे",
+		"text_pdf": "विवरण <5>{{description}}</5> वाला समझौता समझौते <0>{{relatedTxId}}</0> के आधार पर प्रतिभागियों <6>{{participantX}}</6> और <7>{{participantY}}</7> के बीच बनाया गया था। <1>{{signersStatus}}</1> समझौता और प्रतिभागी <2>{{participant}}</2> <3/>, जहां उन्होंने <4>{{amount}} सातोशी</4> भेजे",
+		"status_signed": "दोनों प्रतिभागियों ने हस्ताक्षर किए",
+		"status_pending": "हस्ताक्षर लंबित",
+		"context_self": "इस समझौते के भीतर भुगतान किया",
+		"context_remote": "समझौते के लिए भुगतान किया <0>{{txId}}</0>"
+	},
+	"signed_agreement_summary": {
+		"title": "समझौता सारांश",
+		"text_main": "प्रतिभागियों <2>{{participantX}}</2> और <3>{{participantY}}</3> के बीच समझौता जिसका विवरण <1>{{description}}</1> है <br /><0>{{signersStatus}}</0>",
+		"text_pdf": "प्रतिभागियों <2>{{participantX}}</2> और <3>{{participantY}}</3> के बीच समझौता जिसका विवरण <1>{{description}}</1> है <br /><0>{{signersStatus}}</0>",
+		"status_signed": "दोनों प्रतिभागियों ने हस्ताक्षर किए",
+		"status_pending": "हस्ताक्षर लंबित",
+		"context_self": "इस समझौते के भीतर भुगतान किया",
+		"context_remote": "समझौते के लिए भुगतान किया <0>{{txId}}</0>"
 	}
 }
