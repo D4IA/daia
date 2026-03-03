@@ -1,0 +1,23 @@
+name: Check SNAPSHOT Version
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for SNAPSHOT versions
+        run: |
+          FILES=$(grep -l "SNAPSHOT" package.json demo/agents-demo-ui/package.json docs/package.json libs/*/package.json platform/*/package.json 2>/dev/null || true)
+          if [ -n "$FILES" ]; then
+            echo "Error: SNAPSHOT versions found in:"
+            echo "$FILES"
+            echo "Run 'node bump-version.js --patch|--minor|--major' before merging to main."
+            exit 1
+          fi
